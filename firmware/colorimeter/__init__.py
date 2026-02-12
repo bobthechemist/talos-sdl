@@ -33,6 +33,11 @@ SUBSYSTEM_CONFIG = {
     "default_intensity": 4,
     "min_intensity": 1,
     "max_intensity": 10,
+    "ai_guidance": (
+        "This device is mounted on the Sidekick arm. You MUST ensure the Sidekick has "
+        "centered the arm over the target well (using to_well with no pump argument) "
+        "before calling the 'measure' command."
+    ),
 }
 
 # ============================================================================

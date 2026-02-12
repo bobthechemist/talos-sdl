@@ -75,7 +75,13 @@ SUBSYSTEM_CONFIG = {
         "p1": {"dx": 1.09, "dy": -0.6}, "p2": {"dx": 1.09, "dy": -0.2},
         "p3": {"dx": 1.09, "dy": 0.2}, "p4": {"dx": 1.09, "dy": 0.6},
     },
-   
+    "ai_guidance": (
+        "1. This device MUST be homed using the 'home' command at the start of every session "
+        "before any other movement commands will work.\n"
+        "2. To position a specific PUMP over a well for dispensing, use to_well(well='A1', pump='p1').\n"
+        "3. To position the COLORIMETER over a well for measurement, use to_well(well='A1') "
+        "and OMIT the 'pump' argument entirely. This centers the arm center-point."
+    ),
 }
 
 # ============================================================================

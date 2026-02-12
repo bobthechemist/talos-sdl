@@ -41,7 +41,8 @@ def handle_help(machine, payload):
         status="DATA_RESPONSE",
         payload={
             "metadata": {
-                "data_type": "dict"
+                "data_type": "dict",
+                "ai_guidance": machine.config.get("ai_guidance", "")
             },
             "data": machine.supported_commands # Get it directly from the machine
         }
