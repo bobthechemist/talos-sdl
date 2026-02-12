@@ -46,40 +46,42 @@ def main():
     if not manager:
         return
 
-    # 4. Get Command Sets (Help) from devices to populate Planner
     from host.ai.ai_utils import get_instructions
-    print(f"[*] Fetching device capabilities...")
-    raw_commands = get_instructions(manager, device_ports)
-    if not raw_commands:
-        print(f"{C.ERR}Failed to get device commands.{C.END}")
-        manager.stop()
-        return
+    full_responses = get_instructions(manager, device_ports)
+    if not full_responses:
+        print(f"{C.ERR}Failed to get device capabilities.{C.END}")
+        manager.stop(); return
     
-    # Filter for AI enabled commands (simulating what ai-plan.py does)
     ai_commands = {}
-    for dev, cmds in raw_commands.items():
-        ai_commands[dev] = {k: v for k, v in cmds.items() if v.get('ai_enabled', False)}
+    ai_guidance = {}
     
-    planner.command_sets = ai_commands
+    for dev, payload in full_responses.items():
+        # Extract the command dictionary
+        cmd_data = payload.get('data', {})
+        ai_commands[dev] = {k: v for k, v in cmd_data.items() if v.get('ai_enabled', False)}
+        
+        # Extract the metadata guidance
+        metadata = payload.get('metadata', {})
+        ai_guidance[dev] = metadata.get('ai_guidance', "No specific guidance provided.")
 
-    # 5. Initialize the Agent
+    # 5. Initialize the Planner with guidance
+    planner = Planner(
+        world_model=world_model, 
+        command_sets=ai_commands, 
+        guidance_dict=ai_guidance
+    )
+
+    # 6. Initialize the Agent with the system context
     agent = LLMManager.get_agent(
         provider="vertex", 
         context=planner.build_system_context()
     )
 
-    # 6. Create and Run the Executor
-    executor = AgentExecutor(
-        manager=manager,
-        device_ports=device_ports,
-        agent=agent,
-        planner=planner,
-        plate_manager=plate_manager
-    )
-
-    # TEST SCENARIO
-    goal = "Add 100uL of Red reagent to well A1. If and only if that succeeds, measure the spectrum of A1."
+    # 7. Create and Run the Executor (Memory/PlateManager included)
+    executor = AgentExecutor(manager, device_ports, agent, planner, plate_manager)
     
+    goal = "Add 100uL of Red reagent to well A1. If and only if that succeeds, measure the spectrum of A1."
+
     try:
         executor.run(goal)
     except KeyboardInterrupt:
@@ -87,6 +89,7 @@ def main():
     except Exception as e:
         print(f"\n{C.ERR}An error occurred during execution: {e}{C.END}")
     finally:
+        executor.save_log()
         print(f"\n{C.INFO}Shutting down Device Manager...{C.END}")
         manager.stop()
 

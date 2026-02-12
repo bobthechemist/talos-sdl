@@ -211,36 +211,31 @@ def connect_devices():
 
 def get_instructions(manager: DeviceManager, device_ports: dict, timeout: int = 5):
     """
-    Sends 'help' commands to connected devices and waits for their responses.
+    Sends 'help' commands to connected devices and returns the FULL payload
+    (including metadata/guidance) for each device.
     """
-    print(f"\n{C.INFO}[+] Retrieving command lists from all devices...{C.END}")
+    print(f"\n{C.INFO}[+] Retrieving capabilities from all devices...{C.END}")
     help_payload = {"func": "help", "args": {}}
     help_message = Message.create_message("AI_HOST", "INSTRUCTION", payload=help_payload)
     
     for device, port in device_ports.items():
-        print(f"  -> Sending 'help' to {device} on {port}")
         manager.send_message(port, help_message)
 
-    all_commands = {}
+    all_responses = {}
     start_time = time.time()
-    print("  -> Waiting for responses...")
-
-    while len(all_commands) < len(device_ports) and time.time() - start_time < timeout:
+    
+    while len(all_responses) < len(device_ports) and time.time() - start_time < timeout:
         try:
             msg_type, port, msg_data = manager.incoming_message_queue.get_nowait()
             if msg_type == 'RECV' and msg_data.status == "DATA_RESPONSE":
-                payload_data = msg_data.payload.get('data', {})
-                if 'ping' in payload_data and 'description' in payload_data.get('ping', {}):
-                    for name, p in device_ports.items():
-                        if p == port and name not in all_commands:
-                            print(f"{C.OK}     Received command list from {name}.{C.END}")
-                            all_commands[name] = payload_data
-                            break
+                # Find which device this port belongs to
+                for name, p in device_ports.items():
+                    if p == port and name not in all_responses:
+                        # --- KEY CHANGE: Return the whole payload, not just .get('data') ---
+                        all_responses[name] = msg_data.payload
+                        print(f"{C.OK}     Received capabilities and metadata from {name}.{C.END}")
+                        break
         except queue.Empty:
             time.sleep(0.1)
 
-    if len(all_commands) < len(device_ports):
-        print(f"{C.ERR}[FAILURE] Timed out waiting for all devices to respond.{C.END}")
-        return None
-        
-    return all_commands
+    return all_responses if len(all_responses) == len(device_ports) else None
