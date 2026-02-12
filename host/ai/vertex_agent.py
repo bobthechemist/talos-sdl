@@ -1,3 +1,4 @@
+# host/ai/vertex_agent.py
 import os
 from google import genai
 from google.genai import types
@@ -6,8 +7,7 @@ from .base_agent import BaseAgent
 class VertexAgent(BaseAgent):
     """Implementation for Google Vertex AI / Gemini."""
     
-    def __init__(self, context=None, model_name="gemini-2.0-flash"):
-        # Explicit call to super() init for CP-style compatibility
+    def __init__(self, context=None, model_name="gemini-2.5-flash-lite"):
         BaseAgent.__init__(self, context)
         self.model_name = model_name
         self.client = genai.Client(
@@ -17,6 +17,9 @@ class VertexAgent(BaseAgent):
         )
 
     def prompt(self, user_prompt, use_history=True, **kwargs):
+        # Reset turn info at the start of every prompt
+        self.last_run_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
+        
         try:
             contents = []
             if use_history:
@@ -29,13 +32,24 @@ class VertexAgent(BaseAgent):
                 **kwargs,
             )
 
+            # --- API CALL ---
             response = self.client.models.generate_content(
                 model=self.model_name,
                 contents=contents,
                 config=config,
             )
 
-            if not response.candidates:
+            # --- CAPTURE METADATA ---
+            if hasattr(response, 'usage_metadata') and response.usage_metadata:
+                usage = response.usage_metadata
+                self.last_run_info = {
+                    "prompt_tokens": usage.prompt_token_count or 0,
+                    "completion_tokens": usage.candidates_token_count or 0,
+                    "total_tokens": usage.total_token_count or 0
+                }
+
+            if not response.candidates or not response.candidates[0].content.parts:
+                print("[VertexAgent Warning]: No response text returned by model.")
                 return None
 
             response_text = response.candidates[0].content.parts[0].text
@@ -47,5 +61,6 @@ class VertexAgent(BaseAgent):
             return response_text
 
         except Exception as e:
-            print("[VertexAgent Error]: " + str(e))
+            # Re-wrap error message to be descriptive
+            print(f"[VertexAgent Error]: {type(e).__name__}: {e}")
             return None

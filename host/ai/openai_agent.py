@@ -30,6 +30,13 @@ class OpenAIAgent(BaseAgent):
                 **kwargs
             )
 
+            usage = response.usage
+            self.last_run_info = {
+                "prompt_tokens": usage.prompt_tokens,
+                "completion_tokens": usage.completion_tokens,
+                "total_tokens": usage.total_tokens
+            }
+
             response_text = response.choices[0].message.content
 
             if use_history:

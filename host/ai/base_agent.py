@@ -1,17 +1,12 @@
 class BaseAgent:
-    """
-    Base class for all LLM providers (The 'Base Postman').
-    Uses NotImplementedError instead of abc for hardware compatibility.
-    """
-    
     def __init__(self, context=None):
         self.context = context
         self.history = []
+        self.last_run_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}
 
     def prompt(self, user_prompt, use_history=True, **kwargs):
-        """Sends a prompt to the LLM and returns the text response."""
         raise NotImplementedError("Subclasses must implement prompt()")
 
     def clear_history(self):
-        """Clears the conversation history."""
         self.history = []
+        self.last_run_info = {"prompt_tokens": 0, "completion_tokens": 0, "total_tokens": 0}

@@ -17,7 +17,7 @@ class LLMManager:
         provider = provider or os.getenv("AI_PROVIDER", "vertex").lower()
         
         if provider == "vertex":
-            model = model or os.getenv("AI_MODEL", "gemini-2.0-flash")
+            model = model or os.getenv("AI_MODEL", "gemini-2.5-flash-lite")
             return VertexAgent(context=context, model_name=model)
             
         elif provider == "ollama":
