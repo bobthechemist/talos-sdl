@@ -17,19 +17,14 @@ from . import handlers
 # 1. INSTRUMENT CONFIGURATION
 # ============================================================================
 SUBSYSTEM_NAME = "COLORIMETER"
-SUBSYSTEM_VERSION = "1.1.0" # Incremented version for new features/protocol
+SUBSYSTEM_VERSION = "1.1.0"
 SUBSYSTEM_INIT_STATE = "Initialize"
 SUBSYSTEM_CONFIG = {
     "pins": {
-        # The AS7341 sensor uses the board's default I2C pins.
-        # They are listed here for clarity but are not directly used in the
-        # code, as `board.I2C()` finds them automatically.
         "SCL": board.SCL,
         "SDA": board.SDA
     },
-    # Default gain setting for the sensor on initialization.
     "default_gain": 8,
-    # Default current for the onboard LED source (mA).
     "default_intensity": 4,
     "min_intensity": 1,
     "max_intensity": 10,
@@ -44,7 +39,6 @@ SUBSYSTEM_CONFIG = {
 # 2. ASSEMBLY SECTION
 # ============================================================================
 
-# REFACTORED: This callback now adheres to the messaging.md protocol.
 def send_telemetry(machine):
     """Callback function to generate and send the colorimeter's telemetry."""
     try:
@@ -98,34 +92,32 @@ machine.postman = postman
 machine.add_state(states.Initialize())
 machine.add_state(GenericIdle(telemetry_callback=send_telemetry))
 machine.add_state(GenericError())
-# NEW: Add the states required for the sequencer-driven 'measure' command
 machine.add_state(states.TurnOnLED())
 machine.add_state(states.ReadSensor())
 machine.add_state(states.TurnOffLED())
 
-# --- Define Command Interface (REFACTORED) ---
+# --- Define Command Interface ---
 register_common_commands(machine)
 
 machine.add_command("read_all", handlers.handle_read_all, {
     "description": "Immediately reads all 10 color channels and returns the values.",
     "args": [],
-    "ai_enabled": False
+    "ai_enabled": False # 'measure' is preferred for AI
 })
 machine.add_command("get_settings", handlers.handle_get_settings, {
     "description": "Gets the current sensor settings (gain, LED status, intensity).",
     "args": [],
-    "ai_enabled": False
+    "ai_enabled": True # ENABLED
 })
 machine.add_command("set_settings", handlers.handle_set_settings, {
     "description": "Sets one or more sensor parameters.",
     "args": [
-        {"name": "gain", "type": "int", "description": "Sensor gain. See sensor docs for valid values.", "default": None},
+        {"name": "gain", "type": "int", "description": "Sensor gain [0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512].", "default": None},
         {"name": "led", "type": "bool", "description": "LED on/off state (true/false).", "default": None},
         {"name": "intensity", "type": "int", "description": f"LED current [{SUBSYSTEM_CONFIG['min_intensity']}-{SUBSYSTEM_CONFIG['max_intensity']}] mA.", "default": None}
     ],
-    "ai_enabled": False
+    "ai_enabled": True # ENABLED
 })
-# NEW: Command to demonstrate the StateSequencer
 machine.add_command("measure", handlers.handle_measure, {
     "description": "Performs a full measurement sequence (LED on, read, LED off).",
     "args": [],
@@ -139,7 +131,6 @@ machine.supported_commands['help']['ai_enabled'] = False
 machine.supported_commands['ping']['ai_enabled'] = False
 machine.supported_commands['set_time']['ai_enabled'] = False
 machine.supported_commands['get_info']['ai_enabled'] = False
-
 
 # --- Add machine-wide flags (dynamic variables) ---
 machine.add_flag('error_message', '')

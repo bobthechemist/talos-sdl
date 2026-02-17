@@ -1,6 +1,7 @@
 # host/ai/ai_chat.py
 import sys
 import os
+import argparse
 from pathlib import Path
 
 # Setup project root path
@@ -16,6 +17,20 @@ from host.ai.ai_utils import connect_devices, check_devices_attached, get_instru
 from host.gui.console import C
 
 def main():
+    # --- 0. Parse Command Line Arguments ---
+    parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
+    parser.add_argument(
+        "--provider", 
+        type=str, 
+        help="AI Provider to use (vertex, ollama, openai). Overrides AI_PROVIDER env var."
+    )
+    parser.add_argument(
+        "--model", 
+        type=str, 
+        help="Specific model name (e.g., gemini-2.5-flash-lite, llama3). Overrides AI_MODEL env var."
+    )
+    args = parser.parse_args()
+
     print(f"\n{C.OK}==========================================")
     print("      ALIF AGENTIC LABORATORY COCKPIT      ")
     print(f"=========================================={C.END}")
@@ -53,11 +68,27 @@ def main():
 
     planner = Planner(world_model, ai_commands, ai_guidance)
     
-    # The Agent persists for the entire session (maintaining conversation history)
-    agent = LLMManager.get_agent(
-        provider="vertex", 
-        context=planner.build_system_context()
-    )
+    # 4. Initialize Agent
+    # The agent persists for the entire session (maintaining conversation history).
+    # LLMManager will handle the logic: Args > Env Vars > Defaults.
+    print(f"{C.INFO}[+] Initializing AI Agent...{C.END}")
+    try:
+        agent = LLMManager.get_agent(
+            provider=args.provider, 
+            model=args.model,
+            context=planner.build_system_context()
+        )
+        
+        # Determine display name for the log
+        provider_name = args.provider if args.provider else os.getenv("AI_PROVIDER", "vertex")
+        model_name = getattr(agent, "model_name", "unknown model")
+        print(f"{C.OK}    -> Connected to {provider_name.upper()} using {model_name}.{C.END}")
+
+    except Exception as e:
+        print(f"{C.ERR}    -> Failed to initialize agent: {e}{C.END}")
+        print(f"{C.INFO}       Ensure 'openai' is installed for Ollama support (`pip install openai`).{C.END}")
+        manager.stop()
+        sys.exit(1)
 
     # The Executor handles the ReAct loops
     executor = AgentExecutor(
@@ -72,7 +103,7 @@ def main():
     print(f"\n{C.INFO}System Online. Session is being logged to temp/.{C.END}")
     print(f"{C.INFO}Commands: 'quit' to exit, 'clear' to reset history, 'log' to save current data.{C.END}")
 
-    # 4. The REPL Loop
+    # 5. The REPL Loop
     try:
         while True:
             try:

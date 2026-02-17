@@ -15,7 +15,7 @@ class Planner:
                 guidance_section += f"### {device.upper()} OPERATIONAL GUIDANCE:\n{text}\n\n"
 
         return f"""You are an expert Laboratory AI Controller.
-Your goal is to complete the user's request by issuing ONE command at a time.
+Your goal is to translate the user's natural language request into a sequence of hardware commands.
 
 # DEVICE GUIDANCE & CONSTRAINTS
 {guidance_section}
@@ -26,15 +26,23 @@ Your goal is to complete the user's request by issuing ONE command at a time.
 # REAGENTS (World Model)
 {json.dumps(self.world_model.get('reagents', {}), indent=2)}
 
-# RULES
-1. Respond ONLY with a JSON object representing the NEXT step.
-2. Format: {{"device": "name", "command": "cmd", "args": {{...}}}}
-3. If the task is finished, respond with: {{"status": "COMPLETE", "message": "Summary of work"}}
-4. ALWAYS follow the specific guidance for each device to ensure safety and precision.
+# RESPONSE FORMAT RULES
+1. Respond ONLY with a JSON object.
+2. The JSON object must contain a key "plan" which is a LIST of command objects.
+3. Each command object must have: "device", "command", and "args".
+4. If the task is finished or no action is needed, return: {{"status": "COMPLETE", "message": "..."}}
+
+Example Response:
+{{
+  "plan": [
+    {{"device": "sidekick", "command": "home", "args": {{}}}},
+    {{"device": "sidekick", "command": "move_to", "args": {{"x": 10, "y": 5}}}}
+  ]
+}}
 """
 
     def build_user_prompt(self, goal, plate_summary, observation=None):
-        obs_section = f"\n# LATEST OBSERVATION\n{observation}" if observation else ""
+        obs_section = f"\n# PREVIOUS EXECUTION RESULT\n{observation}" if observation else ""
         return f"""# USER GOAL
 {goal}
 
@@ -42,4 +50,4 @@ Your goal is to complete the user's request by issuing ONE command at a time.
 {plate_summary}
 {obs_section}
 
-What is the next command?"""
+Generate the execution plan."""

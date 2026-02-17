@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from .vertex_agent import VertexAgent
 from .openai_agent import OpenAIAgent
+from .gemini_agent import GeminiAgent
 
 load_dotenv()
 
@@ -24,7 +25,12 @@ class LLMManager:
             model = model or os.getenv("AI_MODEL", "llama3")
             url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
             return OpenAIAgent(context=context, model_name=model, base_url=url)
-        
+
+        elif provider == "gemini":
+            # Google AI Studio (requires API Key)
+            model = model or os.getenv("AI_MODEL", "gemini-2.5-flash-lite")
+            return GeminiAgent(context=context, model_name=model)
+                
         elif provider == "openai":
             model = model or os.getenv("AI_MODEL", "gpt-4o")
             return OpenAIAgent(context=context, model_name=model, base_url="https://api.openai.com/v1")
