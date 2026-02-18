@@ -2,6 +2,7 @@
 import sys
 import os
 import argparse
+import re
 from pathlib import Path
 
 # Setup project root path
@@ -15,6 +16,17 @@ from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, check_devices_attached, get_instructions, load_world_from_file
 from host.gui.console import C
+from host.core.registry import Registry
+
+def print_help():
+    print(f"\n{C.INFO}--- Available Commands ---{C.END}")
+    print(f"  {C.OK}/run [goal]{C.END}    : Switch to Controller Mode (or execute a goal).")
+    print(f"  {C.OK}/data [query]{C.END}  : Switch to Analyst Mode (or ask a question).")
+    print(f"  {C.OK}/confirm [on|off]{C.END}: Toggle human confirmation before hardware execution.")
+    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets.")
+    print(f"  {C.OK}/log{C.END}           : Save the current session log to disk.")
+    print(f"  {C.OK}/clear{C.END}         : Clear the AI's conversation history.")
+    print(f"  {C.OK}/quit{C.END}          : Exit the application.")
 
 def main():
     parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
@@ -39,6 +51,7 @@ def main():
     if not manager: sys.exit(1)
 
     plate_manager = PlateManager(max_volume_ul=world_model['max_well_volume_ul'])
+    registry = Registry()
     
     # 2. Capabilities & Planner
     full_caps = get_instructions(manager, device_ports)
@@ -53,11 +66,9 @@ def main():
     # 3. Initialize AGENTS (Dual Contexts)
     print(f"{C.INFO}[+] Initializing AI Agents...{C.END}")
     
-    # Agent for /run (Controller)
     planner.set_mode(Planner.MODE_RUN)
     run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
-    # Agent for /data (Analyst)
     planner.set_mode(Planner.MODE_DATA)
     data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
@@ -68,13 +79,14 @@ def main():
     executor = AgentExecutor(
         manager=manager, 
         device_ports=device_ports, 
-        agent=current_agent,  # Placeholder, swapped in loop
+        agent=current_agent,
         planner=planner, 
-        plate_manager=plate_manager
+        plate_manager=plate_manager,
+        require_confirmation=True 
     )
 
     print(f"\n{C.INFO}System Online. Mode: /run (Laboratory Controller){C.END}")
-    print(f"{C.INFO}Commands: /run, /data, log, clear, quit{C.END}")
+    print(f"{C.INFO}Type /help for a list of commands.{C.END}")
 
     # 4. REPL Loop
     try:
@@ -82,16 +94,56 @@ def main():
             try:
                 mode_str = "RUN" if planner.current_mode == Planner.MODE_RUN else "DATA"
                 prompt_color = C.WARN if mode_str == "RUN" else C.OK
-                user_input = input(f"\n{prompt_color}[{mode_str}] > {C.END}").strip()
+                
+                safety_char = "🔒" if executor.require_confirmation else "⚡"
+                
+                user_input = input(f"\n{prompt_color}[{mode_str} {safety_char}] > {C.END}").strip()
                 
                 if not user_input: continue
                 
-                # --- Slash Commands ---
+                # --- Slash Command Handling ---
                 if user_input.startswith("/"):
-                    cmd = user_input.split()[0].lower()
-                    remainder = " ".join(user_input.split()[1:])
+                    parts = user_input.split()
+                    cmd = parts[0].lower()
+                    remainder = " ".join(parts[1:])
                     
-                    if cmd == "/run":
+                    if cmd in ("/quit", "/exit"):
+                        break
+                    
+                    elif cmd == "/help":
+                        print_help()
+                        continue
+
+                    elif cmd == "/clear":
+                        current_agent.clear_history()
+                        print(f"{C.INFO}Conversation history cleared for {mode_str} mode.{C.END}")
+                        continue
+
+                    elif cmd == "/log":
+                        executor.save_log()
+                        continue
+
+                    elif cmd == "/confirm":
+                        if "off" in remainder.lower():
+                            executor.require_confirmation = False
+                            print(f"{C.WARN}⚠️ Safety OFF. Plans will execute immediately.{C.END}")
+                        else:
+                            executor.require_confirmation = True
+                            print(f"{C.OK}🔒 Safety ON. Plans require confirmation.{C.END}")
+                        continue
+
+                    elif cmd == "/datasets":
+                        datasets = registry.list_datasets()
+                        print(f"\n{C.INFO}--- Registered Datasets ---{C.END}")
+                        if not datasets:
+                            print("No datasets recorded yet.")
+                        else:
+                            for ds in datasets:
+                                print(f"ID: {C.OK}{ds['id']}{C.END} | Dev: {ds['origin_device']} | Time: {ds['timestamp']}")
+                                print(f"   Files: {ds['files']}")
+                        continue
+
+                    elif cmd == "/run":
                         planner.set_mode(Planner.MODE_RUN)
                         current_agent = run_agent
                         print(f"{C.INFO}Switched to RUN mode (Controller).{C.END}")
@@ -106,30 +158,38 @@ def main():
                         else: continue
                     
                     else:
-                        print(f"{C.ERR}Unknown command: {cmd}{C.END}")
+                        print(f"{C.ERR}Unknown command: {cmd}. Type /help for options.{C.END}")
                         continue
 
-                # --- Standard Commands ---
-                if user_input.lower() in ('quit', 'exit', 'q'): break
-                if user_input.lower() == 'clear':
-                    current_agent.clear_history()
-                    print(f"{C.INFO}Current context history cleared.{C.END}")
-                    continue
-                if user_input.lower() == 'log':
-                    executor.save_log()
-                    continue
-
                 # --- Execution ---
-                # Update executor's active agent
                 executor.agent = current_agent
                 
                 if planner.current_mode == Planner.MODE_RUN:
-                    # Run the full ReAct loop
                     executor.run(user_input)
                 else:
-                    # Data mode just chats for now (Tools coming in M2)
+                    # Data Mode: Check for dataset references and inject content
                     print(f"[*] Analyzing...")
-                    response = current_agent.prompt(user_input, use_history=True)
+                    
+                    # Regex to find IDs like ds_20260218_130448
+                    found_ids = re.findall(r"(ds_\d{8}_\d{6})", user_input)
+                    injected_context = ""
+                    
+                    if found_ids:
+                        print(f"{C.INFO}    -> Found dataset references: {found_ids}{C.END}")
+                        for ds_id in found_ids:
+                            content = registry.get_dataset_content(ds_id)
+                            if content:
+                                injected_context += f"\n--- DATASET {ds_id} CONTENT ---\n{content}\n"
+                                print(f"{C.OK}    -> Loaded content for {ds_id}{C.END}")
+                            else:
+                                print(f"{C.ERR}    -> Could not load {ds_id}{C.END}")
+                    
+                    # Construct the final prompt for the agent
+                    final_prompt = user_input
+                    if injected_context:
+                        final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
+                    
+                    response = current_agent.prompt(final_prompt, use_history=True)
                     print(f"\n{C.OK}{response}{C.END}")
 
             except KeyboardInterrupt:

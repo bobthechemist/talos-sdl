@@ -23,7 +23,6 @@ class Planner:
             return self._build_data_context()
 
     def _build_run_context(self):
-        # Format the guidance strings for the prompt
         guidance_section = ""
         for device, text in self.guidance_dict.items():
             if text:
@@ -58,32 +57,30 @@ Example Response:
 
     def _build_data_context(self):
         return """You are a Laboratory Data Analyst (DATA MODE).
-Your goal is to help the user understand the data collected during experiments.
+Your goal is to help the user understand experimental data.
 
-# CONSTRAINTS
-1. You CANNOT control hardware. You cannot issue commands like 'move' or 'dispense'.
-2. You can analyze datasets, summarize findings, and answer questions about chemistry.
-3. Respond in natural language (Markdown is supported).
+# CAPABILITIES
+1. You CANNOT control hardware.
+2. You can discuss chemistry, analyze results, and answer questions.
+3. **DATA ACCESS**: If the user provides a Dataset ID (e.g., ds_2026...), the system will automatically find that file and paste its contents into the chat for you. You do not need to ask for the data; if a valid ID is present, assume the JSON data following it is the content.
 
-# AVAILABLE TOOLS
-- list_datasets(): Shows available data files.
-- summarize(id): Gets statistics for a dataset.
-- plot(id, columns): Creates a visualization.
-
-(Note: Tools will be executed by the host when you call them using the format: Tool: func_name(args))
+# INSTRUCTIONS
+- Respond in clear natural language.
+- Analyze the provided JSON data to answer the user's questions (e.g., identifying colors from spectral data).
 """
 
-    def build_user_prompt(self, goal, plate_summary, observation=None):
+    def build_user_prompt(self, goal, plate_summary, current_well="Unknown", observation=None):
         if self.current_mode == self.MODE_RUN:
-            obs_section = f"\n# PREVIOUS EXECUTION RESULT\n{observation}" if observation else ""
+            obs_section = f"\n# PREVIOUS EXECUTION RESULT (Read carefully if this is an error)\n{observation}" if observation else ""
             return f"""# USER GOAL
 {goal}
 
-# CURRENT PLATE STATE
+# CURRENT STATE
+Arm Position: {current_well}
+Plate Contents:
 {plate_summary}
 {obs_section}
 
 Generate the execution plan."""
         else:
-            # Data mode prompt is simpler, focusing on the conversation
             return goal

@@ -1,7 +1,7 @@
+# host/core/registry.py
 import os
 import json
 import csv
-import time
 from datetime import datetime
 from pathlib import Path
 
@@ -34,12 +34,9 @@ class Registry:
         files_created = [str(json_path)]
 
         # 2. Attempt CSV Conversion (Best Effort for Flat Data)
-        # We look into payload['data'] if it exists, otherwise the payload itself
         data_content = payload.get('data', payload)
         
-        csv_path = None
         if isinstance(data_content, dict):
-            # Check if it's a flat dictionary (values are scalars)
             is_flat = all(isinstance(v, (int, float, str, bool)) for v in data_content.values())
             if is_flat:
                 csv_path = self.storage_dir / f"{dataset_id}.csv"
@@ -59,7 +56,7 @@ class Registry:
             "origin_device": origin_device,
             "origin_command": command,
             "files": files_created,
-            "preview": str(data_content)[:100] # Snippet for quick listing
+            "preview": str(data_content)[:100]
         }
 
         self._append_to_index(entry)
@@ -83,3 +80,23 @@ class Registry:
             return []
         with open(self.registry_file, 'r') as f:
             return json.load(f)
+
+    def get_dataset_content(self, dataset_id):
+        """
+        Retrieves the text content of a dataset (JSON preferred).
+        Returns None if not found.
+        """
+        # Security check: simple alphanumeric ID only
+        if not dataset_id.replace("_", "").isalnum():
+            return None
+
+        json_path = self.storage_dir / f"{dataset_id}.json"
+        if json_path.exists():
+            try:
+                with open(json_path, 'r') as f:
+                    # Return formatted JSON for the LLM
+                    data = json.load(f)
+                    return json.dumps(data, indent=2)
+            except Exception as e:
+                return f"Error reading dataset: {e}"
+        return None
