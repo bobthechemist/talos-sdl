@@ -49,7 +49,9 @@ def main():
                         "p2": "Unknown 2",
                         "p3": "Unknown 3",
                         "p4": "Unknown 4"},
-                         "max_well_volume_ul": 250.0, "experiment_name": "Chat_Session"}
+                        "waste": {"x": 5, "y": -5.3},
+                         "max_well_volume_ul": 250.0, 
+                         "experiment_name": "Chat_Session"}
 
     if not check_devices_attached(): sys.exit(1)
     manager, device_ports = connect_devices()

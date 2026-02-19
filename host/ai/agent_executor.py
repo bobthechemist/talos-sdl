@@ -275,7 +275,7 @@ class AgentExecutor:
     def _review_and_edit_plan(self, plan):
         # ... (Existing implementation unchanged) ...
         while True:
-            print(f"\n{C.WARN}--- PLAN REVIEW ---{C.END}")
+            print(f"\n{C.WARN}--- PLAN REVIEW (CTRL-C to abort) ---{C.END}")
             if not plan:
                 print(f"  {C.ERR}(Plan is empty){C.END}")
             else:
