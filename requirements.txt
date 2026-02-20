@@ -2,4 +2,5 @@ adafruit-board-toolkit
 pyserial
 python-dotenv
 # numpy
-# google-genai
+google-genai
+openai
