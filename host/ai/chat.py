@@ -45,13 +45,13 @@ def main():
     else:
         print(f"{C.WARN}No world model found. Defaulting to generic setup.{C.END}")
         world_model = {"reagents":
-                       {"p1": "Unknown 1", 
-                        "p2": "Unknown 2",
-                        "p3": "Unknown 3",
-                        "p4": "Unknown 4"},
+                       {"p1": "0.1 M acetic acid", 
+                        "p2": "0.1 M sodium hydroxide",
+                        "p3": "universal indicator",
+                        "p4": "water"},
                         "waste": {"x": 5, "y": -5.3},
                          "max_well_volume_ul": 250.0, 
-                         "experiment_name": "Chat_Session"}
+                         "experiment_name": "Acid-Base Titration"}
 
     if not check_devices_attached(): sys.exit(1)
     manager, device_ports = connect_devices()
