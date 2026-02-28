@@ -1,5 +1,56 @@
 # Architecture
 
+## Scientific workflow
+
+```mermaid
+%%{init: {
+  'theme': 'forest',
+  'themeVariables': {
+    'edgeLabelBackground': '#eeeeee'
+  }
+} }%%
+graph TD
+    %% Styling (Forest theme provides defaults, but these classes refine them)
+    classDef human fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef ai fill:#cce5ff,stroke:#004085,stroke-width:2px;
+    classDef system fill:#f8f9fa,stroke:#383d41,stroke-width:2px;
+    classDef hardware fill:#fff3cd,stroke:#856404,stroke-width:2px;
+    classDef data fill:#d1ecf1,stroke:#0c5460,stroke-width:2px;
+
+    %% First Subgraph (Top)
+    subgraph Cognitive_World [Digital & Cognitive Space]
+        User[👨‍🔬 Scientist / User]:::human
+        AI[🧠 AI Laboratory Agent]:::ai
+        Chat[💬 Chat Interface <br/> /run or /data mode]:::system
+    end
+
+    %% Second Subgraph (Bottom)
+    subgraph Physical_World [Hardware & Execution Space]
+        Orchestrator[⚙️ Lab Orchestrator]:::system
+        Instruments[🔬 Physical Instruments]:::hardware
+        Data[📊 Digital Lab Notebook]:::data
+        
+        %% Columnar Ranking
+        Orchestrator ~~~ Instruments ~~~ Data
+    end
+
+    %% Logic Flow
+    User -- "(1) Request" --> Chat
+    Chat -- "(2) Context" --> AI
+    AI -- "(3) Proposes Plan" --> Chat
+    Chat -. "(4) Human Approval" .-> User
+    Chat -- "(5) Validated Commands" --> Orchestrator
+    
+    %% Execution & Feedback
+    Orchestrator == "(6) Physical Action" ==> Instruments
+    Instruments -- "(7) Telemetry" --> Orchestrator
+    Orchestrator -- "(8) Log Data" --> Data
+    Orchestrator -- "(9) Feedback" --> AI
+    AI -- "(10) Summary" --> User
+```
+
+## Technical flowchart
+
 ```mermaid
 flowchart TB
     %% Host Side
@@ -22,12 +73,12 @@ flowchart TB
             Plate[PlateManager State]
         end
 
-        GUI & REPL -->|Send Command| DM
+        GUI & REPL -->|"(1) Send Command"| DM
         REPL <--> AI_Agent
-        DM -->|Spawns Threads| Queue
-        Queue -->|Updates State| Dev1 & Dev2
-        Queue -->|Triggers| Registry
-        Dev1 & Dev2 -. "Read State" .- GUI
+        DM -->|"(5) Receive Response"| Queue
+        Queue -->|"(6) Update Digital Twin"| Dev1 & Dev2
+        Queue -->|"(6) Update"| Registry
+        Dev1 & Dev2 -. "Reflect State" .- GUI
     end
 
     %% The Bridge
@@ -51,13 +102,17 @@ flowchart TB
     end
 
     %% Connections
-    DM == "Serial Rx/Tx" ==> JSON
-    JSON == "Serial Rx/Tx" ==> CP1 & CP2
+    DM == "(2) Serial Tx" ==> JSON
+    JSON == "(2) Serial Tx" ==> CP1 & CP2
     
-    CP1 <--> SM1
-    SM1 -->|Routes Payload| Handlers1
-    Handlers1 -->|Sets Target Flags| States1
-    States1 -->|Hardware IO| Hardware1((Motors / Pumps))
+    CP1 <-->|"(3) Route"| SM1
+    SM1 -->|"(3) Dispatch"| Handlers1
+    Handlers1 -->|"(4) Execute"| States1
+    States1 -->|"(4) Hardware Pulse"| Hardware1((Motors / Pumps))
+
+    %% Return Path
+    CP1 -.->|"(5) Serial Rx"| JSON
+    JSON -.->|"(5) Serial Rx"| DM
     
     %% Styling
     classDef mvc fill:#e6e6fa,stroke:#4b0082,stroke-width:2px;
