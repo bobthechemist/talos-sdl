@@ -1,4 +1,4 @@
-# **Self-Driving Laboratory:** Standard Messaging Protocol (Version 1.0)
+# **Talos-SDL:** Standard Messaging Protocol (Version 1.0)
 
 ## 1. Introduction
 

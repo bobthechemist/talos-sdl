@@ -2,14 +2,12 @@
 
 **An open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.**
 
-Talos-SDL is designed to lower the barrier to entry for automated scientific experimentation. Rather than a rigid, top-down "Lab Operating System," Talos functions as a **collaborative digital peer**. It empowers researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows—all while natively digitizing the data collection process.
-
-Whether you are performing automated titrations, running closed-loop materials discovery, or just want your robotic arm to do the pipetting for you, Talos handles the orchestration so you can focus on the chemistry.
+Talos-SDL is designed to lower the barrier to entry for automated scientific experimentation. Talos functions as a **collaborative digital peer** and empowers researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows—all while natively digitizing the data collection process.
 
 ## Core Philosophy & Features
 
 *   **The AI as a Peer (Agentic REPL):** Interact with your lab equipment through a natural-language conversational loop. An integrated LLM agent acts as your co-pilot, translating your high-level scientific goals (e.g., *"Prepare a 1:1 mixture in well A1 and measure its spectrum"*) into structured, executable robotic plans.
-*   **"Documentation-While-Doing":** Every human prompt, machine execution, and sensor measurement is captured in real-time. The framework inherently digitizes your workflow, creating a chronological, machine-readable JSON archive ready for machine learning and total reproducibility.
+*   **"Documentation-While-Doing":** Every human prompt, machine execution, and sensor measurement is captured (ideally). The framework inherently digitizes your workflow, creating a chronological, machine-readable JSON archive ready for machine learning and total reproducibility.
 *   **Human-in-the-Loop (HITL) Safety:** To mitigate AI hallucinations and ensure safe operation, Talos enforces explicit human approval prompts, strict capability validation, and optional dry-runs before physical hardware ever actuates.
 *   **Plug-and-Play Hardware (Decoupled Architecture):** Talos enforces a strict separation between the "Brain" (the Python host computer) and the "Hands" (microcontrollers running your hardware). They communicate via standardized, human-readable JSON over serial, making it incredibly easy to add new DIY instruments to your lab.
 
@@ -68,8 +66,6 @@ git clone https://github.com/yourusername/talos-sdl.git
 cd talos-sdl
 pip install -r requirements.txt
 ```
-*(Don't forget to set up your `.env` file with your API keys!)*
-
 ### 3. Deploying Firmware
 Connect your CircuitPython device (it should appear as a USB drive named `CIRCUITPY`). Use the included deployment script to load the instrument's firmware onto the board. 
 
@@ -87,7 +83,7 @@ python host/ai/chat.py
 
 If you prefer to drive the lab manually without AI, you can launch the graphical user interface:
 ```bash
-python run_mvc_app.py
+python control_panel.py
 ```
 
 ## Building Your Own Instruments
