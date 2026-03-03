@@ -1,4 +1,4 @@
-# **Self-Driving Laboratory:** Host Design Protocol (Version 1.0)
+# **Talos-SDL:** Host Design Protocol (Version 1.0)
 
 This document would define the architecture for all PC-side applications that control the Self-Driving Laboratory.
 

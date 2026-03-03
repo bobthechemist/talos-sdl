@@ -1,4 +1,4 @@
-# **Self-Driving Laboratory:** Firmware Design Protocol (Version 1.0)
+# **Talos-SDL:** Firmware Design Protocol (Version 1.0)
 
 This protocol establishes the _Standard Instrument Blueprint_ - a standard way to develop firmware for all instruments within the Self-Driven Laboratory framework. Adherence to this protocol is mandatory to ensure that all firmware is consistent, robust, maintainable, and interoperable with the host application.
 
