@@ -26,7 +26,12 @@ SUBSYSTEM_CONFIG = {
         "SDA": board.SDA
     },
     "motor_count": 4,
-    "pwm_frequency": 1600,
+    "pwm_frequency": 100,
+    "kick_start_enabled": True,       # Master switch for the feature
+    "kick_start_speed": 0.1,          # The throttle to apply for the kick (0.0 to 1.0)
+    "kick_start_duration_ms": 500,    # How long the kick lasts, in milliseconds
+    "kick_start_threshold": 0.1,     # Speeds below this value will trigger a kick-start
+
     "ai_guidance": "This device controls up to 4 DC motors for stirring. Motor IDs are integers from 1 to 4. Speeds are floats from 0.0 (off) to 1.0 (full speed)."
 }
 
