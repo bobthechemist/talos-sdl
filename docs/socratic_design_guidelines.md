@@ -23,6 +23,7 @@ Before writing any code, answer these four core questions about the instrument a
 2.  **What are the primary actions it can perform?** (e.g., "Take a reading," "Move to an X,Y coordinate," "Turn a motor on.")
 3.  **What data does it need to report back periodically?** (This defines your telemetry. e.g., "The current temperature," "The motor's logical position.")
 4.  **What are the critical failure conditions?** (e.g., "The sensor cannot be found on the I2C bus," "An endstop is hit unexpectedly.")
+5.  **What is the high-level operational guidance for an AI agent?** (This defines your `ai_guidance`. For example: "This sensor is mounted on the robotic arm and must be positioned over a well before a measurement can be taken.")
 
 #### Step 2: Defining the Hardware Configuration
 
@@ -41,6 +42,7 @@ This defines the API that the host computer will use to control the instrument. 
 *   **Arguments (`args`):** What data, if any, the host must provide.
 *   **Success Condition:** What happens when the command completes successfully? (e.g., "Returns a `SUCCESS` message with the sensor data," "Transitions to the `Moving` state.")
 *   **Guard Conditions:** What criteria must be met for this command to be accepted? (e.g., "The machine must be homed," "The target coordinates must be within safe limits.")
+*   **`ai_enabled` (`Boolean`):** Set to `true` if this command is a high-level, safe and useful function for an autonomous agent. Set to `false` for low-level debugging commands (e.g., `steps`), or for commands that are superseded by a more abstract one (e.g. `read_all` might be disabled in favor of a more comprehensive `measure` sequence).
 
 #### Step 4: Defining the States
 
