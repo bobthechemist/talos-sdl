@@ -32,6 +32,39 @@ Your questions should be designed to solidify the instrument's logic, focusing o
 Once I have provided answers to your clarifying questions, generate the first draft of the three core firmware files: `__init__.py`, `states.py`, and `handlers.py`.
 
 The draft must adhere to the following quality standards:
+
+**A. Core Architectural Patterns to Enforce**
+
+**1. Declarative Assembly (`__init__.py`):**
+
+- Define `SUBSYSTEM_NAME`, `SUBSYSTEM_VERSION`, and `SUBSYSTEM_INIT_STATE` at the top.
+- The `SUBSYSTEM_CONFIG` dictionary must contain all static hardware data. If the instrument is intended for AI control, it **must** include an `ai_guidance` string explaining its operational constraints.
+- A `build_status(machine)` callback function **must** be defined and passed to the `StateMachine` constructor to support the `get_info` command.
+- A `send_telemetry(machine)` callback function **should** be defined and passed to the `GenericIdle` state.
+
+**2. Command Definition Schema (`__init__.py`):**
+
+- All custom commands **must** be registered with `machine.add_command()`.
+- The documentation for each command **must** be a dictionary including:
+    - `description` (str): What the command does.
+    - `args` (list of dicts): A list of arguments, each defined as `{"name": "...", "type": "...", "default": ...}`.
+    - `ai_enabled` (bool): `true` if the AI planner is allowed to use this command.
+    - `effects` (list of str, optional): A list of state changes the AI can expect.
+    - `usage_notes` (str, optional): Critical context for the AI (e.g., "Must be homed first").
+
+**3. Handler and Messaging Logic (`handlers.py`):**
+
+- All handler functions **must** be decorated with the `@try_wrapper` from `shared_lib.error_handling` to ensure robust error handling.
+- Handlers **must** communicate back to the host using the helper functions `send_success(machine, "...")`, `send_problem(machine, "...")`, or by creating a full `Message` object for `DATA_RESPONSE`. Adhere to the `messaging.md` protocol.
+- For long-running tasks, handlers **must** start a `StateSequencer` and return immediately. They must not block.
+
+**4. State Logic (`states.py`):**
+
+- The `enter` method of any `State` class must have the signature `enter(self, machine, context=None)`.
+- States used in a sequence must signal their completion by setting `self.task_complete = True`.
+
+**B. General Quality Standards**
+
 *   **Heavily Commented:** Explain the purpose of key blocks of code, especially where it relates to the spec sheet and my clarifying answers.
 *   **Architecturally Sound:** Adhere strictly to the existing patterns of the framework (e.g., using the `CONFIG` dictionary, placing guards in handlers, using the state sequencer pattern if necessary).
 *   **Includes Placeholders:** For complex, domain-specific logic that cannot be fully implemented without real-world testing (like kinematics calculations or trajectory planning), create clearly marked placeholder functions or comments (e.g., `# TODO: Implement kinematics calculation here`).
