@@ -83,6 +83,12 @@ class Message():
     @property
     def status(self):
         return self._status
+    
+    @status.setter
+    def status(self, value):
+        if value not in Message.VALID_STATUS:
+            raise ValueError("Invalid Status Level")
+        self._status = value
 
     @property
     def meta(self):
