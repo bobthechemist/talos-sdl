@@ -94,9 +94,17 @@ We use a "Question-Driven Design" philosophy. By answering a few simple question
 
 Check out the `docs/design_protocols/` directory to learn how to seamlessly integrate your bespoke hardware into the Talos ecosystem.
 
-## Contributing
+## The Backronym
 
-Contributions are welcome! Whether you are designing new hardware modules, improving the AI reasoning loop, or finding bugs, please feel free to fork the repository and submit a pull request.
+Talos-sdl wasn't originally designed as an acronym, but sometimes its necessary to have one, so here it goes:
+
+TALOS‑SDL stands for: **Transparent Abstracted Layered Orchestration System — Self‑Driving Laboratory**.
+
+- It is **Transparent** because every action — human, agent, or hardware — is logged chronologically and made visible.
+- It is **Abstracted** because hardware, firmware, capabilities, and vendor details are hidden behind uniform digital twins and protocols.
+- It is **Layered** because the architecture is a vertically tiered stack of reasoning, planning, control, firmware, and hardware subsystems.
+- It is an **Orchestration System** because it coordinates these layers coherently, deterministically, and safely.
+- And it serves a **Self‑Driving Laboratory,** enabling autonomous experimentation while maintaining safety, reproducibility, and modularity.
 
 ## License
 
