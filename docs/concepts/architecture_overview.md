@@ -1,6 +1,10 @@
-# Architecture
+# System Architecture Overview
 
-## Scientific workflow
+This document provides a high-level overview of the Talos-SDL framework's architecture, illustrating the interactions between the human operator, the AI agent, the host computer, and the physical instruments. It highlights both the scientific workflow and the underlying technical implementation across the digital and physical spaces.
+
+## Scientific Workflow
+
+The scientific workflow within Talos-SDL is designed to keep the scientist in control while leveraging AI for autonomous experimentation. It follows a transparent, human-in-the-loop process.
 
 ```mermaid
 %%{init: {
@@ -49,7 +53,9 @@ graph TD
     AI -- "(10) Summary" --> User
 ```
 
-## Technical flowchart
+## Technical Flowchart
+
+The technical architecture separates the host computer's Python-based orchestration from the microcontroller's CircuitPython-based firmware. Communication is standardized using JSON messages, facilitated by a dedicated communication layer.
 
 ```mermaid
 flowchart TB
@@ -123,3 +129,4 @@ flowchart TB
     class JSON comms;
     class CP1,SM1,Handlers1,States1,CP2,SM2 fw;
 ```
+

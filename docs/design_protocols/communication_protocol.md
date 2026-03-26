@@ -40,7 +40,7 @@ Subclasses of `Postman` are required to implement the private methods (`_open_ch
 
 ## Message Format Standard
 
-All messages exchanged via any `Postman` implementation **must** adhere to the standardized JSON message structure defined in the [Standard Messaging Protocol](messaging.md). This ensures that messages are unambiguous, machine-readable, and consistently processed by both host and device.
+All messages exchanged via any `Postman` implementation **must** adhere to the standardized JSON message structure defined in the [Standard Messaging Protocol](messaging_protocol.md). This ensures that messages are unambiguous, machine-readable, and consistently processed by both host and device.
 
 ## CircuitPython Compatibility Notes
 

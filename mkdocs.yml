@@ -19,15 +19,38 @@ plugins:
             show_root_heading: true
             import_outline_sidebars: true
 
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+          
 nav:
   - Home: index.md
   - Tutorials:
       - End-User Guide: tutorials/user_guide.md
-  - Design Protocols: 
-      - Communication Protocol: design_protocols/communication.md 
-      - Firmware Design: design_protocols/firmware.md 
-      - Host Design: design_protocols/host.md 
-      - Messaging Protocol: design_protocols/messaging.md 
+      - Building Your First Instrument Firmware: tutorials/your_first_firmware.md
+  - Concepts:
+      - System Architecture Overview: concepts/architecture_overview.md
+      - Core Philosophy & Features: concepts/core_philosophy_features.md
+  - Developer Guides:
+      - Coding Style Guide: developer_guides/coding_style_guide.md
+      - Socratic Design Method: developer_guides/socratic_design_method.md
+      - AI Agent Firmware Generation Templates: developer_guides/ai_agent_prompt_templates/firmware_generation_template.md
+  - Design Protocols:
+      - Communication Protocol: design_protocols/communication_protocol.md
+      - Firmware Design Protocol: design_protocols/firmware_design_protocol.md
+      - Host Design Protocol: design_protocols/host_design_protocol.md
+      - Messaging Protocol: design_protocols/messaging_protocol.md
+      - Design Examples:
+          - Colorimeter: design_protocols/design_examples/colorimeter_spec.md
+          - Sidekick: design_protocols/design_examples/sidekick_spec.md
+          - Stirplate Manager: design_protocols/design_examples/stirplate_spec.md
   - API Reference:
       - Communicate: api/communicate.md
       - Firmware: api/firmware.md
