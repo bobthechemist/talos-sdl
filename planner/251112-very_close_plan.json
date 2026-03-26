@@ -1,0 +1,135 @@
+{
+  "user_prompt": "starting in well E6, create mixtures of metal and ligand in the following volumetric ratios, 1 to 1, 1 to 2 and 1 to 3. Keep the total volume added to a well below 250 uL. Then measure the spectrum of each well.",
+  "plan": [
+    {
+      "device": "sidekick",
+      "command": "home",
+      "args": {}
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E6",
+        "pump": "p1"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p1",
+        "vol": 100.0
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E6",
+        "pump": "p2"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p2",
+        "vol": 100.0
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E7",
+        "pump": "p1"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p1",
+        "vol": 83.0
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E7",
+        "pump": "p2"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p2",
+        "vol": 167.0
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E8",
+        "pump": "p1"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p1",
+        "vol": 62.5
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E8",
+        "pump": "p2"
+      }
+    },
+    {
+      "device": "sidekick",
+      "command": "dispense",
+      "args": {
+        "pump": "p2",
+        "vol": 187.5
+      }
+    },
+    {
+      "device": "colorimeter",
+      "command": "measure",
+      "args": {}
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E7"
+      }
+    },
+    {
+      "device": "colorimeter",
+      "command": "measure",
+      "args": {}
+    },
+    {
+      "device": "sidekick",
+      "command": "to_well",
+      "args": {
+        "well": "E8"
+      }
+    },
+    {
+      "device": "colorimeter",
+      "command": "measure",
+      "args": {}
+    }
+  ]
+}

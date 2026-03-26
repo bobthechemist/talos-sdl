@@ -1,0 +1,13 @@
+{
+    "reagents": {
+        "p1": "metal",
+        "p2": "ligand",
+        "p3": "none",
+        "p4": "none"
+    },
+    "plate_is_empty": true,
+    "max_well_volume_ul": 250.0,
+    "standard_dispense_ul": 150.0,
+    "experiment_name": "job",
+    "waste_location": "4.5, -5"
+}

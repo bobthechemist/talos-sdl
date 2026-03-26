@@ -1,0 +1,698 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/journal/calibration-260206/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Calibration 260206 - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Calibration 260206
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Calibration 260206</h1>
+
+<p><em>These notes document the sidekick calibration branch where I worked on understanding better the forward kinematics and how the equations could be optimized for better positioning over the 96 well plate. The end result was improved (but not ideal) positioning through the use of an error minimization routine that used the steps and origin offset as adjustable parameters. The assumption made here is that the end stops do not accurately represent 0 and 1600 steps for m1 and m2, respectively. The addition of this fixed step offset seems to have improved things. At some point, a rotation in addition to translation might be needed. However, to do this, a better data collection approach will be needed by comparing the actual and predicted positions. Perhaps using a pump in the center of the end effector and depositing a single drop at a position might provide useful information.</em></p>
+<p>Completed some housecleaning (removed calibration routines) and started improved transect data collection that includes multi-channel data collection and visualization. Next step is either (a) create a more complete template with multiple spots for analysis or (b) continue using filled wells. Either way must result in a method that can be implemented to improve IK. See chat <code>[!] Calibrate Arm Using Numerical Optimization</code> for some strategies.</p>
+<p>Working on sidekick calibration. joint_cross_search seems to be good at finding a minimum to pinpoint the center of a well, but using this information in a calibration is problematic. Next step is to try different calibration methods, possibly with a template that has a few more data points.</p>
+<p>Six point data collection providing the predicted and actual steps</p>
+<table>
+<thead>
+<tr>
+<th>well</th>
+<th>m1_pred</th>
+<th>m2_pred</th>
+<th>m1_act</th>
+<th>m2_act</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>A1</td>
+<td>335</td>
+<td>887</td>
+<td>366</td>
+<td>892</td>
+</tr>
+<tr>
+<td>H1</td>
+<td>131</td>
+<td>1178</td>
+<td>137</td>
+<td>1171</td>
+</tr>
+<tr>
+<td>C5</td>
+<td>552</td>
+<td>1113</td>
+<td>564</td>
+<td>1116</td>
+</tr>
+<tr>
+<td>F8</td>
+<td>546</td>
+<td>1308</td>
+<td>543</td>
+<td>1306</td>
+</tr>
+<tr>
+<td>A12</td>
+<td>987</td>
+<td>1486</td>
+<td>971</td>
+<td>1469</td>
+</tr>
+<tr>
+<td>H12</td>
+<td>518</td>
+<td>1516</td>
+<td>501</td>
+<td>1510</td>
+</tr>
+</tbody>
+</table>
+<p>Mathematica code to convert angles to coordinates</p>
+<pre><code>pt[t1_, t2_, l1_, l3_] := Module[{x, y},
+  x = l1 Cos[t1 Degree] - l3 Cos[t2 Degree];
+  y = l1 Sin[t1 Degree] - l3 Sin[t2 Degree];
+  {x, y}
+  ]
+</code></pre>
+<p>And converting steps to angles is multiplying by 0.9 (step angle degrees) and diviging by 8 (microsteps)</p>
+<p>Analysis of these data with step_analysis.py reveals that the m1 home is actually at -33, the m2 home is at 1610, and there is an effective axis separation of 5.607 mm. I'm skeptical about the axis separation, especially one that big. Time to try implementing that.</p>
+<p>Several days later, two points coincide with above table (one was exact, the other differed by 1 step in one dimension). More exploration of forward kinematics using <a href="https://orenanderson.com/five-bar-robotics-kinematics-and-dynamics/">this website</a> as a resource. Mathematica code stored in temp (5-bar-forward-kinematics.nb). </p>
+<p>Using mathematica to fit the forward kinetics equation with predicted (robot) cartesian coordinates and actual (well plate - A1 -&gt; 0,0) coordinates using a translation offset and step offset seems to have created an improved calibration.</p>
+<p>Additional optimization in calibration is needed. However, the four corner wells can be reached by each of the pumps. This might be good enough for now.</p>
+<p>Mathematica code used to describe forward kinematics and the optimization.
+```
+(<em>link-center points</em>)
+xyl[q1_, a1_] := {a1 Cos[q1], a1 Sin[q1]}
+xyr[q2_, a2_, c_] := {c + a2 Cos[q2], a2 Sin[q2]}</p>
+<p>(<em>deltas and distance between centers</em>)
+dxdy[q1_, q2_, a1_, a2_, c_] := xyr[q2, a2, c] - xyl[q1, a1]
+dist[q1_, q2_, a1_, a2_, c_] := 
+ Module[{dx, dy}, {dx, dy} = dxdy[q1, q2, a1, a2, c];
+  Sqrt[dx^2 + dy^2]]</p>
+<p>(<em>scalars a and h</em>)
+asc[q1_, q2_, a1_, a2_, a3_, a4_, c_] := 
+ Module[{d = dist[q1, q2, a1, a2, c]}, (a3^2 - a4^2 + d^2)/(2 d)]
+hsc[q1_, q2_, a1_, a2_, a3_, a4_, c_] := 
+ Module[{a = asc[q1, q2, a1, a2, a3, a4, c]}, Sqrt[Max[0, a3^2 - a^2]]]</p>
+<p>(<em>base point on the line of centers</em>)
+xbase[q1_, q2_, a1_, a2_, a3_, a4_, c_] := 
+ Module[{xl, dx, d, a}, 
+  xl = xyl[q1, a1]; {dx, d} = {dxdy[q1, q2, a1, a2, c][[1]], 
+    dist[q1, q2, a1, a2, c]};
+  a = asc[q1, q2, a1, a2, a3, a4, c];
+  xl[[1]] + (a/d) dx]
+ybase[q1_, q2_, a1_, a2_, a3_, a4_, c_] := 
+ Module[{yl, dy, d, a}, 
+  yl = xyl[q1, a1]; {dy, d} = {dxdy[q1, q2, a1, a2, c][[2]], 
+    dist[q1, q2, a1, a2, c]};
+  a = asc[q1, q2, a1, a2, a3, a4, c];
+  yl[[2]] + (a/d) dy]</p>
+<p>(<em>forward kinematics:returns {xd,yd};s=\
+[PlusMinus]1 selects assembly mode</em>)
+FK[q1_, q2_, a1_, a2_, a3_, a4_, c_, s_ : 1] := 
+ Module[{dx, dy, d, xb, yb, h}, {dx, dy} = dxdy[q1, q2, a1, a2, c];
+  d = dist[q1, q2, a1, a2, c];
+  xb = xbase[q1, q2, a1, a2, a3, a4, c];
+  yb = ybase[q1, q2, a1, a2, a3, a4, c];
+  h = hsc[q1, q2, a1, a2, a3, a4, c];
+  If[d == 0, Return[$Failed]];(<em>degenerate</em>){xb - s (h/d) dy, 
+   yb + s (h/d) dx}]</p>
+<p>(<em>forward kinematics with end effector</em>)
+pred[m1_, m2_] := 
+ FK[m1 Pi/1600, m2 Pi/1600, 7, 3, 3, 7, 0, -1] - 
+   13 {Cos[m2 Pi/1600], Sin[m2 Pi/1600]} // N
+pred[366, 892]</p>
+<p>model[m1_, m2_] := {xoffset, yoffset} + 
+  FK[(m1 + m1e) Pi/1600, (m2 + m2e) Pi/1600, 7, 3, 3, 7, 
+   0, -1] - (13) {Cos[(m2 + m2e) Pi/1600], Sin[(m2 + m2e) Pi/1600]}
+obs = MapThread[
+   pred, {{366, 137, 564, 543, 971, 501}, {892, 1171, 1116, 1306, 
+     1469, 1510}}];
+actual = {{0, 0}, {6.3, 0}, {1.8, 3.6}, {4.5, 6.3}, {0, 9.9}, {6.3, 
+    9.9}};</p>
+<p>(<em> error function is the sum of the square of the differences, \
+adding the results of x and y at each point </em>)
+Total  [(#[[1]]^2 + #[[2]]^2) &amp; /@ (actual - obs)]</p>
+<p>(<em> optimization routing </em>)
+FindMinimum[Total [(#[[1]]^2 + #[[2]]^2) &amp; /@ (actual - 
+     MapThread[
+      model, {{366, 137, 564, 543, 971, 501}, {892, 1171, 1116, 1306, 
+        1469, 1510}}]
+    )], {{xoffset, -7}, {yoffset, 5}, {m1e, 2}, {m2e, 25}}]</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

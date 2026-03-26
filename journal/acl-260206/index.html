@@ -1,0 +1,808 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/journal/acl-260206/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Agentic Chat Loop - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#agentic-chat-loop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Agentic Chat Loop
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#initial-thoughts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Initial thoughts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#possible-roadmap" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Possible roadmap
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Possible roadmap">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#stage-1-abstract-the-llm-postman" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 1: Abstract the LLM Postman
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-2-the-stateful-tool-user-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 2: The "Stateful Tool user" (Logic)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stage-3-the-repl-interaction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stage 3: The "REPL" (Interaction)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#next-project-hardware-as-a-service-mcp" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Next project: Hardware-as-a-Service (MCP)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#implementation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Implementation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#summary-of-completion" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Summary of Completion
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-needs-to-be-done-next-stage-3" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        What Needs to Be Done Next: Stage 3
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="agentic-chat-loop">Agentic Chat Loop</h1>
+<p><em>Status:</em> Currently <code>planner.py</code> generates a static JSON plan from a prompt. You want a conversation.
+<em>Goal:</em> A Read-Eval-Print Loop (REPL) where you chat, and the AI executes tools immediately.</p>
+<h2 id="initial-thoughts">Initial thoughts</h2>
+<ol>
+<li><strong>Refactor <code>planner.py</code>:</strong> Instead of generating a full list <code>[...]</code>, switch the system prompt to "ReAct" (Reasoning + Acting) style.</li>
+<li><strong>The Loop (Host Side):</strong><ul>
+<li>User types "Dispense 100ul into A1".</li>
+<li>LLM sees tools (<code>sidekick</code>, <code>colorimeter</code>).</li>
+<li>LLM output: <code>{"tool": "sidekick", "cmd": "dispense_at", "args": {...}}</code>.</li>
+<li>Host executes immediately via <code>DeviceManager</code>.</li>
+<li>Host feeds result (<code>SUCCESS</code> or <code>DATA_RESPONSE</code>) back to LLM context.</li>
+<li>LLM replies to user: "Done. What next?"</li>
+</ul>
+</li>
+<li><strong>Integration:</strong> Create <code>host/ai/ai_chat.py</code> which unifies <code>ai_plan.py</code> and <code>ai_execute.py</code> into this single loop.</li>
+<li><strong>Remove LLM ties:</strong> <code>host/ai/vertext_agent.py</code> is currently tied to a single LLM provider which makes it difficult to use other such as Ollama for local serving of the LLM. It might be better to implement a "Postman Pattern" similar to what is in <code>communicate/</code> to resovle.<ul>
+<li>Create a <code>BaseAgent</code> abstract class</li>
+<li>Implement <code>VertextAgent</code> and <code>OllamaAgent</code> subclasses</li>
+<li>The <code>Agent</code> class should just be a wrapper that takes <code>params</code> dictionary e.g. <code>{"provider": "ollama", "model": "llama3"}</code> to decide which backend to use. Implementing the OpenAI API format and targeting OpenAI-compatible will simplify this part of the project.</li>
+</ul>
+</li>
+<li><strong>MCP Integration:</strong> Implementing a standard that allows the AI to discover tools. MCP will likely make the current task - an agentic chat loop - obsolete; however the MCP server would require significant overhead to get the features operational. We want to address the chat loop first using existing infrastructure and start <strong>standardizing tool definitions</strong> with clean descriptions and args schema such as those in <code>sidekick/__init__.py</code>.</li>
+</ol>
+<h2 id="possible-roadmap">Possible roadmap</h2>
+<h3 id="stage-1-abstract-the-llm-postman">Stage 1: Abstract the LLM Postman</h3>
+<ul>
+<li>Refactor <code>vertext_agent.py</code> into a provider-agnostic <code>llm_manager.py</code>.</li>
+<li>Utilize a strategy similar to the Postman Pattern in <code>communicate</code> and generate a <code>BaseAgent</code> abstract class with <code>VertextAgent</code> and <code>OllamaAgent</code> subclasses.<ul>
+<li>Avoid the use of ABC and abstractmethod in the abc library, which is not part of circuitpython and therefore incompatible with the hardware.</li>
+<li>Implement OpenAI API format where possible to target OpenAI compatible solutions.</li>
+</ul>
+</li>
+<li><strong>Success condition:</strong> Can swap between Gemini and a local Ollama instance. </li>
+</ul>
+<h3 id="stage-2-the-stateful-tool-user-logic">Stage 2: The "Stateful Tool user" (Logic)</h3>
+<ul>
+<li>Refactor <code>planner.py</code> logic to handle single-turn execution</li>
+<li>Modify <code>PlateManager</code> to be able to "undo" or "verify" state if a hardware command fails (received a <code>PROBLEM</code> message).</li>
+<li><strong>Success Condition:</strong> The system can successfully execute a <strong>conditional multi-step task</strong> where the second step is generated only after the first step's result is processed.<ul>
+<li><em>Test Scenario:</em> A script is given the prompt: <em>"Add 100µL to well A1. If and only if that succeeds, measure the spectrum."</em></li>
+<li><em>Validation:</em> The logs must show the <code>sidekick</code> command executing, the <code>DeviceManager</code> receiving a <code>SUCCESS</code> message, the <code>PlateManager</code> updating the volume of A1, and <em>then</em> the LLM receiving that confirmation as context before it generates the <code>colorimeter</code> command.</li>
+</ul>
+</li>
+</ul>
+<h3 id="stage-3-the-repl-interaction">Stage 3: The "REPL" (Interaction)</h3>
+<ul>
+<li>Create <code>host/ai/ai_chat.py</code></li>
+<li>The Loop:<ul>
+<li>User Input -&gt;</li>
+<li>LLM Reasoning -&gt;</li>
+<li>Tool Call Proposal -&gt;</li>
+<li>Human Confirmation -&gt;</li>
+<li><code>DeviceManager</code> execution -&gt;</li>
+<li>Parse <code>DATA_RESPONSE</code> -&gt;</li>
+<li>LLM summarizes result to User.</li>
+</ul>
+</li>
+<li><strong>Success Condition:</strong> A continuous, conversational session where the AI maintains <strong>contextual memory</strong> across multiple human interventions and device responses.<ul>
+<li><em>Test Scenario:</em> <ol>
+<li>User: <em>"Move the arm to A1."</em> (AI moves arm).</li>
+<li>User: <em>"What's the current position?"</em> (AI calculates world coordinates via <code>get_info</code> and answers).</li>
+<li>User: <em>"Dispense 50µL of red reagent here."</em> (AI identifies "here" as A1 and identifies "red" as Pump 1 from the World Model, then executes).</li>
+</ol>
+</li>
+<li><em>Validation:</em> The AI must correctly resolve "here" and "red" based on the ongoing conversation and the <code>PlateManager</code> state without the user repeating the coordinates or pump IDs.</li>
+</ul>
+</li>
+</ul>
+<h2 id="next-project-hardware-as-a-service-mcp">Next project: Hardware-as-a-Service (MCP)</h2>
+<p>Upon completing and validating the agentic chat loop, we will move on to standardizing the lab for the wider AI ecosystem. This branch will need additional planning, but the initial ideas are the following</p>
+<ul>
+<li>Wrap the <code>DeviceManager</code> in an MCP server. This allows the lab to be "plugged in" to any modern agentic framework without writing any more custom chat code.</li>
+<li><strong>Success Condition:</strong> An <strong>external, off-the-shelf MCP client</strong> (e.g., Claude Desktop, <code>mcp-inspector</code>, or an IDE-based agent) can automatically discover and control the laboratory instruments without any custom ALIF-specific integration code.<ul>
+<li><em>Test Scenario:</em> Point an MCP-compliant client at the ALIF MCP server.</li>
+<li><em>Validation:</em> The client automatically populates its "Toolbox" with entries like <code>sidekick_move_to</code> and <code>colorimeter_measure</code> (derived from your <code>handlers.py</code> documentation), and a command triggered from the external client successfully moves physical hardware.</li>
+</ul>
+</li>
+</ul>
+<h2 id="implementation">Implementation</h2>
+<p>Beginning with step 1.</p>
+<p>After much vibe coding, we are now at a point where <code>test_agent_stage2.py</code> demonstrates agentic control of a single multi-step command. In the example, the sidekick is homed, it moves to well A1 to dispense liquid and then measures the spectrum. The functionality required some updates to firmware (SYSTEM_CONFIG) to provide ai_guidance on how to use the hardware. There is likely a more elegant way to provide this manual but the current approach demonstrates a self-documenting instrument. </p>
+<p>The entire transaction is logged for later review. Immediately it can be seen that chat history will grow quite significantly with more complex operations. I don't know how this type of issue is handled in chatbots. </p>
+<p>We have successfully abstracted the LLM, making it possible to use the llm of choice. Using gemini-2.5-flash-lite is presently inexpensive and functional.</p>
+<p>The ai_guidance currently intertwines the sidekick and the colorimeter. That is unavoidable in my test system, but will need to be thought through in a future version.</p>
+<p>We have successfully established the foundational logic and communication plumbing for the agentic laboratory.</p>
+<h3 id="summary-of-completion"><strong>Summary of Completion</strong></h3>
+<ol>
+<li>
+<p><strong>Stage 1: LLM Abstraction (The "LLM Postman"):</strong></p>
+<ul>
+<li>Refactored the AI architecture into a provider-agnostic system.</li>
+<li>Implemented <code>BaseAgent</code> (hardware-compatible, no <code>abc</code> library), <code>VertexAgent</code> (for Gemini), and <code>OpenAIAgent</code> (for Ollama/OpenAI-compatible local models).</li>
+<li>Created <code>LLMManager</code> to act as a factory, allowing you to swap between cloud and local AI via a single environment variable.</li>
+</ul>
+</li>
+<li>
+<p><strong>Stage 2: The ReAct Logic (The "Reasoning Engine"):</strong></p>
+<ul>
+<li><strong>Dynamic Guidance:</strong> Updated firmware and <code>ai_utils</code> to pull "Operational Metadata" (<code>ai_guidance</code>) directly from the hardware. The AI now knows it must <code>home</code> before moving and center the sensor before measuring.</li>
+<li><strong>Iterative Execution:</strong> Created the <code>AgentExecutor</code> to run a ReAct loop. Instead of generating a static batch plan, the system now sends one command, waits for the hardware response, and feeds that "observation" back to the LLM to decide the next step.</li>
+<li><strong>Stateful Memory:</strong> Integrated the <code>PlateManager</code> so the AI maintains a "mental map" of well contents across steps.</li>
+<li><strong>Telemetry &amp; Budgeting:</strong> Implemented real-time token tracking and cumulative cost estimation for the Gemini 2.5 Flash-Lite model.</li>
+<li><strong>Flight Data Recorder:</strong> Built a logging system that saves every transaction (System Context, Prompts, JSON responses, and Hardware Observations) into timestamped JSON files in the <code>temp/</code> directory for audit and debugging.</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="what-needs-to-be-done-next-stage-3"><strong>What Needs to Be Done Next: Stage 3</strong></h3>
+<p>We are currently at the threshold of the final stage: <strong>The Agentic REPL (Conversation Loop).</strong></p>
+<p><strong>The Goal:</strong> Move from a script that executes one specific goal and exits to a persistent "Laboratory Cockpit" session.</p>
+<p><strong>Next Steps:</strong>
+1.  <strong>Develop <code>ai_chat.py</code>:</strong> Create a command-line interface that allows for a continuous back-and-forth conversation.
+2.  <strong>Session Persistence:</strong> Ensure the <code>Agent</code> history and <code>PlateManager</code> state persist across multiple distinct goals (e.g., Goal 1: "Home the system" -&gt; Goal 2: "Prepare a 1:1 mixture in B2").
+3.  <strong>Human-in-the-Loop (HITL) Safety:</strong> Implement a gate where the user can review and approve the AI’s proposed JSON command before it is dispatched to the physical hardware.
+4.  <strong>Refined "Completion" Logic:</strong> Adapt the <code>COMPLETE</code> status so it returns control to the human user rather than shutting down the <code>DeviceManager</code>.</p>
+<p>The last few steps took one more prompt, we now have a REPL that can do basic movements of the sidekick :)</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

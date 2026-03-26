@@ -1,0 +1,724 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/socratic_howto/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>How-To: Building New Firmware with the Socratic AI Method - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#how-to-building-new-firmware-with-the-socratic-ai-method" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              How-To: Building New Firmware with the Socratic AI Method
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href=".." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#the-workflow-from-spec-sheet-to-running-hardware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Workflow: From Spec Sheet to Running Hardware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Workflow: From Spec Sheet to Running Hardware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-ai-assisted-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: AI-Assisted Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-file-placement" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: File Placement
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-update-the-host-firmware-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Update the Host Firmware Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="how-to-building-new-firmware-with-the-socratic-ai-method">How-To: Building New Firmware with the Socratic AI Method</h1>
+<p>This guide provides the standard workflow for creating and integrating a new instrument into the Talos-SDL framework, from design to live hardware testing.</p>
+<p>This document assumes you have already completed the design process outlined in <code>docs/socratic_design_guidelines.md</code> and have a finished "spec sheet" for your new instrument.</p>
+<h2 id="the-workflow-from-spec-sheet-to-running-hardware">The Workflow: From Spec Sheet to Running Hardware</h2>
+<h3 id="step-1-ai-assisted-code-generation">Step 1: AI-Assisted Code Generation</h3>
+<p>This step uses an AI assistant to write the boilerplate firmware code.</p>
+<ol>
+<li><strong>Open the AI Prompt Template:</strong> Use the contents of <code>docs/AI assistant instrument design.md</code> as the system prompt for your AI assistant (e.g., Gemini, ChatGPT).</li>
+<li><strong>Provide Context:</strong> The prompt will ask for two inputs:<ul>
+<li><strong>Input 1 (Software Stack):</strong> Provide the AI with the code for <code>shared_lib/</code> and the firmware for an existing instrument (e.g., <code>firmware/sidekick/</code>). This teaches the AI the required architectural patterns.</li>
+<li><strong>Input 2 (Spec Sheet):</strong> Provide the complete <code>socratic_&lt;your_instrument&gt;.md</code> design document you created.</li>
+</ul>
+</li>
+<li><strong>Engage and Clarify:</strong> The AI will ask clarifying questions about your instrument's hardware and desired behavior. Answer these questions to ensure the generated code is accurate.</li>
+<li><strong>Receive Files:</strong> The AI will generate the three initial firmware files: <code>__init__.py</code>, <code>states.py</code>, and <code>handlers.py</code>.</li>
+</ol>
+<h3 id="step-2-file-placement">Step 2: File Placement</h3>
+<p>Place the generated files into the project structure.</p>
+<ol>
+<li>Create a new folder inside the <code>firmware/</code> directory. The folder name should be the name of your instrument (e.g., <code>firmware/stirplate_manager/</code>).</li>
+<li>Copy the three generated Python files into this new folder.</li>
+</ol>
+<h3 id="step-3-update-the-host-firmware-database">Step 3: Update the Host Firmware Database</h3>
+<p>The host application needs to know how to identify your new device.</p>
+<ol>
+<li><strong>Assign an ID:</strong> Choose a unique Product ID (PID) for your device. For internal development, use the Brockport Original Builds Vendor ID (VID) of <code>808</code>. For our example, we will assign the <code>stirplate_manager</code> a PID of <code>814</code>.</li>
+<li>
+<p><strong>Edit the Database:</strong> Open the file <code>host/firmware_db.py</code> and add your new device to the <code>products</code> dictionary.</p>
+<p>```python</p>
+<h1 id="hostfirmware_dbpy">host/firmware_db.py</h1>
+<p>FIRMWARE_DATABASE = {
+    808: {
+        'manufacturer': 'Brockport Original Builds',
+        'products': {
+            810: 'Fake Device',
+            811: 'DIY Stirplate',
+            812: 'Sidekick',
+            813: 'Colorimeter',
+            # --- ADD YOUR NEW DEVICE HERE ---
+            814: 'Stirplate Manager'
+        }
+    },
+}
+```</p>
+</li>
+</ol>
+<h3 id="step-4-install-circuitpython-libraries">Step 4: Install CircuitPython Libraries</h3>
+<p>Your new instrument firmware likely depends on specific hardware libraries that are not part of the core Talos-SDL codebase.</p>
+<ol>
+<li><strong>Identify Dependencies:</strong> Check the <code>import</code> statements in your new <code>states.py</code> file. For the <code>stirplate_manager</code>, this is <code>from adafruit_motorkit import MotorKit</code>.</li>
+<li><strong>Download the Library:</strong> Find the required library on the <a href="https://circuitpython.org/libraries">CircuitPython Libraries Bundle</a> website.</li>
+<li><strong>Install on Device:</strong> Connect your microcontroller. It will appear as a USB drive named <code>CIRCUITPY</code>. Copy the required library file or folder (e.g., <code>adafruit_motorkit.mpy</code>) into the <code>lib/</code> directory on the <code>CIRCUITPY</code> drive.</li>
+</ol>
+<h3 id="step-5-deploy-the-firmware">Step 5: Deploy the Firmware</h3>
+<p>Use the <code>deploy.py</code> script to copy the Talos-SDL framework code and your new firmware onto the microcontroller.</p>
+<ol>
+<li><strong>Connect the Device:</strong> Ensure your <code>CIRCUITPY</code> drive is visible on your computer. Note its drive letter (e.g., <code>E:</code> on Windows) or path.</li>
+<li>
+<p><strong>Run the Script:</strong> Open a terminal in the project's root directory and run the deployment script, providing the drive and your firmware's folder name.</p>
+<p>```bash</p>
+<h1 id="example-for-deploying-the-stirplate_manager-to-the-e-drive">Example for deploying the stirplate_manager to the E: drive</h1>
+<p>python deploy.py E: stirplate_manager
+<code>``
+3.  **What it Does:** This script will automatically:
+*   Copy the</code>shared_lib/<code>and</code>communicate/<code>folders to the device.
+*   Copy your specific</code>firmware/stirplate_manager/<code>folder.
+*   Customize the</code>boot.py<code>file on the device with the correct VID/PID (</code>808<code>/</code>814<code>).
+*   Customize the</code>code.py<code>file to import and run your new</code>stirplate_manager<code></code>machine`.</p>
+</li>
+</ol>
+<h3 id="step-6-verification-with-the-control-panel">Step 6: Verification with the Control Panel</h3>
+<p>The final step is to run the host application and verify that it can communicate with your new instrument.</p>
+<ol>
+<li><strong>Launch the Host:</strong> Run the control panel from the project root.
+    <code>bash
+    python host/control_panel.py</code></li>
+<li><strong>Check for Success:</strong><ul>
+<li>Click <strong>"Scan &amp; Connect All"</strong>.</li>
+<li>Your new device, <code>Stirplate Manager</code>, should appear in the device dropdown list.</li>
+<li>Select the device. After a moment, its status panel should update.</li>
+<li>Periodic <code>TELEMETRY</code> messages from your device should begin appearing in the Raw Message Log.</li>
+<li>The "Available Commands" panel should populate with <code>set_speed</code> and <code>stop_all</code>.</li>
+<li>Test a command:<ul>
+<li>Double-click <code>set_speed</code> to populate the command entries.</li>
+<li>Modify the arguments to <code>{"motor_id": 1, "speed": 0.5}</code>.</li>
+<li>Click <strong>"Send"</strong>.</li>
+<li>You should see a green <code>RECV_SUCCESS</code> message in the log confirming the command was executed.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr />
+<p>Congratulations! You have successfully designed, generated, deployed, and tested a new instrument for the Talos-SDL ecosystem.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "..", "features": ["navigation.sections", "navigation.expand"], "search": "../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>
