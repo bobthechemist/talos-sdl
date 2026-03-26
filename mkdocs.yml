@@ -1,0 +1,30 @@
+site_name: Talos-SDL Documentation
+site_url: https://bobthechemist.github.io/talos-sdl/
+site_name: Talos-SDL Documentation
+theme:
+  name: material
+  features:
+    - navigation.sections
+    - navigation.expand
+
+plugins:
+  - search
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: ["."]  # Look in the root for your packages
+          options:
+            show_source: true
+            show_root_toc_entry: true
+            show_root_heading: true
+            import_outline_sidebars: true
+
+nav:
+  - Home: index.md
+  - Tutorials:
+      - End-User Guide: tutorials/user_guide.md
+  - API Reference:
+      - Communicate: api/communicate.md
+      - Firmware: api/firmware.md
+      - Host: api/host.md
+      - Shared Lib: api/shared_lib.md
