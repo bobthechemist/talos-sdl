@@ -1,0 +1,2183 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/tutorials/building_your_first_firmware/">
+      
+      
+        <link rel="prev" href="../user_guide/">
+      
+      
+        <link rel="next" href="../../concepts/architecture_overview/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Building Your First Instrument Firmware - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#guide-building-your-first-instrument-firmware" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Building Your First Instrument Firmware
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Your First Instrument Firmware
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Your First Instrument Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-1-designing-your-instrument-with-the-socratic-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: Designing Your Instrument with the Socratic Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 1: Designing Your Instrument with the Socratic Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#our-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-design-process-a-question-driven-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Design Process: A Question-Driven Approach
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Design Process: A Question-Driven Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-high-level-instrument-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: High-Level Instrument Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-defining-the-hardware-configuration-subsystem_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Defining the Hardware Configuration (SUBSYSTEM_CONFIG)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-defining-the-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Defining the Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-defining-the-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Defining the States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-2-ai-assisted-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: AI-Assisted Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-3-implementing-and-deploying-the-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: Implementing and Deploying the Firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 3: Implementing and Deploying the Firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-firmware-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Create the Firmware Directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-bootpy-for-the-new-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure boot.py for the New Device
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-writing-the-firmware-logic-aht20-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Writing the Firmware Logic (AHT20 Example)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Writing the Firmware Logic (AHT20 Example)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensorstatespy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/states.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensorhandlerspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/handlers.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensor__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-the-main-entrypoint-codepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: The Main Entrypoint (code.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-update-the-host-firmware-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Update the Host Firmware Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-install-circuitpython-libraries-on-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Install CircuitPython Libraries on Device
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-deploy-the-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Deploy the Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-verification-with-the-control-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Verification with the Control Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/core_philosophy_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Philosophy & Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer_guides/coding_style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer_guides/socratic_design_method/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socratic Design Method
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Firmware Generation Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Protocols
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Protocols
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/communication_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/firmware_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/host_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/messaging_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colorimeter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sidekick
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stirplate Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#part-1-designing-your-instrument-with-the-socratic-method" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: Designing Your Instrument with the Socratic Method
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 1: Designing Your Instrument with the Socratic Method">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#our-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Our Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#the-design-process-a-question-driven-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Design Process: A Question-Driven Approach
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="The Design Process: A Question-Driven Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-high-level-instrument-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: High-Level Instrument Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-defining-the-hardware-configuration-subsystem_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Defining the Hardware Configuration (SUBSYSTEM_CONFIG)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-defining-the-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Defining the Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-defining-the-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Defining the States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-2-ai-assisted-code-generation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: AI-Assisted Code Generation
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#part-3-implementing-and-deploying-the-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 3: Implementing and Deploying the Firmware
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Part 3: Implementing and Deploying the Firmware">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-create-the-firmware-directory" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: Create the Firmware Directory
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-configure-bootpy-for-the-new-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Configure boot.py for the New Device
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-writing-the-firmware-logic-aht20-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Writing the Firmware Logic (AHT20 Example)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Step 3: Writing the Firmware Logic (AHT20 Example)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensorstatespy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/states.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensorhandlerspy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/handlers.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#file-firmwareaht20_sensor__init__py" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File: firmware/aht20_sensor/__init__.py
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-the-main-entrypoint-codepy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: The Main Entrypoint (code.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-5-update-the-host-firmware-database" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 5: Update the Host Firmware Database
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-6-install-circuitpython-libraries-on-device" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 6: Install CircuitPython Libraries on Device
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-7-deploy-the-firmware" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 7: Deploy the Firmware
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-8-verification-with-the-control-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 8: Verification with the Control Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="guide-building-your-first-instrument-firmware">Guide: Building Your First Instrument Firmware</h1>
+<p>This comprehensive guide will walk you through the entire process of integrating a new instrument into the Talos-SDL framework. From the initial design phase using the Socratic method, through AI-assisted code generation, to deployment and verification on hardware, you'll learn how to create a complete, functional firmware package that can be controlled and monitored by the host application.</p>
+<p><strong>Our Example Project: The AHT20 Environmental Sensor</strong></p>
+<p>We will build firmware for a microcontroller connected to an Adafruit AHT20 Temperature and Humidity sensor. This is a practical example as it involves:
+*   Initializing a specific piece of hardware (the sensor).
+*   Periodically reading data (temperature and humidity).
+*   Sending this data back to the host as telemetry.
+*   Responding to custom commands (e.g., "read the sensor right now").</p>
+<p><strong>Prerequisites:</strong>
+*   A PC running Python 3.8+ with the Talos-SDL repository cloned and dependencies installed (<code>pip install -r requirements.txt</code>).
+*   A CircuitPython-compatible microcontroller (e.g., Raspberry Pi Pico, Adafruit Feather M4) with an AHT20 sensor wired to its I2C pins.
+*   The necessary CircuitPython library for the AHT20 sensor. You must copy the <code>adafruit_ahtx0.mpy</code> file to the <code>lib</code> folder on your microcontroller's <code>CIRCUITPY</code> drive.</p>
+<hr />
+<h2 id="part-1-designing-your-instrument-with-the-socratic-method">Part 1: Designing Your Instrument with the Socratic Method</h2>
+<p>Before writing any code, it's crucial to clearly define your instrument's purpose, capabilities, and behavior. The Talos-SDL framework is built on a state-machine-based design philosophy that prioritizes clarity, modularity, and non-blocking operations.</p>
+<h3 id="our-design-philosophy">Our Design Philosophy</h3>
+<ul>
+<li><strong>One Machine, One State:</strong> Each instrument is represented by a single, unified <code>StateMachine</code> instance. At any given moment, the machine is in one, and only one, well-defined state (e.g., <code>Initializing</code>, <code>Idle</code>, <code>Moving</code>).</li>
+<li><strong>Separation of Data and Logic:</strong> We strictly separate the instrument's static configuration (the <em>data</em>, like pin numbers and settings) from its dynamic behavior (the <em>logic</em>, defined in states and handlers).</li>
+<li><strong>Centralized Command Handling:</strong> The <code>StateMachine</code> itself is responsible for managing and dispatching commands. States simply indicate <em>when</em> the machine should listen for those commands.</li>
+<li><strong>Common, Reusable Components:</strong> We leverage a library of common states (<code>GenericIdle</code>, <code>GenericError</code>) and command handlers (<code>ping</code>, <code>help</code>) to reduce boilerplate code and ensure consistent behavior across all instruments.</li>
+</ul>
+<h3 id="the-design-process-a-question-driven-approach">The Design Process: A Question-Driven Approach</h3>
+<p>The best way to design a new instrument is to answer a series of questions, moving from a high-level overview down to the specific details of each state. This Socratic, question-driven method ensures all aspects of the instrument's behavior are considered.</p>
+<h4 id="step-1-high-level-instrument-definition">Step 1: High-Level Instrument Definition</h4>
+<p>Answer these four core questions about the instrument as a whole:</p>
+<ol>
+<li><strong>What is the primary purpose of this instrument?</strong><ul>
+<li><em>(AHT20 Example: To measure and report ambient temperature and relative humidity.)</em></li>
+</ul>
+</li>
+<li><strong>What are the primary actions it can perform?</strong><ul>
+<li><em>(AHT20 Example: Initialize the sensor, periodically read sensor values, and perform a manual read on command.)</em></li>
+</ul>
+</li>
+<li><strong>What data does it need to report back periodically?</strong> (This defines your telemetry.)<ul>
+<li><em>(AHT20 Example: The current temperature (in Celsius) and relative humidity (in %).)</em></li>
+</ul>
+</li>
+<li><strong>What are the critical failure conditions?</strong><ul>
+<li><em>(AHT20 Example: The AHT20 sensor is not detected on the I2C bus during initialization.)</em></li>
+</ul>
+</li>
+<li><strong>What is the high-level operational guidance for an AI agent?</strong> (This defines your <code>ai_guidance</code> in <code>SUBSYSTEM_CONFIG</code>).<ul>
+<li><em>(AHT20 Example: This sensor is a simple environmental sensor and does not require pre-positioning by a robotic arm.)</em></li>
+</ul>
+</li>
+</ol>
+<h4 id="step-2-defining-the-hardware-configuration-subsystem_config">Step 2: Defining the Hardware Configuration (<code>SUBSYSTEM_CONFIG</code>)</h4>
+<p>All static hardware definitions and settings belong in a single <code>SUBSYSTEM_CONFIG</code> dictionary in the instrument's <code>__init__.py</code> file. This creates a central "dashboard" for the instrument's physical setup.</p>
+<ul>
+<li>List every pin the microcontroller will use. Give each pin a descriptive name.</li>
+<li>List any key operational parameters (e.g., default gain, default LED intensity).</li>
+<li>List any "safe limits" that the instrument must not violate (e.g., min/max intensity).</li>
+</ul>
+<p><strong>Example <code>SUBSYSTEM_CONFIG</code> for AHT20:</strong></p>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">AHT20_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="c1"># The AHT20 uses the board&#39;s default I2C pins, so we don&#39;t need to define them explicitly.</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="c1"># A more complex device would list all pins here (e.g., &quot;SCL&quot;: board.SCL, &quot;SDA&quot;: board.SDA).</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>    <span class="s2">&quot;ai_guidance&quot;</span><span class="p">:</span> <span class="s2">&quot;This sensor is a simple environmental sensor and does not require pre-positioning by a robotic arm.&quot;</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="p">}</span>
+</span></code></pre></div>
+<h4 id="step-3-defining-the-command-interface">Step 3: Defining the Command Interface</h4>
+<p>This defines the API that the host computer will use to control the instrument. For each custom command, define:</p>
+<ul>
+<li><strong>Function Name (<code>func</code>):</strong> A short, verb-based name (e.g., <code>read_now</code>).</li>
+<li><strong>Description:</strong> A clear, one-sentence description of what the command does.</li>
+<li><strong>Arguments (<code>args</code>):</strong> What data, if any, the host must provide (as a list of dictionaries, e.g., <code>[{"name": "...", "type": "...", "default": ...}]</code>).</li>
+<li><strong>Success Condition:</strong> What happens when the command completes successfully? (e.g., "Returns a <code>SUCCESS</code> message with the sensor data," "Transitions to the <code>Moving</code> state.")</li>
+<li><strong>Guard Conditions:</strong> What criteria must be met for this command to be accepted? (e.g., "The machine must be homed," "The target coordinates must be within safe limits.")</li>
+<li><strong><code>ai_enabled</code> (<code>Boolean</code>):</strong> Set to <code>true</code> if this command is a high-level, safe, and useful function for an autonomous agent. Set to <code>false</code> for low-level debugging commands (e.g., <code>steps</code>), or for commands that are superseded by a more abstract one (e.g., <code>read_all</code> might be disabled in favor of a more comprehensive <code>measure</code> sequence).</li>
+</ul>
+<p><strong>Example Command for AHT20:</strong></p>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><code>func</code> Name</th>
+<th style="text-align: left;"><code>ai_enabled</code></th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Arguments</th>
+<th style="text-align: left;">Success Condition</th>
+<th style="text-align: left;">Guard Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>read_now</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">Immediately reads the sensor and returns the values.</td>
+<td style="text-align: left;"><code>[]</code></td>
+<td style="text-align: left;">Returns a <code>DATA_RESPONSE</code> message with a payload containing the temperature and humidity.</td>
+<td style="text-align: left;">None.</td>
+</tr>
+</tbody>
+</table>
+<h4 id="step-4-defining-the-states">Step 4: Defining the States</h4>
+<p>Now, apply the Socratic method to each individual state your instrument will have. Remember, you get <code>GenericIdle</code> and <code>GenericError</code> (or <code>GenericErrorWithButton</code>) for free from <code>firmware/common/common_states.py</code>, so you only need to design the states unique to your instrument.</p>
+<p>For each custom state, answer these five questions:</p>
+<ol>
+<li><strong>Purpose:</strong> What is this state's single, clear responsibility?</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong> What needs to be set up <em>the moment</em> we enter this state? (e.g., start a timer, reset a counter, turn on a pin).</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> What is the main work this state does on <em>every loop</em>? (e.g., check a timer, monitor a sensor, step a motor, listen for commands).</li>
+<li><strong>Exit Events &amp; Triggers:</strong> How does this state know its job is finished? What causes a transition to another state? (e.g., a timer expires, a task is complete, an error is detected, an <code>abort</code> command is received).</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> What cleanup is required when leaving this state to ensure the hardware is safe? (e.g., turn off a motor, reset a flag).</li>
+</ol>
+<p><strong>Example State: <code>Initialize</code> for AHT20</strong></p>
+<ol>
+<li><strong>Purpose:</strong> To connect to the AHT20 sensor via the I2C bus.</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong><ul>
+<li>Attempt to create an <code>I2C</code> object for the board (<code>i2c = board.I2C()</code>).</li>
+<li>Attempt to instantiate the <code>adafruit_ahtx0.AHTx0</code> sensor object using the I2C bus (<code>machine.sensor = adafruit_ahtx0.AHTx0(i2c)</code>).</li>
+<li>Attach the sensor object to the <code>machine</code> instance (<code>machine.sensor</code>).</li>
+</ul>
+</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> None. This state should transition immediately.</li>
+<li><strong>Exit Events &amp; Triggers:</strong><ul>
+<li><strong>On Success:</strong> The sensor is instantiated without error. Trigger: Transition to <code>Idle</code>.</li>
+<li><strong>On Failure:</strong> An exception is raised (e.g., <code>ValueError</code> if the sensor is not found). Trigger: Set an <code>error_message</code> flag and transition to <code>Error</code>.</li>
+</ul>
+</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> None.</li>
+</ol>
+<hr />
+<h2 id="part-2-ai-assisted-code-generation">Part 2: AI-Assisted Code Generation</h2>
+<p>Once your design is documented, you can leverage an AI assistant to generate the initial boilerplate firmware code.</p>
+<ol>
+<li><strong>Open the AI Prompt Template:</strong> Use the contents of <code>developer_guides/ai_agent_prompt_templates/firmware_generation_template.md</code> as the system prompt for your AI assistant (e.g., Gemini, ChatGPT).</li>
+<li><strong>Provide Context:</strong> The prompt will ask for two inputs:<ul>
+<li><strong>Input 1 (Current Software Stack):</strong> Provide the AI with the code for <code>shared_lib/</code> and the firmware for an existing instrument (e.g., <code>firmware/sidekick/</code>). This teaches the AI the required architectural patterns.</li>
+<li><strong>Input 2 (New Instrument Design Spec Sheet):</strong> Paste your completed Socratic design document (like the AHT20 example above) into the AI.</li>
+</ul>
+</li>
+<li><strong>Engage and Clarify:</strong> The AI will ask clarifying questions about your instrument's hardware and desired behavior. Answer these questions to ensure the generated code is accurate.</li>
+<li><strong>Receive Files:</strong> The AI will generate the three initial firmware files: <code>__init__.py</code>, <code>states.py</code>, and <code>handlers.py</code>.</li>
+</ol>
+<hr />
+<h2 id="part-3-implementing-and-deploying-the-firmware">Part 3: Implementing and Deploying the Firmware</h2>
+<p>Now that you have your design and AI-generated code, it's time to integrate it into the project, deploy it to your microcontroller, and verify its operation.</p>
+<h3 id="step-1-create-the-firmware-directory">Step 1: Create the Firmware Directory</h3>
+<p>All firmware for a specific instrument lives in its own dedicated folder.</p>
+<ol>
+<li>Navigate to the <code>firmware/</code> directory in your project.</li>
+<li>Create a new folder. For our AHT20 example, we'll name it <code>aht20_sensor</code>.</li>
+<li>Copy the three generated Python files (<code>__init__.py</code>, <code>states.py</code>, <code>handlers.py</code>) into this new folder.</li>
+</ol>
+<p>Your new directory structure will look like this:</p>
+<div class="language-text highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>firmware/
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>└── aht20_sensor/
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    ├── __init__.py
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    ├── handlers.py
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    └── states.py
+</span></code></pre></div>
+<h3 id="step-2-configure-bootpy-for-the-new-device">Step 2: Configure <code>boot.py</code> for the New Device</h3>
+<p>The <code>boot.py</code> file identifies your device to the host computer. Each <em>type</em> of device should have a unique Vendor ID (VID) and Product ID (PID).</p>
+<ol>
+<li>Open <code>firmware/common/boot.py</code>.</li>
+<li>Assign a new, unique VID/PID pair. For the AHT20 sensor example, we'll use <code>101</code> for both VID and PID for in-lab testing.</li>
+</ol>
+<p><div class="language-python highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a><span class="c1"># firmware/common/boot.py</span>
+</span><span id="__span-2-2"><a id="__codelineno-2-2" name="__codelineno-2-2" href="#__codelineno-2-2"></a><span class="c1"># type: ignore</span>
+</span><span id="__span-2-3"><a id="__codelineno-2-3" name="__codelineno-2-3" href="#__codelineno-2-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">usb_cdc</span>
+</span><span id="__span-2-4"><a id="__codelineno-2-4" name="__codelineno-2-4" href="#__codelineno-2-4"></a><span class="kn">import</span><span class="w"> </span><span class="nn">supervisor</span>
+</span><span id="__span-2-5"><a id="__codelineno-2-5" name="__codelineno-2-5" href="#__codelineno-2-5"></a>
+</span><span id="__span-2-6"><a id="__codelineno-2-6" name="__codelineno-2-6" href="#__codelineno-2-6"></a><span class="c1"># Remember changes to boot.py only go into effect upon power cycling the uC.</span>
+</span><span id="__span-2-7"><a id="__codelineno-2-7" name="__codelineno-2-7" href="#__codelineno-2-7"></a><span class="c1"># (The reset button won&#39;t do it.)</span>
+</span><span id="__span-2-8"><a id="__codelineno-2-8" name="__codelineno-2-8" href="#__codelineno-2-8"></a>
+</span><span id="__span-2-9"><a id="__codelineno-2-9" name="__codelineno-2-9" href="#__codelineno-2-9"></a><span class="n">supervisor</span><span class="o">.</span><span class="n">set_usb_identification</span><span class="p">(</span>
+</span><span id="__span-2-10"><a id="__codelineno-2-10" name="__codelineno-2-10" href="#__codelineno-2-10"></a>    <span class="n">vid</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="c1"># --&gt; New, unique Vendor ID (for AHT20 example)</span>
+</span><span id="__span-2-11"><a id="__codelineno-2-11" name="__codelineno-2-11" href="#__codelineno-2-11"></a>    <span class="n">pid</span><span class="o">=</span><span class="mi">101</span><span class="p">,</span> <span class="c1"># --&gt; New, unique Product ID (for AHT20 example)</span>
+</span><span id="__span-2-12"><a id="__codelineno-2-12" name="__codelineno-2-12" href="#__codelineno-2-12"></a>    <span class="n">product</span><span class="o">=</span><span class="s2">&quot;something awesome&quot;</span><span class="p">,</span>
+</span><span id="__span-2-13"><a id="__codelineno-2-13" name="__codelineno-2-13" href="#__codelineno-2-13"></a>    <span class="n">manufacturer</span><span class="o">=</span><span class="s2">&quot;Brockport Original Builds&quot;</span><span class="p">)</span>
+</span><span id="__span-2-14"><a id="__codelineno-2-14" name="__codelineno-2-14" href="#__codelineno-2-14"></a>
+</span><span id="__span-2-15"><a id="__codelineno-2-15" name="__codelineno-2-15" href="#__codelineno-2-15"></a><span class="n">usb_cdc</span><span class="o">.</span><span class="n">enable</span><span class="p">(</span><span class="n">console</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</span></code></pre></div>
+<strong>Important:</strong> Changes to <code>boot.py</code> only take effect after a full power cycle of the microcontroller (unplugging and plugging it back in).</p>
+<h3 id="step-3-writing-the-firmware-logic-aht20-example">Step 3: Writing the Firmware Logic (AHT20 Example)</h3>
+<p>Here are the specific Python files for our AHT20 example. These would typically be generated by your AI assistant based on the design specification you provided.</p>
+<h4 id="file-firmwareaht20_sensorstatespy">File: <code>firmware/aht20_sensor/states.py</code></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a><span class="c1"># firmware/aht20_sensor/states.py</span>
+</span><span id="__span-3-2"><a id="__codelineno-3-2" name="__codelineno-3-2" href="#__codelineno-3-2"></a><span class="c1">#type: ignore</span>
+</span><span id="__span-3-3"><a id="__codelineno-3-3" name="__codelineno-3-3" href="#__codelineno-3-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">board</span>
+</span><span id="__span-3-4"><a id="__codelineno-3-4" name="__codelineno-3-4" href="#__codelineno-3-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">shared_lib.statemachine</span><span class="w"> </span><span class="kn">import</span> <span class="n">State</span>
+</span><span id="__span-3-5"><a id="__codelineno-3-5" name="__codelineno-3-5" href="#__codelineno-3-5"></a><span class="c1"># The sensor-specific library you copied to the device&#39;s lib folder</span>
+</span><span id="__span-3-6"><a id="__codelineno-3-6" name="__codelineno-3-6" href="#__codelineno-3-6"></a><span class="kn">import</span><span class="w"> </span><span class="nn">adafruit_ahtx0</span>
+</span><span id="__span-3-7"><a id="__codelineno-3-7" name="__codelineno-3-7" href="#__codelineno-3-7"></a>
+</span><span id="__span-3-8"><a id="__codelineno-3-8" name="__codelineno-3-8" href="#__codelineno-3-8"></a><span class="k">class</span><span class="w"> </span><span class="nc">Initialize</span><span class="p">(</span><span class="n">State</span><span class="p">):</span>
+</span><span id="__span-3-9"><a id="__codelineno-3-9" name="__codelineno-3-9" href="#__codelineno-3-9"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-3-10"><a id="__codelineno-3-10" name="__codelineno-3-10" href="#__codelineno-3-10"></a><span class="sd">    Initializes the I2C bus and the AHT20 sensor. This state is custom</span>
+</span><span id="__span-3-11"><a id="__codelineno-3-11" name="__codelineno-3-11" href="#__codelineno-3-11"></a><span class="sd">    because every instrument has a unique hardware setup.</span>
+</span><span id="__span-3-12"><a id="__codelineno-3-12" name="__codelineno-3-12" href="#__codelineno-3-12"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-3-13"><a id="__codelineno-3-13" name="__codelineno-3-13" href="#__codelineno-3-13"></a>    <span class="nd">@property</span>
+</span><span id="__span-3-14"><a id="__codelineno-3-14" name="__codelineno-3-14" href="#__codelineno-3-14"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+</span><span id="__span-3-15"><a id="__codelineno-3-15" name="__codelineno-3-15" href="#__codelineno-3-15"></a>        <span class="k">return</span> <span class="s1">&#39;Initialize&#39;</span>
+</span><span id="__span-3-16"><a id="__codelineno-3-16" name="__codelineno-3-16" href="#__codelineno-3-16"></a>
+</span><span id="__span-3-17"><a id="__codelineno-3-17" name="__codelineno-3-17" href="#__codelineno-3-17"></a>    <span class="k">def</span><span class="w"> </span><span class="nf">enter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">machine</span><span class="p">,</span> <span class="n">context</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+</span><span id="__span-3-18"><a id="__codelineno-3-18" name="__codelineno-3-18" href="#__codelineno-3-18"></a>        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">enter</span><span class="p">(</span><span class="n">machine</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
+</span><span id="__span-3-19"><a id="__codelineno-3-19" name="__codelineno-3-19" href="#__codelineno-3-19"></a>        <span class="k">try</span><span class="p">:</span>
+</span><span id="__span-3-20"><a id="__codelineno-3-20" name="__codelineno-3-20" href="#__codelineno-3-20"></a>            <span class="c1"># Create the I2C bus object.</span>
+</span><span id="__span-3-21"><a id="__codelineno-3-21" name="__codelineno-3-21" href="#__codelineno-3-21"></a>            <span class="n">i2c</span> <span class="o">=</span> <span class="n">board</span><span class="o">.</span><span class="n">I2C</span><span class="p">()</span>  <span class="c1"># uses board.SCL and board.SDA</span>
+</span><span id="__span-3-22"><a id="__codelineno-3-22" name="__codelineno-3-22" href="#__codelineno-3-22"></a>            <span class="c1"># Create the sensor object and attach it to the machine instance.</span>
+</span><span id="__span-3-23"><a id="__codelineno-3-23" name="__codelineno-3-23" href="#__codelineno-3-23"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span> <span class="o">=</span> <span class="n">adafruit_ahtx0</span><span class="o">.</span><span class="n">AHTx0</span><span class="p">(</span><span class="n">i2c</span><span class="p">)</span>
+</span><span id="__span-3-24"><a id="__codelineno-3-24" name="__codelineno-3-24" href="#__codelineno-3-24"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;AHT20 sensor initialized successfully.&quot;</span><span class="p">)</span>
+</span><span id="__span-3-25"><a id="__codelineno-3-25" name="__codelineno-3-25" href="#__codelineno-3-25"></a>            <span class="c1"># Once initialization is successful, transition to Idle.</span>
+</span><span id="__span-3-26"><a id="__codelineno-3-26" name="__codelineno-3-26" href="#__codelineno-3-26"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">go_to_state</span><span class="p">(</span><span class="s1">&#39;Idle&#39;</span><span class="p">)</span>
+</span><span id="__span-3-27"><a id="__codelineno-3-27" name="__codelineno-3-27" href="#__codelineno-3-27"></a>        <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-3-28"><a id="__codelineno-3-28" name="__codelineno-3-28" href="#__codelineno-3-28"></a>            <span class="c1"># If the sensor is not found or another error occurs, go to the Error state.</span>
+</span><span id="__span-3-29"><a id="__codelineno-3-29" name="__codelineno-3-29" href="#__codelineno-3-29"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">flags</span><span class="p">[</span><span class="s1">&#39;error_message&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+</span><span id="__span-3-30"><a id="__codelineno-3-30" name="__codelineno-3-30" href="#__codelineno-3-30"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">critical</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Initialization of AHT20 failed: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-3-31"><a id="__codelineno-3-31" name="__codelineno-3-31" href="#__codelineno-3-31"></a>            <span class="n">machine</span><span class="o">.</span><span class="n">go_to_state</span><span class="p">(</span><span class="s1">&#39;Error&#39;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="file-firmwareaht20_sensorhandlerspy">File: <code>firmware/aht20_sensor/handlers.py</code></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="c1"># firmware/aht20_sensor/handlers.py</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="c1">#type: ignore</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">shared_lib.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span><span class="p">,</span> <span class="n">send_problem</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">shared_lib.error_handling</span><span class="w"> </span><span class="kn">import</span> <span class="n">try_wrapper</span> <span class="c1"># For robust error handling</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="nd">@try_wrapper</span> <span class="c1"># Decorate handler for automatic error message sending</span>
+</span><span id="__span-4-7"><a id="__codelineno-4-7" name="__codelineno-4-7" href="#__codelineno-4-7"></a><span class="k">def</span><span class="w"> </span><span class="nf">handle_read_now</span><span class="p">(</span><span class="n">machine</span><span class="p">,</span> <span class="n">payload</span><span class="p">):</span>
+</span><span id="__span-4-8"><a id="__codelineno-4-8" name="__codelineno-4-8" href="#__codelineno-4-8"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+</span><span id="__span-4-9"><a id="__codelineno-4-9" name="__codelineno-4-9" href="#__codelineno-4-9"></a><span class="sd">    Handles the device-specific &#39;read_now&#39; command. This is an example of</span>
+</span><span id="__span-4-10"><a id="__codelineno-4-10" name="__codelineno-4-10" href="#__codelineno-4-10"></a><span class="sd">    a command that doesn&#39;t change state, but returns data directly.</span>
+</span><span id="__span-4-11"><a id="__codelineno-4-11" name="__codelineno-4-11" href="#__codelineno-4-11"></a><span class="sd">    &quot;&quot;&quot;</span>
+</span><span id="__span-4-12"><a id="__codelineno-4-12" name="__codelineno-4-12" href="#__codelineno-4-12"></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="__span-4-13"><a id="__codelineno-4-13" name="__codelineno-4-13" href="#__codelineno-4-13"></a>        <span class="n">temp</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="__span-4-14"><a id="__codelineno-4-14" name="__codelineno-4-14" href="#__codelineno-4-14"></a>        <span class="n">humidity</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">relative_humidity</span>
+</span><span id="__span-4-15"><a id="__codelineno-4-15" name="__codelineno-4-15" href="#__codelineno-4-15"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Manual read: Temp=</span><span class="si">{</span><span class="n">temp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">C, Humidity=</span><span class="si">{</span><span class="n">humidity</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</span><span id="__span-4-16"><a id="__codelineno-4-16" name="__codelineno-4-16" href="#__codelineno-4-16"></a>
+</span><span id="__span-4-17"><a id="__codelineno-4-17" name="__codelineno-4-17" href="#__codelineno-4-17"></a>        <span class="c1"># Send the data back in a DATA_RESPONSE message payload.</span>
+</span><span id="__span-4-18"><a id="__codelineno-4-18" name="__codelineno-4-18" href="#__codelineno-4-18"></a>        <span class="n">response</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">create_message</span><span class="p">(</span>
+</span><span id="__span-4-19"><a id="__codelineno-4-19" name="__codelineno-4-19" href="#__codelineno-4-19"></a>            <span class="n">subsystem_name</span><span class="o">=</span><span class="n">machine</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+</span><span id="__span-4-20"><a id="__codelineno-4-20" name="__codelineno-4-20" href="#__codelineno-4-20"></a>            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;DATA_RESPONSE&quot;</span><span class="p">,</span>
+</span><span id="__span-4-21"><a id="__codelineno-4-21" name="__codelineno-4-21" href="#__codelineno-4-21"></a>            <span class="n">payload</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-4-22"><a id="__codelineno-4-22" name="__codelineno-4-22" href="#__codelineno-4-22"></a>                <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-4-23"><a id="__codelineno-4-23" name="__codelineno-4-23" href="#__codelineno-4-23"></a>                    <span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="s2">&quot;environmental_reading&quot;</span><span class="p">,</span>
+</span><span id="__span-4-24"><a id="__codelineno-4-24" name="__codelineno-4-24" href="#__codelineno-4-24"></a>                    <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="s2">&quot;celsius&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="s2">&quot;percent_relative&quot;</span><span class="p">}</span>
+</span><span id="__span-4-25"><a id="__codelineno-4-25" name="__codelineno-4-25" href="#__codelineno-4-25"></a>                <span class="p">},</span>
+</span><span id="__span-4-26"><a id="__codelineno-4-26" name="__codelineno-4-26" href="#__codelineno-4-26"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-4-27"><a id="__codelineno-4-27" name="__codelineno-4-27" href="#__codelineno-4-27"></a>                    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temp</span><span class="p">,</span>
+</span><span id="__span-4-28"><a id="__codelineno-4-28" name="__codelineno-4-28" href="#__codelineno-4-28"></a>                    <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="n">humidity</span>
+</span><span id="__span-4-29"><a id="__codelineno-4-29" name="__codelineno-4-29" href="#__codelineno-4-29"></a>                <span class="p">}</span>
+</span><span id="__span-4-30"><a id="__codelineno-4-30" name="__codelineno-4-30" href="#__codelineno-4-30"></a>            <span class="p">}</span>
+</span><span id="__span-4-31"><a id="__codelineno-4-31" name="__codelineno-4-31" href="#__codelineno-4-31"></a>        <span class="p">)</span>
+</span><span id="__span-4-32"><a id="__codelineno-4-32" name="__codelineno-4-32" href="#__codelineno-4-32"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">postman</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">response</span><span class="o">.</span><span class="n">serialize</span><span class="p">())</span>
+</span><span id="__span-4-33"><a id="__codelineno-4-33" name="__codelineno-4-33" href="#__codelineno-4-33"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-4-34"><a id="__codelineno-4-34" name="__codelineno-4-34" href="#__codelineno-4-34"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to perform manual read: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-4-35"><a id="__codelineno-4-35" name="__codelineno-4-35" href="#__codelineno-4-35"></a>        <span class="c1"># The @try_wrapper decorator will automatically call send_problem,</span>
+</span><span id="__span-4-36"><a id="__codelineno-4-36" name="__codelineno-4-36" href="#__codelineno-4-36"></a>        <span class="c1"># so this explicit call is technically redundant if using the decorator.</span>
+</span><span id="__span-4-37"><a id="__codelineno-4-37" name="__codelineno-4-37" href="#__codelineno-4-37"></a>        <span class="c1"># However, it demonstrates how to manually send a problem message.</span>
+</span><span id="__span-4-38"><a id="__codelineno-4-38" name="__codelineno-4-38" href="#__codelineno-4-38"></a>        <span class="n">send_problem</span><span class="p">(</span><span class="n">machine</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;Failed to perform manual read: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span></code></pre></div>
+<h4 id="file-firmwareaht20_sensor__init__py">File: <code>firmware/aht20_sensor/__init__.py</code></h4>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a><span class="c1"># firmware/aht20_sensor/__init__.py</span>
+</span><span id="__span-5-2"><a id="__codelineno-5-2" name="__codelineno-5-2" href="#__codelineno-5-2"></a><span class="c1">#type: ignore</span>
+</span><span id="__span-5-3"><a id="__codelineno-5-3" name="__codelineno-5-3" href="#__codelineno-5-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">board</span> <span class="c1"># Required for pin definitions if any</span>
+</span><span id="__span-5-4"><a id="__codelineno-5-4" name="__codelineno-5-4" href="#__codelineno-5-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">shared_lib.statemachine</span><span class="w"> </span><span class="kn">import</span> <span class="n">StateMachine</span>
+</span><span id="__span-5-5"><a id="__codelineno-5-5" name="__codelineno-5-5" href="#__codelineno-5-5"></a><span class="kn">from</span><span class="w"> </span><span class="nn">shared_lib.messages</span><span class="w"> </span><span class="kn">import</span> <span class="n">Message</span>
+</span><span id="__span-5-6"><a id="__codelineno-5-6" name="__codelineno-5-6" href="#__codelineno-5-6"></a><span class="kn">from</span><span class="w"> </span><span class="nn">communicate.circuitpython_postman</span><span class="w"> </span><span class="kn">import</span> <span class="n">CircuitPythonPostman</span>
+</span><span id="__span-5-7"><a id="__codelineno-5-7" name="__codelineno-5-7" href="#__codelineno-5-7"></a>
+</span><span id="__span-5-8"><a id="__codelineno-5-8" name="__codelineno-5-8" href="#__codelineno-5-8"></a><span class="c1"># Import resources from our common firmware library</span>
+</span><span id="__span-5-9"><a id="__codelineno-5-9" name="__codelineno-5-9" href="#__codelineno-5-9"></a><span class="kn">from</span><span class="w"> </span><span class="nn">firmware.common.common_states</span><span class="w"> </span><span class="kn">import</span> <span class="n">GenericIdle</span><span class="p">,</span> <span class="n">GenericError</span>
+</span><span id="__span-5-10"><a id="__codelineno-5-10" name="__codelineno-5-10" href="#__codelineno-5-10"></a><span class="kn">from</span><span class="w"> </span><span class="nn">firmware.common.command_library</span><span class="w"> </span><span class="kn">import</span> <span class="n">register_common_commands</span>
+</span><span id="__span-5-11"><a id="__codelineno-5-11" name="__codelineno-5-11" href="#__codelineno-5-11"></a>
+</span><span id="__span-5-12"><a id="__codelineno-5-12" name="__codelineno-5-12" href="#__codelineno-5-12"></a><span class="c1"># Import the device-specific parts we just wrote</span>
+</span><span id="__span-5-13"><a id="__codelineno-5-13" name="__codelineno-5-13" href="#__codelineno-5-13"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.</span><span class="w"> </span><span class="kn">import</span> <span class="n">states</span>
+</span><span id="__span-5-14"><a id="__codelineno-5-14" name="__codelineno-5-14" href="#__codelineno-5-14"></a><span class="kn">from</span><span class="w"> </span><span class="nn">.handlers</span><span class="w"> </span><span class="kn">import</span> <span class="n">handle_read_now</span>
+</span><span id="__span-5-15"><a id="__codelineno-5-15" name="__codelineno-5-15" href="#__codelineno-5-15"></a>
+</span><span id="__span-5-16"><a id="__codelineno-5-16" name="__codelineno-5-16" href="#__codelineno-5-16"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-5-17"><a id="__codelineno-5-17" name="__codelineno-5-17" href="#__codelineno-5-17"></a><span class="c1"># 1. INSTRUMENT CONFIGURATION (Declarative Section)</span>
+</span><span id="__span-5-18"><a id="__codelineno-5-18" name="__codelineno-5-18" href="#__codelineno-5-18"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-5-19"><a id="__codelineno-5-19" name="__codelineno-5-19" href="#__codelineno-5-19"></a><span class="n">SUBSYSTEM_NAME</span> <span class="o">=</span> <span class="s2">&quot;AHT20_SENSOR&quot;</span>
+</span><span id="__span-5-20"><a id="__codelineno-5-20" name="__codelineno-5-20" href="#__codelineno-5-20"></a><span class="n">SUBSYSTEM_VERSION</span> <span class="o">=</span> <span class="s2">&quot;1.0.0&quot;</span> <span class="c1"># Start with a version</span>
+</span><span id="__span-5-21"><a id="__codelineno-5-21" name="__codelineno-5-21" href="#__codelineno-5-21"></a><span class="n">SUBSYSTEM_INIT_STATE</span> <span class="o">=</span> <span class="s2">&quot;Initialize&quot;</span>
+</span><span id="__span-5-22"><a id="__codelineno-5-22" name="__codelineno-5-22" href="#__codelineno-5-22"></a>
+</span><span id="__span-5-23"><a id="__codelineno-5-23" name="__codelineno-5-23" href="#__codelineno-5-23"></a><span class="n">SUBSYSTEM_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-5-24"><a id="__codelineno-5-24" name="__codelineno-5-24" href="#__codelineno-5-24"></a>    <span class="c1"># No custom pin definitions needed for this simple sensor as it uses default I2C.</span>
+</span><span id="__span-5-25"><a id="__codelineno-5-25" name="__codelineno-5-25" href="#__codelineno-5-25"></a>    <span class="c1"># A more complex device would list all pins here, e.g., &quot;SCL&quot;: board.SCL, &quot;SDA&quot;: board.SDA.</span>
+</span><span id="__span-5-26"><a id="__codelineno-5-26" name="__codelineno-5-26" href="#__codelineno-5-26"></a>    <span class="s2">&quot;ai_guidance&quot;</span><span class="p">:</span> <span class="s2">&quot;This sensor is a simple environmental sensor and does not require pre-positioning by a robotic arm.&quot;</span><span class="p">,</span>
+</span><span id="__span-5-27"><a id="__codelineno-5-27" name="__codelineno-5-27" href="#__codelineno-5-27"></a><span class="p">}</span>
+</span><span id="__span-5-28"><a id="__codelineno-5-28" name="__codelineno-5-28" href="#__codelineno-5-28"></a>
+</span><span id="__span-5-29"><a id="__codelineno-5-29" name="__codelineno-5-29" href="#__codelineno-5-29"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-5-30"><a id="__codelineno-5-30" name="__codelineno-5-30" href="#__codelineno-5-30"></a><span class="c1"># 2. ASSEMBLY SECTION</span>
+</span><span id="__span-5-31"><a id="__codelineno-5-31" name="__codelineno-5-31" href="#__codelineno-5-31"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-5-32"><a id="__codelineno-5-32" name="__codelineno-5-32" href="#__codelineno-5-32"></a>
+</span><span id="__span-5-33"><a id="__codelineno-5-33" name="__codelineno-5-33" href="#__codelineno-5-33"></a><span class="c1"># This is our custom telemetry callback function.</span>
+</span><span id="__span-5-34"><a id="__codelineno-5-34" name="__codelineno-5-34" href="#__codelineno-5-34"></a><span class="c1"># Its purpose is to define WHAT data to send periodically.</span>
+</span><span id="__span-5-35"><a id="__codelineno-5-35" name="__codelineno-5-35" href="#__codelineno-5-35"></a><span class="k">def</span><span class="w"> </span><span class="nf">send_aht20_telemetry</span><span class="p">(</span><span class="n">machine</span><span class="p">):</span>
+</span><span id="__span-5-36"><a id="__codelineno-5-36" name="__codelineno-5-36" href="#__codelineno-5-36"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Callback function to generate and send the AHT20&#39;s telemetry.&quot;&quot;&quot;</span>
+</span><span id="__span-5-37"><a id="__codelineno-5-37" name="__codelineno-5-37" href="#__codelineno-5-37"></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="__span-5-38"><a id="__codelineno-5-38" name="__codelineno-5-38" href="#__codelineno-5-38"></a>        <span class="n">temp</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="__span-5-39"><a id="__codelineno-5-39" name="__codelineno-5-39" href="#__codelineno-5-39"></a>        <span class="n">humidity</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">relative_humidity</span>
+</span><span id="__span-5-40"><a id="__codelineno-5-40" name="__codelineno-5-40" href="#__codelineno-5-40"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Telemetry: Temp=</span><span class="si">{</span><span class="n">temp</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">C, Humidity=</span><span class="si">{</span><span class="n">humidity</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+</span><span id="__span-5-41"><a id="__codelineno-5-41" name="__codelineno-5-41" href="#__codelineno-5-41"></a>
+</span><span id="__span-5-42"><a id="__codelineno-5-42" name="__codelineno-5-42" href="#__codelineno-5-42"></a>        <span class="n">telemetry_message</span> <span class="o">=</span> <span class="n">Message</span><span class="o">.</span><span class="n">create_message</span><span class="p">(</span>
+</span><span id="__span-5-43"><a id="__codelineno-5-43" name="__codelineno-5-43" href="#__codelineno-5-43"></a>            <span class="n">subsystem_name</span><span class="o">=</span><span class="n">machine</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+</span><span id="__span-5-44"><a id="__codelineno-5-44" name="__codelineno-5-44" href="#__codelineno-5-44"></a>            <span class="n">status</span><span class="o">=</span><span class="s2">&quot;TELEMETRY&quot;</span><span class="p">,</span>
+</span><span id="__span-5-45"><a id="__codelineno-5-45" name="__codelineno-5-45" href="#__codelineno-5-45"></a>            <span class="n">payload</span><span class="o">=</span><span class="p">{</span>
+</span><span id="__span-5-46"><a id="__codelineno-5-46" name="__codelineno-5-46" href="#__codelineno-5-46"></a>                <span class="s2">&quot;metadata&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-5-47"><a id="__codelineno-5-47" name="__codelineno-5-47" href="#__codelineno-5-47"></a>                    <span class="s2">&quot;data_type&quot;</span><span class="p">:</span> <span class="s2">&quot;environmental_reading&quot;</span><span class="p">,</span>
+</span><span id="__span-5-48"><a id="__codelineno-5-48" name="__codelineno-5-48" href="#__codelineno-5-48"></a>                    <span class="s2">&quot;units&quot;</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="s2">&quot;celsius&quot;</span><span class="p">,</span> <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="s2">&quot;percent_relative&quot;</span><span class="p">}</span>
+</span><span id="__span-5-49"><a id="__codelineno-5-49" name="__codelineno-5-49" href="#__codelineno-5-49"></a>                <span class="p">},</span>
+</span><span id="__span-5-50"><a id="__codelineno-5-50" name="__codelineno-5-50" href="#__codelineno-5-50"></a>                <span class="s2">&quot;data&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-5-51"><a id="__codelineno-5-51" name="__codelineno-5-51" href="#__codelineno-5-51"></a>                    <span class="s2">&quot;temperature&quot;</span><span class="p">:</span> <span class="n">temp</span><span class="p">,</span>
+</span><span id="__span-5-52"><a id="__codelineno-5-52" name="__codelineno-5-52" href="#__codelineno-5-52"></a>                    <span class="s2">&quot;humidity&quot;</span><span class="p">:</span> <span class="n">humidity</span>
+</span><span id="__span-5-53"><a id="__codelineno-5-53" name="__codelineno-5-53" href="#__codelineno-5-53"></a>                <span class="p">}</span>
+</span><span id="__span-5-54"><a id="__codelineno-5-54" name="__codelineno-5-54" href="#__codelineno-5-54"></a>            <span class="p">}</span>
+</span><span id="__span-5-55"><a id="__codelineno-5-55" name="__codelineno-5-55" href="#__codelineno-5-55"></a>        <span class="p">)</span>
+</span><span id="__span-5-56"><a id="__codelineno-5-56" name="__codelineno-5-56" href="#__codelineno-5-56"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">postman</span><span class="o">.</span><span class="n">send</span><span class="p">(</span><span class="n">telemetry_message</span><span class="o">.</span><span class="n">serialize</span><span class="p">())</span>
+</span><span id="__span-5-57"><a id="__codelineno-5-57" name="__codelineno-5-57" href="#__codelineno-5-57"></a>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+</span><span id="__span-5-58"><a id="__codelineno-5-58" name="__codelineno-5-58" href="#__codelineno-5-58"></a>        <span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to send AHT20 telemetry: </span><span class="si">{</span><span class="n">e</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</span><span id="__span-5-59"><a id="__codelineno-5-59" name="__codelineno-5-59" href="#__codelineno-5-59"></a>
+</span><span id="__span-5-60"><a id="__codelineno-5-60" name="__codelineno-5-60" href="#__codelineno-5-60"></a>
+</span><span id="__span-5-61"><a id="__codelineno-5-61" name="__codelineno-5-61" href="#__codelineno-5-61"></a><span class="c1"># This function builds the instrument-specific status dictionary for the get_info command.</span>
+</span><span id="__span-5-62"><a id="__codelineno-5-62" name="__codelineno-5-62" href="#__codelineno-5-62"></a><span class="k">def</span><span class="w"> </span><span class="nf">build_aht20_status</span><span class="p">(</span><span class="n">machine</span><span class="p">):</span>
+</span><span id="__span-5-63"><a id="__codelineno-5-63" name="__codelineno-5-63" href="#__codelineno-5-63"></a><span class="w">    </span><span class="sd">&quot;&quot;&quot;Builds the instrument-specific status dictionary for the get_info command.&quot;&quot;&quot;</span>
+</span><span id="__span-5-64"><a id="__codelineno-5-64" name="__codelineno-5-64" href="#__codelineno-5-64"></a>    <span class="k">try</span><span class="p">:</span>
+</span><span id="__span-5-65"><a id="__codelineno-5-65" name="__codelineno-5-65" href="#__codelineno-5-65"></a>        <span class="n">temp</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">temperature</span>
+</span><span id="__span-5-66"><a id="__codelineno-5-66" name="__codelineno-5-66" href="#__codelineno-5-66"></a>        <span class="n">humidity</span> <span class="o">=</span> <span class="n">machine</span><span class="o">.</span><span class="n">sensor</span><span class="o">.</span><span class="n">relative_humidity</span>
+</span><span id="__span-5-67"><a id="__codelineno-5-67" name="__codelineno-5-67" href="#__codelineno-5-67"></a>        <span class="k">return</span> <span class="p">{</span>
+</span><span id="__span-5-68"><a id="__codelineno-5-68" name="__codelineno-5-68" href="#__codelineno-5-68"></a>            <span class="s2">&quot;sensor_initialized&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span>
+</span><span id="__span-5-69"><a id="__codelineno-5-69" name="__codelineno-5-69" href="#__codelineno-5-69"></a>            <span class="s2">&quot;current_temperature_c&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span>
+</span><span id="__span-5-70"><a id="__codelineno-5-70" name="__codelineno-5-70" href="#__codelineno-5-70"></a>            <span class="s2">&quot;current_humidity_pct&quot;</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">humidity</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</span><span id="__span-5-71"><a id="__codelineno-5-71" name="__codelineno-5-71" href="#__codelineno-5-71"></a>        <span class="p">}</span>
+</span><span id="__span-5-72"><a id="__codelineno-5-72" name="__codelineno-5-72" href="#__codelineno-5-72"></a>    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+</span><span id="__span-5-73"><a id="__codelineno-5-73" name="__codelineno-5-73" href="#__codelineno-5-73"></a>        <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;sensor_initialized&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;status_error&quot;</span><span class="p">:</span> <span class="s2">&quot;Sensor not readable&quot;</span><span class="p">}</span>
+</span><span id="__span-5-74"><a id="__codelineno-5-74" name="__codelineno-5-74" href="#__codelineno-5-74"></a>
+</span><span id="__span-5-75"><a id="__codelineno-5-75" name="__codelineno-5-75" href="#__codelineno-5-75"></a>
+</span><span id="__span-5-76"><a id="__codelineno-5-76" name="__codelineno-5-76" href="#__codelineno-5-76"></a><span class="c1"># --- Machine Instantiation ---</span>
+</span><span id="__span-5-77"><a id="__codelineno-5-77" name="__codelineno-5-77" href="#__codelineno-5-77"></a><span class="n">machine</span> <span class="o">=</span> <span class="n">StateMachine</span><span class="p">(</span>
+</span><span id="__span-5-78"><a id="__codelineno-5-78" name="__codelineno-5-78" href="#__codelineno-5-78"></a>    <span class="n">name</span><span class="o">=</span><span class="n">SUBSYSTEM_NAME</span><span class="p">,</span>
+</span><span id="__span-5-79"><a id="__codelineno-5-79" name="__codelineno-5-79" href="#__codelineno-5-79"></a>    <span class="n">version</span><span class="o">=</span><span class="n">SUBSYSTEM_VERSION</span><span class="p">,</span>
+</span><span id="__span-5-80"><a id="__codelineno-5-80" name="__codelineno-5-80" href="#__codelineno-5-80"></a>    <span class="n">config</span><span class="o">=</span><span class="n">SUBSYSTEM_CONFIG</span><span class="p">,</span>
+</span><span id="__span-5-81"><a id="__codelineno-5-81" name="__codelineno-5-81" href="#__codelineno-5-81"></a>    <span class="n">init_state</span><span class="o">=</span><span class="n">SUBSYSTEM_INIT_STATE</span><span class="p">,</span>
+</span><span id="__span-5-82"><a id="__codelineno-5-82" name="__codelineno-5-82" href="#__codelineno-5-82"></a>    <span class="n">status_callback</span><span class="o">=</span><span class="n">build_aht20_status</span> <span class="c1"># Pass the custom status builder</span>
+</span><span id="__span-5-83"><a id="__codelineno-5-83" name="__codelineno-5-83" href="#__codelineno-5-83"></a><span class="p">)</span>
+</span><span id="__span-5-84"><a id="__codelineno-5-84" name="__codelineno-5-84" href="#__codelineno-5-84"></a>
+</span><span id="__span-5-85"><a id="__codelineno-5-85" name="__codelineno-5-85" href="#__codelineno-5-85"></a><span class="c1"># --- Attach Communication Channel (Postman) ---</span>
+</span><span id="__span-5-86"><a id="__codelineno-5-86" name="__codelineno-5-86" href="#__codelineno-5-86"></a><span class="n">postman</span> <span class="o">=</span> <span class="n">CircuitPythonPostman</span><span class="p">(</span><span class="n">params</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;protocol&quot;</span><span class="p">:</span> <span class="s2">&quot;serial_cp&quot;</span><span class="p">})</span>
+</span><span id="__span-5-87"><a id="__codelineno-5-87" name="__codelineno-5-87" href="#__codelineno-5-87"></a><span class="n">postman</span><span class="o">.</span><span class="n">open_channel</span><span class="p">()</span>
+</span><span id="__span-5-88"><a id="__codelineno-5-88" name="__codelineno-5-88" href="#__codelineno-5-88"></a><span class="n">machine</span><span class="o">.</span><span class="n">postman</span> <span class="o">=</span> <span class="n">postman</span>
+</span><span id="__span-5-89"><a id="__codelineno-5-89" name="__codelineno-5-89" href="#__codelineno-5-89"></a>
+</span><span id="__span-5-90"><a id="__codelineno-5-90" name="__codelineno-5-90" href="#__codelineno-5-90"></a><span class="c1"># --- Add all the states the machine can be in ---</span>
+</span><span id="__span-5-91"><a id="__codelineno-5-91" name="__codelineno-5-91" href="#__codelineno-5-91"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_state</span><span class="p">(</span><span class="n">states</span><span class="o">.</span><span class="n">Initialize</span><span class="p">())</span> <span class="c1"># Our custom state</span>
+</span><span id="__span-5-92"><a id="__codelineno-5-92" name="__codelineno-5-92" href="#__codelineno-5-92"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_state</span><span class="p">(</span><span class="n">GenericIdle</span><span class="p">(</span><span class="n">telemetry_callback</span><span class="o">=</span><span class="n">send_aht20_telemetry</span><span class="p">))</span> <span class="c1"># The common idle state</span>
+</span><span id="__span-5-93"><a id="__codelineno-5-93" name="__codelineno-5-93" href="#__codelineno-5-93"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_state</span><span class="p">(</span><span class="n">GenericError</span><span class="p">())</span> <span class="c1"># The common error state</span>
+</span><span id="__span-5-94"><a id="__codelineno-5-94" name="__codelineno-5-94" href="#__codelineno-5-94"></a>
+</span><span id="__span-5-95"><a id="__codelineno-5-95" name="__codelineno-5-95" href="#__codelineno-5-95"></a><span class="c1"># --- Define the machine&#39;s command interface ---</span>
+</span><span id="__span-5-96"><a id="__codelineno-5-96" name="__codelineno-5-96" href="#__codelineno-5-96"></a><span class="n">register_common_commands</span><span class="p">(</span><span class="n">machine</span><span class="p">)</span> <span class="c1"># Adds &#39;ping&#39;, &#39;help&#39;, &#39;set_time&#39;, &#39;get_info&#39;</span>
+</span><span id="__span-5-97"><a id="__codelineno-5-97" name="__codelineno-5-97" href="#__codelineno-5-97"></a>
+</span><span id="__span-5-98"><a id="__codelineno-5-98" name="__codelineno-5-98" href="#__codelineno-5-98"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_command</span><span class="p">(</span><span class="s2">&quot;read_now&quot;</span><span class="p">,</span> <span class="n">handle_read_now</span><span class="p">,</span> <span class="p">{</span>
+</span><span id="__span-5-99"><a id="__codelineno-5-99" name="__codelineno-5-99" href="#__codelineno-5-99"></a>    <span class="s2">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Immediately reads the sensor and returns the values.&quot;</span><span class="p">,</span>
+</span><span id="__span-5-100"><a id="__codelineno-5-100" name="__codelineno-5-100" href="#__codelineno-5-100"></a>    <span class="s2">&quot;args&quot;</span><span class="p">:</span> <span class="p">[],</span>
+</span><span id="__span-5-101"><a id="__codelineno-5-101" name="__codelineno-5-101" href="#__codelineno-5-101"></a>    <span class="s2">&quot;ai_enabled&quot;</span><span class="p">:</span> <span class="kc">True</span> <span class="c1"># Expose this command to the AI agent</span>
+</span><span id="__span-5-102"><a id="__codelineno-5-102" name="__codelineno-5-102" href="#__codelineno-5-102"></a><span class="p">})</span>
+</span><span id="__span-5-103"><a id="__codelineno-5-103" name="__codelineno-5-103" href="#__codelineno-5-103"></a>
+</span><span id="__span-5-104"><a id="__codelineno-5-104" name="__codelineno-5-104" href="#__codelineno-5-104"></a><span class="c1"># --- Add machine-wide flags and settings (Dynamic Runtime Variables) ---</span>
+</span><span id="__span-5-105"><a id="__codelineno-5-105" name="__codelineno-5-105" href="#__codelineno-5-105"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_flag</span><span class="p">(</span><span class="s1">&#39;error_message&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">)</span>
+</span><span id="__span-5-106"><a id="__codelineno-5-106" name="__codelineno-5-106" href="#__codelineno-5-106"></a><span class="n">machine</span><span class="o">.</span><span class="n">add_flag</span><span class="p">(</span><span class="s1">&#39;telemetry_interval&#39;</span><span class="p">,</span> <span class="mf">10.0</span><span class="p">)</span> <span class="c1"># Send telemetry every 10 seconds</span>
+</span></code></pre></div>
+<h3 id="step-4-the-main-entrypoint-codepy">Step 4: The Main Entrypoint (<code>code.py</code>)</h3>
+<p>The <code>code.py</code> file is the first thing your microcontroller runs. We need to tell it to import and run our new <code>aht20_sensor</code> machine.</p>
+<ol>
+<li>Open <code>firmware/common/code.py</code>.</li>
+<li>Change <code>SUBSYSTEM</code> to <code>aht20_sensor</code>.</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-6-1"><a id="__codelineno-6-1" name="__codelineno-6-1" href="#__codelineno-6-1"></a><span class="c1"># firmware/common/code.py</span>
+</span><span id="__span-6-2"><a id="__codelineno-6-2" name="__codelineno-6-2" href="#__codelineno-6-2"></a><span class="c1">#type: ignore</span>
+</span><span id="__span-6-3"><a id="__codelineno-6-3" name="__codelineno-6-3" href="#__codelineno-6-3"></a><span class="kn">from</span><span class="w"> </span><span class="nn">firmware.aht20_sensor</span><span class="w"> </span><span class="kn">import</span> <span class="n">machine</span> <span class="c1"># --&gt; Point to the new machine</span>
+</span><span id="__span-6-4"><a id="__codelineno-6-4" name="__codelineno-6-4" href="#__codelineno-6-4"></a><span class="kn">from</span><span class="w"> </span><span class="nn">time</span><span class="w"> </span><span class="kn">import</span> <span class="n">sleep</span>
+</span><span id="__span-6-5"><a id="__codelineno-6-5" name="__codelineno-6-5" href="#__codelineno-6-5"></a>
+</span><span id="__span-6-6"><a id="__codelineno-6-6" name="__codelineno-6-6" href="#__codelineno-6-6"></a><span class="n">machine</span><span class="o">.</span><span class="n">log</span><span class="o">.</span><span class="n">setLevel</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span> <span class="c1"># Set to DEBUG for testing</span>
+</span><span id="__span-6-7"><a id="__codelineno-6-7" name="__codelineno-6-7" href="#__codelineno-6-7"></a><span class="n">machine</span><span class="o">.</span><span class="n">run</span><span class="p">()</span>
+</span><span id="__span-6-8"><a id="__codelineno-6-8" name="__codelineno-6-8" href="#__codelineno-6-8"></a><span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+</span><span id="__span-6-9"><a id="__codelineno-6-9" name="__codelineno-6-9" href="#__codelineno-6-9"></a>    <span class="n">machine</span><span class="o">.</span><span class="n">update</span><span class="p">()</span>
+</span><span id="__span-6-10"><a id="__codelineno-6-10" name="__codelineno-6-10" href="#__codelineno-6-10"></a>    <span class="n">sleep</span><span class="p">(</span><span class="mf">0.005</span><span class="p">)</span>
+</span></code></pre></div>
+<h3 id="step-5-update-the-host-firmware-database">Step 5: Update the Host Firmware Database</h3>
+<p>Your host application needs to know how to identify your new device by its VID/PID pair.</p>
+<ol>
+<li>Open <code>host/firmware_db.py</code>.</li>
+<li>Add a new entry for your device using the VID/PID defined in <code>boot.py</code>.</li>
+</ol>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-7-1"><a id="__codelineno-7-1" name="__codelineno-7-1" href="#__codelineno-7-1"></a><span class="c1"># host/firmware_db.py</span>
+</span><span id="__span-7-2"><a id="__codelineno-7-2" name="__codelineno-7-2" href="#__codelineno-7-2"></a><span class="c1"># ... (existing content) ...</span>
+</span><span id="__span-7-3"><a id="__codelineno-7-3" name="__codelineno-7-3" href="#__codelineno-7-3"></a>
+</span><span id="__span-7-4"><a id="__codelineno-7-4" name="__codelineno-7-4" href="#__codelineno-7-4"></a><span class="n">FIRMWARE_DATABASE</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-7-5"><a id="__codelineno-7-5" name="__codelineno-7-5" href="#__codelineno-7-5"></a>    <span class="mi">808</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-7-6"><a id="__codelineno-7-6" name="__codelineno-7-6" href="#__codelineno-7-6"></a>        <span class="s1">&#39;manufacturer&#39;</span><span class="p">:</span> <span class="s1">&#39;Brockport Original Builds&#39;</span><span class="p">,</span>
+</span><span id="__span-7-7"><a id="__codelineno-7-7" name="__codelineno-7-7" href="#__codelineno-7-7"></a>        <span class="s1">&#39;products&#39;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-7-8"><a id="__codelineno-7-8" name="__codelineno-7-8" href="#__codelineno-7-8"></a>            <span class="mi">810</span><span class="p">:</span> <span class="s1">&#39;Fake Device&#39;</span><span class="p">,</span>
+</span><span id="__span-7-9"><a id="__codelineno-7-9" name="__codelineno-7-9" href="#__codelineno-7-9"></a>            <span class="mi">811</span><span class="p">:</span> <span class="s1">&#39;Stirplate Manager&#39;</span><span class="p">,</span> 
+</span><span id="__span-7-10"><a id="__codelineno-7-10" name="__codelineno-7-10" href="#__codelineno-7-10"></a>            <span class="mi">812</span><span class="p">:</span> <span class="s1">&#39;Sidekick&#39;</span><span class="p">,</span>
+</span><span id="__span-7-11"><a id="__codelineno-7-11" name="__codelineno-7-11" href="#__codelineno-7-11"></a>            <span class="mi">813</span><span class="p">:</span> <span class="s1">&#39;Colorimeter&#39;</span>
+</span><span id="__span-7-12"><a id="__codelineno-7-12" name="__codelineno-7-12" href="#__codelineno-7-12"></a>        <span class="p">}</span>
+</span><span id="__span-7-13"><a id="__codelineno-7-13" name="__codelineno-7-13" href="#__codelineno-7-13"></a>    <span class="p">},</span>
+</span><span id="__span-7-14"><a id="__codelineno-7-14" name="__codelineno-7-14" href="#__codelineno-7-14"></a>    <span class="c1"># --- NEW ENTRY FOR AHT20 SENSOR ---</span>
+</span><span id="__span-7-15"><a id="__codelineno-7-15" name="__codelineno-7-15" href="#__codelineno-7-15"></a>    <span class="mi">101</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-7-16"><a id="__codelineno-7-16" name="__codelineno-7-16" href="#__codelineno-7-16"></a>        <span class="s1">&#39;manufacturer&#39;</span><span class="p">:</span> <span class="s1">&#39;Your Lab Name&#39;</span><span class="p">,</span> <span class="c1"># Replace with your lab&#39;s name</span>
+</span><span id="__span-7-17"><a id="__codelineno-7-17" name="__codelineno-7-17" href="#__codelineno-7-17"></a>        <span class="s1">&#39;products&#39;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-7-18"><a id="__codelineno-7-18" name="__codelineno-7-18" href="#__codelineno-7-18"></a>            <span class="mi">101</span><span class="p">:</span> <span class="s1">&#39;AHT20 Environmental Sensor&#39;</span><span class="p">,</span>
+</span><span id="__span-7-19"><a id="__codelineno-7-19" name="__codelineno-7-19" href="#__codelineno-7-19"></a>        <span class="p">}</span>
+</span><span id="__span-7-20"><a id="__codelineno-7-20" name="__codelineno-7-20" href="#__codelineno-7-20"></a>    <span class="p">}</span>
+</span><span id="__span-7-21"><a id="__codelineno-7-21" name="__codelineno-7-21" href="#__codelineno-7-21"></a><span class="p">}</span>
+</span><span id="__span-7-22"><a id="__codelineno-7-22" name="__codelineno-7-22" href="#__codelineno-7-22"></a>
+</span><span id="__span-7-23"><a id="__codelineno-7-23" name="__codelineno-7-23" href="#__codelineno-7-23"></a><span class="c1"># ... (rest of file is the same) ...</span>
+</span></code></pre></div>
+<h3 id="step-6-install-circuitpython-libraries-on-device">Step 6: Install CircuitPython Libraries on Device</h3>
+<p>Your new instrument firmware will likely depend on specific hardware libraries that are not part of the core Talos-SDL codebase.</p>
+<ol>
+<li><strong>Identify Dependencies:</strong> Check the <code>import</code> statements in your new <code>states.py</code> file. For the AHT20, this is <code>import adafruit_ahtx0</code>.</li>
+<li><strong>Download the Library:</strong> Find the required library on the <a href="https://circuitpython.org/libraries">CircuitPython Libraries Bundle</a> website.</li>
+<li><strong>Install on Device:</strong> Connect your microcontroller. It will appear as a USB drive named <code>CIRCUITPY</code>. Copy the required library file or folder (e.g., <code>adafruit_ahtx0.mpy</code>) into the <code>lib/</code> directory on the <code>CIRCUITPY</code> drive.</li>
+</ol>
+<h3 id="step-7-deploy-the-firmware">Step 7: Deploy the Firmware</h3>
+<p>Use the <code>deploy.py</code> script to copy the Talos-SDL framework code and your new firmware onto the microcontroller.</p>
+<ol>
+<li><strong>Connect the Device:</strong> Ensure your <code>CIRCUITPY</code> drive is visible on your computer. Note its drive letter (e.g., <code>D:</code> on Windows) or path.</li>
+<li>
+<p><strong>Run the Script:</strong> Open a terminal in the project's root directory and run the deployment script, providing the drive and your firmware's folder name.</p>
+<p><div class="language-bash highlight"><pre><span></span><code><span id="__span-8-1"><a id="__codelineno-8-1" name="__codelineno-8-1" href="#__codelineno-8-1"></a><span class="c1"># Example for deploying the aht20_sensor to drive D:</span>
+</span><span id="__span-8-2"><a id="__codelineno-8-2" name="__codelineno-8-2" href="#__codelineno-8-2"></a>python<span class="w"> </span>deploy.py<span class="w"> </span>D:<span class="w"> </span>aht20_sensor
+</span></code></pre></div>
+3.  <strong>What <code>deploy.py</code> Does:</strong> This script will automatically:
+*   Copy the <code>shared_lib/</code> and <code>communicate/</code> folders to the device.
+*   Copy your specific <code>firmware/aht20_sensor/</code> folder.
+*   Customize the <code>boot.py</code> file on the device with the correct VID/PID (<code>101</code>/<code>101</code>).
+*   Customize the <code>code.py</code> file to import and run your new <code>aht20_sensor</code> <code>machine</code>.</p>
+</li>
+</ol>
+<h3 id="step-8-verification-with-the-control-panel">Step 8: Verification with the Control Panel</h3>
+<p>The final step is to run the host application and verify that it can communicate with your new instrument.</p>
+<ol>
+<li><strong>Launch the Host:</strong> Run the control panel from the project root.
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-9-1"><a id="__codelineno-9-1" name="__codelineno-9-1" href="#__codelineno-9-1"></a>python<span class="w"> </span>host/control_panel.py
+</span></code></pre></div></li>
+<li><strong>Check for Success:</strong><ul>
+<li>Click <strong>"Scan &amp; Connect All"</strong>.</li>
+<li>Your new device, <code>AHT20 Environmental Sensor</code>, should appear in the device dropdown list.</li>
+<li>Select the device. After a moment, its status panel should update.</li>
+<li>Periodic <code>TELEMETRY</code> messages from your device should begin appearing in the Raw Message Log, showing temperature and humidity.</li>
+<li>The "Available Commands" panel should populate with <code>ping</code>, <code>help</code>, <code>set_time</code>, <code>get_info</code>, and your new <code>read_now</code> command.</li>
+<li><strong>Test a custom command (<code>read_now</code>):</strong><ul>
+<li>Double-click <code>read_now</code> in the "Available Commands" tree to populate the command entries.</li>
+<li>The arguments field should be empty, as <code>read_now</code> takes no arguments.</li>
+<li>Click <strong>"Send"</strong>.</li>
+<li>You should see a green <code>RECV_DATA_RESPONSE</code> message in the log containing the current temperature and humidity, confirming the command was executed successfully.</li>
+</ul>
+</li>
+<li><strong>Test a common command (<code>get_info</code>):</strong><ul>
+<li>Double-click <code>get_info</code>.</li>
+<li>Click <strong>"Send"</strong>.</li>
+<li>You should receive a <code>RECV_DATA_RESPONSE</code> with detailed status information, including <code>sensor_initialized</code>, <code>current_temperature_c</code>, and <code>current_humidity_pct</code> from your <code>build_aht20_status</code> callback.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<hr />
+<p>Congratulations! You have successfully designed, generated, deployed, and tested a new instrument for the Talos-SDL ecosystem. You can now follow this pattern to integrate any new hardware into the system.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

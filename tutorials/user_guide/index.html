@@ -14,7 +14,7 @@
         <link rel="prev" href="../..">
       
       
-        <link rel="next" href="../your_first_firmware/">
+        <link rel="next" href="../building_your_first_firmware/">
       
       
         
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#talos-sdl-user-guide" class="md-skip">
+        <a href="#talos-sdl-user-guide-operating-your-self-driving-laboratory" class="md-skip">
           Skip to content
         </a>
       
@@ -290,6 +290,24 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
         
   
@@ -307,6 +325,219 @@
 
       </a>
       
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-is-talos-sdl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. What is Talos-SDL?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-initial-setup-getting-your-lab-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Initial Setup: Getting Your Lab Ready
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Initial Setup: Getting Your Lab Ready">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-system-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. System Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-software-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Software Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-laboratory-cockpit-ai-driven-interaction-hostaichatpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Laboratory Cockpit: AI-Driven Interaction (host/ai/chat.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. The Laboratory Cockpit: AI-Driven Interaction (host/ai/chat.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-launching-the-cockpit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Launching the Cockpit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-understanding-modes-run-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Understanding Modes: /run and /data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-key-slash-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Key Slash Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-interacting-in-run-mode-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Interacting in /run Mode (Controller)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-interacting-in-data-mode-analyst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Interacting in /data Mode (Analyst)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-manual-control-the-graphical-user-interface-hostcontrol_panelpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Manual Control: The Graphical User Interface (host/control_panel.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Manual Control: The Graphical User Interface (host/control_panel.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-launching-the-control-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Launching the Control Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Basic Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-understanding-your-data-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Understanding Your Data &amp; Logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-troubleshooting-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Troubleshooting Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-next-steps-beyond-basic-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Next Steps: Beyond Basic Operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -319,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../your_first_firmware/" class="md-nav__link">
+      <a href="../building_your_first_firmware/" class="md-nav__link">
         
   
   
@@ -1118,6 +1349,208 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-what-is-talos-sdl" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. What is Talos-SDL?
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-initial-setup-getting-your-lab-ready" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Initial Setup: Getting Your Lab Ready
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. Initial Setup: Getting Your Lab Ready">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#21-system-prerequisites" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.1. System Prerequisites
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#22-software-installation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2.2. Software Installation
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-laboratory-cockpit-ai-driven-interaction-hostaichatpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Laboratory Cockpit: AI-Driven Interaction (host/ai/chat.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="3. The Laboratory Cockpit: AI-Driven Interaction (host/ai/chat.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#31-launching-the-cockpit" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.1. Launching the Cockpit
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#32-understanding-modes-run-and-data" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.2. Understanding Modes: /run and /data
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#33-key-slash-commands" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.3. Key Slash Commands
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#34-interacting-in-run-mode-controller" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.4. Interacting in /run Mode (Controller)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#35-interacting-in-data-mode-analyst" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3.5. Interacting in /data Mode (Analyst)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-manual-control-the-graphical-user-interface-hostcontrol_panelpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Manual Control: The Graphical User Interface (host/control_panel.py)
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. Manual Control: The Graphical User Interface (host/control_panel.py)">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#41-launching-the-control-panel" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.1. Launching the Control Panel
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#42-basic-operations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4.2. Basic Operations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-understanding-your-data-logs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Understanding Your Data &amp; Logs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-troubleshooting-common-issues" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Troubleshooting Common Issues
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-next-steps-beyond-basic-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. Next Steps: Beyond Basic Operation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1133,8 +1566,182 @@
 
 
 
-<h1 id="talos-sdl-user-guide">Talos-sdl user guide</h1>
-<p>to be written</p>
+<h1 id="talos-sdl-user-guide-operating-your-self-driving-laboratory">Talos-SDL User Guide: Operating Your Self-Driving Laboratory</h1>
+<p>Welcome to the Talos-SDL User Guide! This document will walk you through the process of setting up, interacting with, and interpreting results from your agentic self-driving laboratory. Whether you're executing predefined experiments or exploring new chemistry with AI assistance, this guide provides the essential knowledge to operate Talos-SDL effectively and safely.</p>
+<h2 id="1-what-is-talos-sdl">1. What is Talos-SDL?</h2>
+<p>Talos-SDL is an open-source framework that transforms your laboratory into an autonomous experimentation platform. At its core, it's designed to be your <strong>collaborative digital peer</strong>, enabling you to:</p>
+<ul>
+<li><strong>Interact Naturally:</strong> Use everyday language to instruct your lab equipment.</li>
+<li><strong>Automate Complex Workflows:</strong> Translate high-level scientific goals into precise robotic actions.</li>
+<li><strong>Ensure Reproducibility:</strong> Automatically log every action and measurement.</li>
+<li><strong>Maintain Safety:</strong> Keep humans in control with explicit approval steps.</li>
+</ul>
+<p>For a deeper understanding of the project's foundational ideas, please refer to the <a href="../../concepts/core_philosophy_features/">Core Philosophy &amp; Features documentation</a>.</p>
+<h2 id="2-initial-setup-getting-your-lab-ready">2. Initial Setup: Getting Your Lab Ready</h2>
+<p>Before you can command your instruments, ensure your environment is set up correctly.</p>
+<h3 id="21-system-prerequisites">2.1. System Prerequisites</h3>
+<p>You'll need:</p>
+<ul>
+<li>A PC (Windows, macOS, Linux) running <strong>Python 3.8+</strong>.</li>
+<li>An <strong>API key</strong> for a supported Large Language Model (LLM) provider (e.g., Google Gemini, OpenAI, Anthropic). This key should be set as an environment variable (e.g., <code>GOOGLE_API_KEY</code> for Gemini).</li>
+<li>One or more <strong>CircuitPython-compatible microcontrollers</strong> (e.g., Raspberry Pi Pico, Adafruit Feather) connected to your physical instruments (e.g., Sidekick robotic arm, Colorimeter). These devices should appear as a USB drive named <code>CIRCUITPY</code>.</li>
+<li>The necessary <strong>CircuitPython libraries</strong> installed on your microcontrollers for your specific hardware (e.g., <code>adafruit_as7341.mpy</code> for the Colorimeter).</li>
+</ul>
+<h3 id="22-software-installation">2.2. Software Installation</h3>
+<ol>
+<li>
+<p><strong>Clone the Repository:</strong> If you haven't already, get the Talos-SDL code:
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a>git<span class="w"> </span>clone<span class="w"> </span>https://github.com/bobthechemist/talos-sdl.git
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a><span class="nb">cd</span><span class="w"> </span>talos-sdl
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Install Python Dependencies:</strong>
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</span></code></pre></div></p>
+</li>
+<li>
+<p><strong>Deploy Firmware to Your Instruments:</strong> Each physical instrument needs to run its specific Talos-SDL firmware.</p>
+<ul>
+<li>Connect your CircuitPython device. It should appear as a USB drive named <code>CIRCUITPY</code>.</li>
+<li>Use the <code>deploy.py</code> script. For example, to deploy the Sidekick robotic arm firmware to drive <code>D:</code> (Windows) or <code>/Volumes/CIRCUITPY</code> (macOS/Linux):
+    <div class="language-bash highlight"><pre><span></span><code><span id="__span-2-1"><a id="__codelineno-2-1" name="__codelineno-2-1" href="#__codelineno-2-1"></a>python<span class="w"> </span>deploy.py<span class="w"> </span>D:<span class="w"> </span>sidekick
+</span></code></pre></div>
+    <em>(Replace <code>D:</code> with your device's actual drive letter/path, and <code>sidekick</code> with the name of the firmware folder in <code>firmware/</code>.)</em></li>
+<li><strong>Important:</strong> After deploying firmware, always <strong>power cycle</strong> your microcontroller (unplug and replug it) for changes to <code>boot.py</code> and <code>code.py</code> to take effect.</li>
+</ul>
+</li>
+</ol>
+<p>For a detailed walkthrough on setting up your environment and deploying firmware, see the <a href="../building_your_first_firmware/">Building Your First Instrument Firmware tutorial</a>.</p>
+<h2 id="3-the-laboratory-cockpit-ai-driven-interaction-hostaichatpy">3. The Laboratory Cockpit: AI-Driven Interaction (<code>host/ai/chat.py</code>)</h2>
+<p>The primary way to interact with your Talos-SDL system is through the AI-driven conversational loop, which we call the "Laboratory Cockpit."</p>
+<h3 id="31-launching-the-cockpit">3.1. Launching the Cockpit</h3>
+<p>From the project's root directory, run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>host/ai/chat.py
+</span></code></pre></div>
+<p>Upon launching, the system will:
+1.  <strong>Load the World Model:</strong> It will attempt to load <code>job_world.json</code> if present, or fall back to a default configuration. This model tells the AI what reagents are in which pumps, the maximum well volume, etc.
+2.  <strong>Scan and Connect Devices:</strong> It will automatically scan your system for connected Talos-SDL instruments (Sidekick, Colorimeter, Stirplate Manager, etc.) and establish communication.
+3.  <strong>Initialize AI Agents:</strong> It sets up the AI models for both "run" (control) and "data" (analysis) modes.</p>
+<h3 id="32-understanding-modes-run-and-data">3.2. Understanding Modes: <code>/run</code> and <code>/data</code></h3>
+<p>The Laboratory Cockpit operates in two distinct modes to ensure clarity and safety:</p>
+<ul>
+<li><strong><code>/run</code> (Laboratory Controller):</strong> This is the <strong>default mode</strong> for controlling your physical hardware.<ul>
+<li>In this mode, the AI's primary goal is to generate <strong>JSON plans</strong> consisting of hardware commands.</li>
+<li><strong>Human confirmation is required</strong> by default before any physical actions are taken.</li>
+<li>The prompt indicator will be <code>[RUN 🔒] &gt;</code> (or <code>[RUN ⚡] &gt;</code> if confirmation is off).</li>
+</ul>
+</li>
+<li><strong><code>/data</code> (Data Analyst):</strong> This mode is for analyzing and interpreting experimental data.<ul>
+<li>In this mode, the AI <strong>cannot</strong> issue any hardware commands.</li>
+<li>It responds in natural language and can perform summaries, identify trends, and answer questions about datasets.</li>
+<li>The prompt indicator will be <code>[DATA ✅] &gt;</code>.</li>
+</ul>
+</li>
+</ul>
+<h3 id="33-key-slash-commands">3.3. Key Slash Commands</h3>
+<p>Type a slash (<code>/</code>) followed by the command to interact with the cockpit:</p>
+<ul>
+<li><strong><code>/help</code></strong>: Displays a list of all available slash commands and their descriptions.</li>
+<li><strong><code>/run [your goal here]</code></strong>: Switches to "run" (Controller) mode. If you provide a goal after <code>/run</code>, the AI will immediately try to generate a plan for it.</li>
+<li><strong><code>/data [your query here]</code></strong>: Switches to "data" (Analyst) mode. If you provide a query after <code>/data</code>, the AI will try to answer it using available context and datasets.</li>
+<li><strong><code>/confirm [on|off]</code></strong>: Toggles the human confirmation step before executing an AI-generated plan.<ul>
+<li><code>on</code>: (Default) You must type <code>y</code> or <code>run</code> to approve a plan. <code>[RUN 🔒] &gt;</code></li>
+<li><code>off</code>: Plans execute immediately after AI generation. <code>[RUN ⚡] &gt;</code></li>
+<li><strong>Warning:</strong> Use <code>/confirm off</code> with extreme caution, especially with physical hardware.</li>
+</ul>
+</li>
+<li><strong><code>/datasets</code></strong>: Lists all recorded datasets from the current session. Each dataset is assigned a unique <code>ds_YYYYMMDD_HHMMSS</code> ID.</li>
+<li><strong><code>/log</code></strong>: Saves the current conversational session and all executed plans/results to a JSON log file in the <code>temp/</code> directory.</li>
+<li><strong><code>/clear</code></strong>: Clears the AI's short-term conversational history for the <em>current mode</em>.</li>
+<li><strong><code>/quit</code></strong> (or <code>/exit</code>): Shuts down the Laboratory Cockpit, disconnects devices, and saves the session log.</li>
+</ul>
+<h3 id="34-interacting-in-run-mode-controller">3.4. Interacting in <code>/run</code> Mode (Controller)</h3>
+<ol>
+<li><strong>State Your Goal:</strong> Type your desired scientific action in natural language (e.g., "Home the robotic arm," "Add 100 µL of acetic acid to well A1," "Measure the spectrum of well H5").</li>
+<li><strong>AI Proposes a Plan:</strong> The AI will process your request and propose a JSON-formatted plan consisting of one or more device commands.
+    <div class="language-json highlight"><pre><span></span><code><span id="__span-4-1"><a id="__codelineno-4-1" name="__codelineno-4-1" href="#__codelineno-4-1"></a><span class="p">{</span>
+</span><span id="__span-4-2"><a id="__codelineno-4-2" name="__codelineno-4-2" href="#__codelineno-4-2"></a><span class="w">  </span><span class="nt">&quot;plan&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
+</span><span id="__span-4-3"><a id="__codelineno-4-3" name="__codelineno-4-3" href="#__codelineno-4-3"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sidekick&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;to_well&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;well&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;pump&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;p1&quot;</span><span class="p">}},</span>
+</span><span id="__span-4-4"><a id="__codelineno-4-4" name="__codelineno-4-4" href="#__codelineno-4-4"></a><span class="w">    </span><span class="p">{</span><span class="nt">&quot;device&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;sidekick&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;command&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;dispense&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;args&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;pump&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;p1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;vol&quot;</span><span class="p">:</span><span class="w"> </span><span class="mf">100.0</span><span class="p">}}</span>
+</span><span id="__span-4-5"><a id="__codelineno-4-5" name="__codelineno-4-5" href="#__codelineno-4-5"></a><span class="w">  </span><span class="p">]</span>
+</span><span id="__span-4-6"><a id="__codelineno-4-6" name="__codelineno-4-6" href="#__codelineno-4-6"></a><span class="p">}</span>
+</span></code></pre></div></li>
+<li><strong>Human-in-the-Loop Approval:</strong><ul>
+<li>If <code>/confirm</code> is <code>on</code> (default), you will be prompted to review the plan.</li>
+<li>You can type <code>y</code> or <code>run</code> to approve, <code>n</code> or <code>reject</code> to cancel, <code>del &lt;#&gt;</code> to remove a specific step, or <code>edit &lt;#&gt;</code> to modify the arguments of a step.</li>
+<li>This is your critical safety gate. Always review plans carefully!</li>
+</ul>
+</li>
+<li><strong>Execution &amp; Feedback:</strong><ul>
+<li>Once approved, the system executes each command in the plan sequentially.</li>
+<li>You'll see real-time updates on the command's status (<code>[OK]</code>, <code>[PROBLEM]</code>).</li>
+<li>If a command returns data (e.g., a colorimeter measurement), the system will perform a <strong>one-shot analysis</strong>: a brief, natural-language summary of the data relevant to your goal, without switching modes.</li>
+</ul>
+</li>
+</ol>
+<h3 id="35-interacting-in-data-mode-analyst">3.5. Interacting in <code>/data</code> Mode (Analyst)</h3>
+<ol>
+<li><strong>Switch to Data Mode:</strong> Type <code>/data</code> to switch modes. The prompt will change to <code>[DATA ✅] &gt;</code>.</li>
+<li><strong>Query Data:</strong> Ask questions about your experiments or recorded datasets.<ul>
+<li>"What did I dispense into well A1?"</li>
+<li>"Can you summarize the spectrum from dataset <code>ds_20260220_124909</code>?"</li>
+<li>"Compare the yellow channel intensity between <code>ds_12345</code> and <code>ds_67890</code>."</li>
+</ul>
+</li>
+<li><strong>Dataset Content Injection:</strong> If your query includes a valid dataset ID (e.g., <code>ds_YYYYMMDD_HHMMSS</code>), the system will automatically load the raw JSON content of that dataset into the AI's context before processing your question.</li>
+<li><strong>AI Analysis:</strong> The AI will use its analytical capabilities and the provided data to answer your questions in natural language.</li>
+</ol>
+<h2 id="4-manual-control-the-graphical-user-interface-hostcontrol_panelpy">4. Manual Control: The Graphical User Interface (<code>host/control_panel.py</code>)</h2>
+<p>For direct, manual control of individual devices without AI assistance, you can use the graphical user interface.</p>
+<h3 id="41-launching-the-control-panel">4.1. Launching the Control Panel</h3>
+<p>From the project's root directory, run:</p>
+<div class="language-bash highlight"><pre><span></span><code><span id="__span-5-1"><a id="__codelineno-5-1" name="__codelineno-5-1" href="#__codelineno-5-1"></a>python<span class="w"> </span>host/control_panel.py
+</span></code></pre></div>
+<h3 id="42-basic-operations">4.2. Basic Operations</h3>
+<ul>
+<li><strong>Scan &amp; Connect All:</strong> This button will scan for all connected Talos-SDL devices and establish serial connections.</li>
+<li><strong>Select Device:</strong> Use the dropdown menu to choose which connected instrument you want to control.</li>
+<li><strong>Device Status Panel:</strong> Displays firmware name, version, and the latest telemetry data from the selected device.</li>
+<li><strong>Available Commands:</strong> A list of all commands supported by the <em>selected device</em>. Double-click a command to populate the "Function" and "Arguments" fields below.</li>
+<li><strong>Send Command:</strong><ul>
+<li>Enter the <code>Function</code> name (e.g., <code>set_speed</code>).</li>
+<li>Enter <code>Arguments</code> as a JSON dictionary (e.g., <code>{"motor_id": 1, "speed": 0.5}</code>). Remember that string values <strong>must</strong> be in double quotes (e.g., <code>pump:"p1"</code>).</li>
+<li>Click <strong>Send</strong> to dispatch the command.</li>
+</ul>
+</li>
+<li><strong>Raw Message Log:</strong> Displays all incoming and outgoing messages in real-time, color-coded by type (Sent, Received Success, Problem, Telemetry, etc.).</li>
+</ul>
+<h2 id="5-understanding-your-data-logs">5. Understanding Your Data &amp; Logs</h2>
+<p>Talos-SDL is designed for "Documentation-While-Doing."</p>
+<ul>
+<li><strong>Session Logs (<code>temp/chat-session-*.json</code>):</strong> Every interaction in the Laboratory Cockpit is recorded in a timestamped JSON file. This log includes your prompts, the AI's plans, human approvals, execution results, and any generated one-shot analyses. These are invaluable for reviewing experiments and debugging.</li>
+<li><strong>Registered Datasets (<code>temp/data/ds_*.json</code>, <code>temp/data/ds_*.csv</code>):</strong> Any <code>DATA_RESPONSE</code> message from an instrument (e.g., a spectral measurement) is automatically saved to disk by the <code>Registry</code>. It stores both a raw JSON file and, if possible, a CSV version for easy analysis. Each dataset gets a unique ID (<code>ds_YYYYMMDD_HHMMSS</code>). You can list these with the <code>/datasets</code> command in the cockpit.</li>
+</ul>
+<h2 id="6-troubleshooting-common-issues">6. Troubleshooting Common Issues</h2>
+<ul>
+<li><strong>"Device not found" or connection errors:</strong><ul>
+<li>Ensure your microcontroller is plugged in and recognized by your computer.</li>
+<li>Verify the correct firmware is deployed and the microcontroller has been power cycled.</li>
+<li>Check your <code>host/firmware_db.py</code> to ensure your device's VID/PID pair is registered.</li>
+<li>Confirm no other application is using the serial port (e.g., another instance of <code>chat.py</code> or a serial monitor).</li>
+</ul>
+</li>
+<li><strong>AI produces "PROBLEM" messages:</strong><ul>
+<li>Carefully read the error message in the payload. It often indicates invalid arguments, a device in the wrong state (e.g., not homed), or a hardware fault.</li>
+<li>Check the relevant <a href="../../design_protocols/firmware_design_protocol/">Design Protocols</a> and <a href="../../api/firmware/">API Reference</a> for the device's commands to ensure correct usage.</li>
+</ul>
+</li>
+<li><strong>Mermaid diagrams not rendering:</strong> Ensure you have <code>pymdown-extensions</code> installed (<code>pip install pymdown-extensions</code>) and your <code>mkdocs.yml</code> is configured correctly for <code>pymdownx.superfences</code>.</li>
+</ul>
+<h2 id="7-next-steps-beyond-basic-operation">7. Next Steps: Beyond Basic Operation</h2>
+<p>Once you're comfortable operating the lab, you might want to:</p>
+<ul>
+<li><strong>Build Your Own Instruments:</strong> Learn how to integrate new custom hardware into the Talos-SDL ecosystem using the <a href="../building_your_first_firmware/">Building Your First Instrument Firmware tutorial</a> and the <a href="../../developer_guides/socratic_design_method/">Socratic Design Method developer guide</a>.</li>
+<li><strong>Explore Advanced AI Capabilities:</strong> Dive into the <code>host/ai/</code> codebase to understand how the AI agent learns and plans.</li>
+<li><strong>Contribute to Talos-SDL:</strong> Check out the <a href="../../developer_guides/coding_style_guide/">developer guides</a> and <a href="../../design_protocols/firmware_design_protocol/">design protocols</a> if you're interested in extending the framework itself.</li>
+</ul>
+<p>Happy experimenting!</p>
 
 
 
