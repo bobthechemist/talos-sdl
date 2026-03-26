@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/tutorials/user_guide/">
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/firmware_design_protocol/">
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../communication_protocol/">
       
       
-        <link rel="next" href="../your_first_firmware/">
+        <link rel="next" href="../host_design_protocol/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>End-User Guide - Talos-SDL Documentation</title>
+        <title>Firmware Design Protocol - Talos-SDL Documentation</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#talos-sdl-user-guide" class="md-skip">
+        <a href="#talos-sdl-firmware-design-protocol-version-10" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              End-User Guide
+              Firmware Design Protocol
             
           </span>
         </div>
@@ -224,8 +224,6 @@
       
   
   
-    
-  
   
   
     
@@ -238,11 +236,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -263,7 +263,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
@@ -278,19 +278,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -306,7 +297,6 @@
   
 
       </a>
-      
     </li>
   
 
@@ -319,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../your_first_firmware/" class="md-nav__link">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -613,8 +603,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -625,13 +617,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -652,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -670,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../communication_protocol/" class="md-nav__link">
         
   
   
@@ -695,10 +685,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../../design_protocols/firmware_design_protocol/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -714,6 +731,126 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#guiding-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guiding Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#__init__py-configuration-and-assembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__.py: Configuration and Assembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__.py: Configuration and Assembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-1-the-declarative-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: The Declarative Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-2-the-assembly-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: The Assembly Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statespy-runtime-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        states.py: Runtime Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlerspy-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handlers.py: Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -726,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../host_design_protocol/" class="md-nav__link">
         
   
   
@@ -754,7 +891,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../messaging_protocol/" class="md-nav__link">
         
   
   
@@ -833,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -861,7 +998,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -889,7 +1026,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -1118,6 +1255,114 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#guiding-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Guiding Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#file-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        File Structure
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="File Structure">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#__init__py-configuration-and-assembly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        __init__.py: Configuration and Assembly
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="__init__.py: Configuration and Assembly">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Structure
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-1-the-declarative-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 1: The Declarative Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#part-2-the-assembly-section" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Part 2: The Assembly Section
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#statespy-runtime-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        states.py: Runtime Behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#handlerspy-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        handlers.py: Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -1133,8 +1378,124 @@
 
 
 
-<h1 id="talos-sdl-user-guide">Talos-sdl user guide</h1>
-<p>to be written</p>
+<h1 id="talos-sdl-firmware-design-protocol-version-10"><strong>Talos-SDL:</strong> Firmware Design Protocol (Version 1.0)</h1>
+<p>This protocol establishes the <em>Standard Instrument Blueprint</em> - a standard way to develop firmware for all instruments within the Self-Driven Laboratory framework. Adherence to this protocol is mandatory to ensure that all firmware is consistent, robust, maintainable, and interoperable with the host application.</p>
+<h2 id="guiding-principles">Guiding Principles</h2>
+<ul>
+<li><strong>Modularity:</strong> Each instrument's firmware is a self-contained module.</li>
+<li><strong>Separation of Concerns:</strong> A strict separation is maintained between configuration (data), state logic (behavior), and command handling (interface).</li>
+<li><strong>Declarative Assembly:</strong> Instruments are assembled using a clear, declarative pattern, minimizing boilerplate code and reducing errors.</li>
+<li><strong>Non-Blocking Logic:</strong> Firmware must remain responsive at all times. Long-running operations must be handled by states, not by blocking code within command handlers.</li>
+</ul>
+<h2 id="file-structure">File Structure</h2>
+<p>All firmware for a specific instrument MUST reside in its own directory (e.g., <code>firmware/sidekick/</code>). This directory MUST contain the following three Python files:</p>
+<ul>
+<li><code>__init__.py</code>: The master assembly file. Contains all static configuration and the instantiation of the <code>StateMachine</code>.</li>
+<li><code>states.py</code>: Contains all custom <code>State</code> classes that define the instrument's unique runtime behaviors.</li>
+<li><code>handlers.py</code>: Contains all handler functions that execute the logic for custom commands received from the host.</li>
+</ul>
+<hr />
+<h3 id="__init__py-configuration-and-assembly"><code>__init__.py</code>: Configuration and Assembly</h3>
+<p><strong>Guiding Principle:</strong> The <code>__init__.py</code> file follows a <strong>Declarative Assembly</strong> pattern. Its primary role is to define <em>what</em> the instrument is through a set of standardized variables and then assemble the <code>StateMachine</code> instance from those declarations.</p>
+<h4 id="structure">Structure</h4>
+<p>The file is divided into two main parts:</p>
+<ol>
+<li><strong>The Declarative Section:</strong> A set of top-level variables that a developer configures.</li>
+<li><strong>The Assembly Section:</strong> Standardized, boilerplate code that builds the machine from the declarations.</li>
+</ol>
+<h4 id="part-1-the-declarative-section">Part 1: The Declarative Section</h4>
+<p>This section MUST be at the top of the file. It defines the instrument's identity and static configuration.</p>
+<ol>
+<li>
+<p><strong>Top-Level Imports:</strong> Any modules required by the configuration dictionary (most commonly <code>import board</code>) MUST be placed at the very top of the file.</p>
+</li>
+<li>
+<p><strong>Identity Variables:</strong> The following three variables MUST be defined:</p>
+<ul>
+<li><code>SUBSYSTEM_NAME</code> (String): The unique, uppercase name for this instrument (e.g., <code>"SIDEKICK"</code>).</li>
+<li><code>SUBSYSTEM_VERSION</code> (String): The semantic version of the firmware (e.g., <code>"1.1.0"</code> for Major.Minor.Patch).</li>
+<li><code>SUBSYSTEM_INIT_STATE</code> (String): The name of the first state the machine should enter (almost always <code>"Initialize"</code>).</li>
+</ul>
+</li>
+<li>
+<p><strong>Configuration Dictionary:</strong></p>
+<ul>
+<li>A dictionary named <code>SUBSYSTEM_CONFIG</code> MUST be defined.</li>
+<li>This dictionary MUST contain all static, boot-time parameters, such as pin definitions, physical constants, motor settings, and safe operational limits. It is the single source of truth for the instrument's hardware data.</li>
+</ul>
+</li>
+</ol>
+<p><strong>Example Declarative Section:</strong>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="c1"># firmware/sidekick/__init__.py</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a><span class="kn">import</span><span class="w"> </span><span class="nn">board</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a><span class="c1"># 1. DECLARATIVE SECTION</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a><span class="c1"># ============================================================================</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a><span class="n">SUBSYSTEM_NAME</span> <span class="o">=</span> <span class="s2">&quot;SIDEKICK&quot;</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a><span class="n">SUBSYSTEM_VERSION</span> <span class="o">=</span> <span class="s2">&quot;1.1.0&quot;</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a><span class="n">SUBSYSTEM_INIT_STATE</span> <span class="o">=</span> <span class="s2">&quot;Initialize&quot;</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a><span class="n">SUBSYSTEM_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="s2">&quot;pins&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a>        <span class="s2">&quot;motor1_step&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">GP1</span><span class="p">,</span> 
+</span><span id="__span-0-15"><a id="__codelineno-0-15" name="__codelineno-0-15" href="#__codelineno-0-15"></a>        <span class="s2">&quot;user_button&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">GP20</span><span class="p">,</span>
+</span><span id="__span-0-16"><a id="__codelineno-0-16" name="__codelineno-0-16" href="#__codelineno-0-16"></a>        <span class="c1"># ... all other pin definitions</span>
+</span><span id="__span-0-17"><a id="__codelineno-0-17" name="__codelineno-0-17" href="#__codelineno-0-17"></a>    <span class="p">},</span>
+</span><span id="__span-0-18"><a id="__codelineno-0-18" name="__codelineno-0-18" href="#__codelineno-0-18"></a>    <span class="s2">&quot;motor_settings&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-19"><a id="__codelineno-0-19" name="__codelineno-0-19" href="#__codelineno-0-19"></a>        <span class="s2">&quot;max_speed_sps&quot;</span><span class="p">:</span> <span class="mi">200</span><span class="p">,</span>
+</span><span id="__span-0-20"><a id="__codelineno-0-20" name="__codelineno-0-20" href="#__codelineno-0-20"></a>        <span class="c1"># ... all other motor settings</span>
+</span><span id="__span-0-21"><a id="__codelineno-0-21" name="__codelineno-0-21" href="#__codelineno-0-21"></a>    <span class="p">}</span>
+</span><span id="__span-0-22"><a id="__codelineno-0-22" name="__codelineno-0-22" href="#__codelineno-0-22"></a>    <span class="c1"># ... etc.</span>
+</span><span id="__span-0-23"><a id="__codelineno-0-23" name="__codelineno-0-23" href="#__codelineno-0-23"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<h4 id="part-2-the-assembly-section">Part 2: The Assembly Section</h4>
+<p>This section is largely standardized across all instruments.</p>
+<ol>
+<li>
+<p><strong>Callback Functions:</strong></p>
+<ul>
+<li><strong>Telemetry:</strong> A <code>send_telemetry(machine)</code> function SHOULD be defined to generate and send the instrument's periodic <code>TELEMETRY</code> message. This function is passed to the <code>GenericIdle</code> state.</li>
+<li><strong>Status Info:</strong> A <code>build_status(machine)</code> function MUST be defined. This function implements the "Computed Status" pattern. Its only job is to return a dictionary containing the public-facing status information (e.g., <code>{'homed': machine.flags.get('is_homed')}</code>). This function is passed to the <code>StateMachine</code> constructor.</li>
+</ul>
+</li>
+<li>
+<p><strong>Machine Instantiation:</strong></p>
+<ul>
+<li>The <code>StateMachine</code> instance MUST be created by passing the declarative variables and the <code>build_status</code> callback to its constructor.</li>
+</ul>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-1-1"><a id="__codelineno-1-1" name="__codelineno-1-1" href="#__codelineno-1-1"></a><span class="n">machine</span> <span class="o">=</span> <span class="n">StateMachine</span><span class="p">(</span>
+</span><span id="__span-1-2"><a id="__codelineno-1-2" name="__codelineno-1-2" href="#__codelineno-1-2"></a>    <span class="n">name</span><span class="o">=</span><span class="n">SUBSYSTEM_NAME</span><span class="p">,</span>
+</span><span id="__span-1-3"><a id="__codelineno-1-3" name="__codelineno-1-3" href="#__codelineno-1-3"></a>    <span class="n">version</span><span class="o">=</span><span class="n">SUBSYSTEM_VERSION</span><span class="p">,</span>
+</span><span id="__span-1-4"><a id="__codelineno-1-4" name="__codelineno-1-4" href="#__codelineno-1-4"></a>    <span class="n">config</span><span class="o">=</span><span class="n">SUBSYSTEM_CONFIG</span><span class="p">,</span>
+</span><span id="__span-1-5"><a id="__codelineno-1-5" name="__codelineno-1-5" href="#__codelineno-1-5"></a>    <span class="n">init_state</span><span class="o">=</span><span class="n">SUBSYSTEM_INIT_STATE</span><span class="p">,</span>
+</span><span id="__span-1-6"><a id="__codelineno-1-6" name="__codelineno-1-6" href="#__codelineno-1-6"></a>    <span class="n">status_callback</span><span class="o">=</span><span class="n">build_status</span>
+</span><span id="__span-1-7"><a id="__codelineno-1-7" name="__codelineno-1-7" href="#__codelineno-1-7"></a><span class="p">)</span>
+</span></code></pre></div>
+</li>
+<li>
+<p><strong>Component Attachment:</strong> The <code>Postman</code> communication channel is attached to the <code>machine</code>.</p>
+</li>
+<li>
+<p><strong>Adding States, Commands, and Flags:</strong></p>
+<ul>
+<li>All required states (both custom from <code>states.py</code> and common from <code>common_states.py</code>) are added using <code>machine.add_state()</code>.</li>
+<li>Common commands are registered with <code>register_common_commands(machine)</code>.</li>
+<li>All custom commands are added using <code>machine.add_command()</code>.</li>
+<li>All required internal, dynamic flags are initialized using <code>machine.add_flag()</code>. This includes the internal flags that the <code>build_status</code> function relies on (e.g., <code>machine.add_flag('is_homed', False)</code>).</li>
+</ul>
+</li>
+</ol>
+<hr />
+<h3 id="statespy-runtime-behavior"><code>states.py</code>: Runtime Behavior</h3>
+<p><strong>(TODO: This section will be expanded with detailed protocols for state design.)</strong></p>
+<p><strong>Guiding Principle:</strong> States encapsulate <strong>behavior and logic</strong>. They are responsible for managing long-running, non-blocking operations and updating the machine's internal flags to reflect its current condition.</p>
+<hr />
+<h3 id="handlerspy-command-interface"><code>handlers.py</code>: Command Interface</h3>
+<p><strong>(TODO: This section will be expanded with detailed protocols for handler design.)</strong></p>
+<p>TODO: Consider adding "returns": {"data_type", "units", "schema"} to the handler definition.</p>
+<p><strong>Guiding Principle:</strong> Handlers are the <strong>entry point</strong> for external commands. They MUST be non-blocking. Their primary role is to validate incoming arguments, set flags for the state machine to act upon, and trigger state transitions.</p>
 
 
 

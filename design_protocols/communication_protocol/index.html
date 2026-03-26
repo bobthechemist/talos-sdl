@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/communication_protocol/">
       
+      
+        <link rel="prev" href="../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/">
+      
+      
+        <link rel="next" href="../firmware_design_protocol/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>Communication Protocol - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#talos-sdl-communication-protocol-and-the-postman-pattern" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Communication Protocol
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -387,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+      <a href="../../concepts/architecture_overview/" class="md-nav__link">
         
   
   
@@ -415,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../../concepts/core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -504,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+      <a href="../../developer_guides/coding_style_guide/" class="md-nav__link">
         
   
   
@@ -532,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../../developer_guides/socratic_design_method/" class="md-nav__link">
         
   
   
@@ -560,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+      <a href="../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -592,8 +603,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -604,13 +617,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -631,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -646,10 +657,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication Protocol
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -665,6 +703,131 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-postman-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Postman Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-postman-interface-shared_libcommunicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Postman Interface (shared_lib/communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Implementations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Implementations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serialpostman-communicateserial_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SerialPostman (communicate/serial_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuitpythonpostman-communicatecircuitpython_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPythonPostman (communicate/circuitpython_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dummypostman-communicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DummyPostman (communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Message Format Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#circuitpython-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPython Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -677,7 +840,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -705,7 +868,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../host_design_protocol/" class="md-nav__link">
         
   
   
@@ -733,7 +896,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../messaging_protocol/" class="md-nav__link">
         
   
   
@@ -812,7 +975,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -840,7 +1003,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +1031,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1128,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1156,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1184,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1212,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1257,121 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-postman-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Postman Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-postman-interface-shared_libcommunicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Postman Interface (shared_lib/communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Implementations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Implementations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serialpostman-communicateserial_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SerialPostman (communicate/serial_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuitpythonpostman-communicatecircuitpython_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPythonPostman (communicate/circuitpython_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dummypostman-communicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DummyPostman (communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Message Format Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#circuitpython-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPython Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1384,62 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="talos-sdl-communication-protocol-and-the-postman-pattern">Talos-SDL: Communication Protocol and the Postman Pattern</h1>
+<p>This document outlines the standardized communication protocol and the <strong>Postman Pattern</strong> employed in the Talos-SDL framework. This architecture is crucial for abstracting the complexities of inter-process communication between the host computer (running Python) and the microcontroller-based instruments (running CircuitPython).</p>
+<h2 id="introduction">Introduction</h2>
+<p>The Talos-SDL framework operates across diverse computing environments: a powerful host computer for orchestration and AI, and resource-constrained microcontrollers for direct hardware control. These environments utilize different underlying communication mechanisms (e.g., <code>pyserial</code> on the host, <code>usb_cdc.data</code> on CircuitPython). To ensure flexible, testable, and robust message exchange, an abstraction layer is necessary to decouple high-level application logic from low-level transport specifics.</p>
+<h2 id="the-postman-pattern">The Postman Pattern</h2>
+<p>The <strong>Postman Pattern</strong> defines a clear, abstract interface for sending and receiving messages over any communication channel. In this pattern:</p>
+<ul>
+<li><strong>The Postman:</strong> Handles the low-level mechanics of message transport. This includes actions like opening and closing a serial port, encoding/decoding data, writing bytes, and reading incoming lines. Each specific communication medium (e.g., standard serial, CircuitPython's USB CDC data channel, or a dummy channel for testing) will have its own concrete <code>Postman</code> implementation.</li>
+<li><strong>The Clients (Secretary/DeviceManager):</strong> High-level components like the <code>DeviceManager</code> on the host or the <code>StateMachine</code> (acting as a "Secretary" on the device) <em>use</em> an instance of a <code>Postman</code> to communicate. These clients interact with the standardized <code>Postman</code> interface and do not need to know the intricate details of how the message is physically transmitted or received. This separation ensures that changing the communication hardware or protocol does not impact the core control logic.</li>
+</ul>
+<h2 id="core-postman-interface-shared_libcommunicatepostmanpy">Core <code>Postman</code> Interface (<code>shared_lib/communicate/postman.py</code>)</h2>
+<p>The <code>Postman</code> base class defines the essential methods for any communication channel:</p>
+<ul>
+<li><code>open_channel()</code>: Establishes the communication link.</li>
+<li><code>close_channel()</code>: Terminates the communication link.</li>
+<li><code>send(value)</code>: Transmits a message (<code>value</code> is typically a serialized JSON string).</li>
+<li><code>receive()</code>: Attempts to read an incoming message.</li>
+</ul>
+<p>Subclasses of <code>Postman</code> are required to implement the private methods (<code>_open_channel()</code>, <code>_close_channel()</code>, <code>_send(value)</code>, <code>_receive()</code>) that provide the concrete, channel-specific logic.</p>
+<h2 id="concrete-implementations">Concrete Implementations</h2>
+<h3 id="serialpostman-communicateserial_postmanpy"><code>SerialPostman</code> (<code>communicate/serial_postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This implementation is used exclusively on the <strong>Host computer</strong>. It facilitates communication with physical CircuitPython devices by interacting with standard serial ports (e.g., COM ports on Windows, <code>/dev/ttyACM*</code> on Linux).</li>
+<li><strong>Technology:</strong> Leverages the <code>pyserial</code> library for serial communication.</li>
+</ul>
+<h3 id="circuitpythonpostman-communicatecircuitpython_postmanpy"><code>CircuitPythonPostman</code> (<code>communicate/circuitpython_postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This implementation resides on the <strong>CircuitPython microcontroller</strong>. Its role is to enable the device to send messages back to the Host computer using CircuitPython's native USB CDC (Communications Device Class) data channel.</li>
+<li><strong>Technology:</strong> Utilizes the CircuitPython-specific <code>usb_cdc.data</code> object, which represents a separate serial stream distinct from the REPL console. This data channel is typically enabled in <code>boot.py</code>.</li>
+</ul>
+<h3 id="dummypostman-communicatepostmanpy"><code>DummyPostman</code> (<code>communicate/postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This is a mock implementation used primarily for <strong>unit testing and offline development</strong>. It simulates sending and receiving messages without requiring any physical hardware or active serial connections.</li>
+<li><strong>Functionality:</strong> Can be configured with "canned responses" to mimic device behavior, allowing for isolated testing of Host-side or Device-side logic.</li>
+</ul>
+<h2 id="message-format-standard">Message Format Standard</h2>
+<p>All messages exchanged via any <code>Postman</code> implementation <strong>must</strong> adhere to the standardized JSON message structure defined in the <a href="../messaging_protocol/">Standard Messaging Protocol</a>. This ensures that messages are unambiguous, machine-readable, and consistently processed by both host and device.</p>
+<h2 id="circuitpython-compatibility-notes">CircuitPython Compatibility Notes</h2>
+<p>You will observe <code>type: ignore</code> comments within <code>communicate/postman.py</code> and <code>communicate/circuitpython_postman.py</code>. These are used to inform type checkers (like MyPy) to ignore specific imports or type issues that arise because <code>usb_cdc</code> is a module only available in the CircuitPython environment. This allows the host-side Python code to be type-checked without errors, even though it references CircuitPython-specific modules indirectly.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1476,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

@@ -5,47 +5,43 @@
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/AI%20assistant%20instrument%20design/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260206/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/ai_style_guide/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260217/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/architecture/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260219/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/colorimeter_log/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/calibration-260206/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_colorimeter/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/chem1-260220-report/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_design_guidelines/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/chem1-260220/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_howto/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/colorimeter_dev_log/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_sidekick/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/dev_log/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_sidekick_ai_revised/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/docs-260303/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/socratic_stirplate_manager/</loc>
-         <lastmod>2026-03-26</lastmod>
-    </url>
-    <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/your_first_machine/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/stirplate-260305/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
@@ -65,59 +61,63 @@
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/communication/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/concepts/architecture_overview/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/firmware/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/concepts/core_philosophy_features/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/host/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/communication_protocol/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/messaging/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/firmware_design_protocol/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/acl-260206/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/host_design_protocol/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/acl-260217/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/messaging_protocol/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/acl-260219/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/colorimeter_spec/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/calibration-260206/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/sidekick_spec/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/chem1-260220-report/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/stirplate_spec/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/chem1-260220/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/coding_style_guide/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/dev_log/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/socratic_design_method/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/docs-260303/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
-         <loc>https://bobthechemist.github.io/talos-sdl/journal/stirplate-260305/</loc>
+         <loc>https://bobthechemist.github.io/talos-sdl/tutorials/socratic_howto/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/tutorials/user_guide/</loc>
+         <lastmod>2026-03-26</lastmod>
+    </url>
+    <url>
+         <loc>https://bobthechemist.github.io/talos-sdl/tutorials/your_first_firmware/</loc>
          <lastmod>2026-03-26</lastmod>
     </url>
 </urlset>

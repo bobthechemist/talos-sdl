@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/colorimeter_spec/">
       
+      
+        <link rel="prev" href="../../messaging_protocol/">
+      
+      
+        <link rel="next" href="../sidekick_spec/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>Colorimeter - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#instrument-design-as7341-colorimeter-colorimeter" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Colorimeter
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -387,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+      <a href="../../../concepts/architecture_overview/" class="md-nav__link">
         
   
   
@@ -415,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../../../concepts/core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -504,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+      <a href="../../../developer_guides/coding_style_guide/" class="md-nav__link">
         
   
   
@@ -532,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../../../developer_guides/socratic_design_method/" class="md-nav__link">
         
   
   
@@ -560,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+      <a href="../../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -592,8 +603,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -604,13 +617,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -631,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -649,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../../communication_protocol/" class="md-nav__link">
         
   
   
@@ -677,7 +688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../../firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -705,7 +716,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../../host_design_protocol/" class="md-nav__link">
         
   
   
@@ -733,7 +744,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../../messaging_protocol/" class="md-nav__link">
         
   
   
@@ -758,6 +769,8 @@
                 
   
   
+    
+  
   
   
     
@@ -767,13 +780,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
@@ -794,7 +805,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -809,10 +820,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colorimeter
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -828,6 +866,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-instrument-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Instrument Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-hardware-configuration-as7431_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hardware Configuration (AS7431_CONFIG)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. States
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -840,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1196,60 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-instrument-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Instrument Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-hardware-configuration-as7431_config" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hardware Configuration (AS7431_CONFIG)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command interface
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. States
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1262,111 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="instrument-design-as7341-colorimeter-colorimeter">Instrument design: AS7341 Colorimeter (colorimeter)</h1>
+<h2 id="1-instrument-overview">1. Instrument Overview</h2>
+<ul>
+<li>Primary purpose: to measure light at a variety of wavelengths</li>
+<li>primary actions: read light channels, control background light, control gain</li>
+<li>periodic telemetry data:  send led status</li>
+<li>critical failure conditions: no communication with device</li>
+</ul>
+<h2 id="2-hardware-configuration-as7431_config">2. Hardware Configuration (<code>AS7431_CONFIG</code>)</h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">AS7341_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;pins&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="c1"># SCL and SDA pins</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;SCL&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">SCL</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;SDA&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">SDA</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>    <span class="p">}</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="c1"># Default gain setting for sensors</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="s2">&quot;default_gain&quot;</span><span class="p">:</span> <span class="mi">8</span><span class="p">,</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="c1"># Default current for LED source</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="s2">&quot;default_intensity&quot;</span><span class="p">:</span> <span class="mi">4</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="3-command-interface">3. Command interface</h2>
+<ul>
+<li>read<ul>
+<li>description: returns reading from a channel</li>
+<li>arguments: channel (color)</li>
+<li>success condition: Returns <code>SUCCESS</code> message with data</li>
+<li>guard conditions: None</li>
+</ul>
+</li>
+<li>read_all<ul>
+<li>description: returns an array of all channel readings</li>
+<li>arguments: none</li>
+<li>success condition: Returns <code>SUCCESS</code> message with data</li>
+<li>guard conditions: None</li>
+</ul>
+</li>
+<li>read_gain<ul>
+<li>description: reads the current gain setting</li>
+<li>arguments: none</li>
+<li>success condition: Returns <code>SUCCESS</code> message with gain value</li>
+<li>guard conditions: None</li>
+</ul>
+</li>
+<li>set_gain<ul>
+<li>description: reads the current gain setting</li>
+<li>arguments: new gain value select from [0.5 1 2 4 8 16 32 64 128 256 512]</li>
+<li>success condition: Returns <code>SUCCESS</code> message with gain value</li>
+<li>guard conditions: None</li>
+</ul>
+</li>
+<li>led<ul>
+<li>description: turns the source led on or off</li>
+<li>arguments: boolean </li>
+<li>success condition: Returns <code>SUCCESS</code> and current LED status</li>
+<li>guard conditions: None</li>
+</ul>
+</li>
+<li>led_intensity<ul>
+<li>description: adjusts the led intensity (default is 4)</li>
+<li>argumenst: intenger from 1 to 10</li>
+<li>success condition: Returns <code>SUCCESS</code> and current led intensity</li>
+</ul>
+</li>
+</ul>
+<h2 id="4-states">4. States</h2>
+<ul>
+<li>Initialize<ul>
+<li>purpose: establish I2C communication, set default gain, set default led_current</li>
+<li>entry actions: initialize sensor, set default values</li>
+<li>internal actions: none</li>
+<li>exit events:<ul>
+<li>success: no errors raised. Trigger transition to Idle</li>
+<li>failure: an exception is raised. Trigger error message and transition to Error</li>
+</ul>
+</li>
+<li>exit actions: none</li>
+</ul>
+</li>
+<li>Collecting<ul>
+<li>purpose: a placeholder state for data collection routines such as time series</li>
+<li>entry actions: to be determined</li>
+<li>internal actions: to be determined</li>
+<li>exit events: to be determined</li>
+<li>exit actions: to be determined</li>
+</ul>
+</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1403,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

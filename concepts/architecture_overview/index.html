@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/concepts/architecture_overview/">
       
+      
+        <link rel="prev" href="../../tutorials/your_first_firmware/">
+      
+      
+        <link rel="next" href="../core_philosophy_features/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>System Architecture Overview - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#system-architecture-overview" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              System Architecture Overview
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -330,8 +341,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -342,13 +355,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
           <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
@@ -369,7 +380,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
@@ -384,10 +395,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -403,6 +441,48 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scientific-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-flowchart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Flowchart
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -415,7 +495,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -504,7 +584,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+      <a href="../../developer_guides/coding_style_guide/" class="md-nav__link">
         
   
   
@@ -532,7 +612,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../../developer_guides/socratic_design_method/" class="md-nav__link">
         
   
   
@@ -560,7 +640,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+      <a href="../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -649,7 +729,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/communication_protocol/" class="md-nav__link">
         
   
   
@@ -677,7 +757,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -705,7 +785,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/host_design_protocol/" class="md-nav__link">
         
   
   
@@ -733,7 +813,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/messaging_protocol/" class="md-nav__link">
         
   
   
@@ -812,7 +892,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -840,7 +920,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +948,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1045,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1073,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1101,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1129,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1174,38 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#scientific-workflow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Scientific Workflow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#technical-flowchart" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Technical Flowchart
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1218,143 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="system-architecture-overview">System Architecture Overview</h1>
+<p>This document provides a high-level overview of the Talos-SDL framework's architecture, illustrating the interactions between the human operator, the AI agent, the host computer, and the physical instruments. It highlights both the scientific workflow and the underlying technical implementation across the digital and physical spaces.</p>
+<h2 id="scientific-workflow">Scientific Workflow</h2>
+<p>The scientific workflow within Talos-SDL is designed to keep the scientist in control while leveraging AI for autonomous experimentation. It follows a transparent, human-in-the-loop process.</p>
+<pre class="mermaid"><code>%%{init: {
+  'theme': 'forest',
+  'themeVariables': {
+    'edgeLabelBackground': '#eeeeee'
+  }
+} }%%
+graph TD
+    %% Styling (Forest theme provides defaults, but these classes refine them)
+    classDef human fill:#d4edda,stroke:#28a745,stroke-width:2px;
+    classDef ai fill:#cce5ff,stroke:#004085,stroke-width:2px;
+    classDef system fill:#f8f9fa,stroke:#383d41,stroke-width:2px;
+    classDef hardware fill:#fff3cd,stroke:#856404,stroke-width:2px;
+    classDef data fill:#d1ecf1,stroke:#0c5460,stroke-width:2px;
+
+    %% First Subgraph (Top)
+    subgraph Cognitive_World [Digital &amp; Cognitive Space]
+        User[👨‍🔬 Scientist / User]:::human
+        AI[🧠 AI Laboratory Agent]:::ai
+        Chat[💬 Chat Interface &lt;br/&gt; /run or /data mode]:::system
+    end
+
+    %% Second Subgraph (Bottom)
+    subgraph Physical_World [Hardware &amp; Execution Space]
+        Orchestrator[⚙️ Lab Orchestrator]:::system
+        Instruments[🔬 Physical Instruments]:::hardware
+        Data[📊 Digital Lab Notebook]:::data
+
+        %% Columnar Ranking
+        Orchestrator ~~~ Instruments ~~~ Data
+    end
+
+    %% Logic Flow
+    User -- "(1) Request" --&gt; Chat
+    Chat -- "(2) Context" --&gt; AI
+    AI -- "(3) Proposes Plan" --&gt; Chat
+    Chat -. "(4) Human Approval" .-&gt; User
+    Chat -- "(5) Validated Commands" --&gt; Orchestrator
+
+    %% Execution &amp; Feedback
+    Orchestrator == "(6) Physical Action" ==&gt; Instruments
+    Instruments -- "(7) Telemetry" --&gt; Orchestrator
+    Orchestrator -- "(8) Log Data" --&gt; Data
+    Orchestrator -- "(9) Feedback" --&gt; AI
+    AI -- "(10) Summary" --&gt; User</code></pre>
+<h2 id="technical-flowchart">Technical Flowchart</h2>
+<p>The technical architecture separates the host computer's Python-based orchestration from the microcontroller's CircuitPython-based firmware. Communication is standardized using JSON messages, facilitated by a dedicated communication layer.</p>
+<pre class="mermaid"><code>flowchart TB
+    %% Host Side
+    subgraph Host_Computer [Host Computer Python]
+        subgraph View [View / Interfaces]
+            GUI[Tkinter MainView]
+            REPL[AI chat.py REPL]
+            AI_Agent[LLM Manager]
+        end
+
+        subgraph Controller [Controller]
+            DM[DeviceManager]
+            Queue[(incoming_message_queue)]
+            Registry[Data Registry]
+        end
+
+        subgraph Model [Models]
+            Dev1[Device Model: Sidekick]
+            Dev2[Device Model: Colorimeter]
+            Plate[PlateManager State]
+        end
+
+        GUI &amp; REPL --&gt;|"(1) Send Command"| DM
+        REPL &lt;--&gt; AI_Agent
+        DM --&gt;|"(5) Receive Response"| Queue
+        Queue --&gt;|"(6) Update Digital Twin"| Dev1 &amp; Dev2
+        Queue --&gt;|"(6) Update"| Registry
+        Dev1 &amp; Dev2 -. "Reflect State" .- GUI
+    end
+
+    %% The Bridge
+    subgraph Comms [Communication Layer]
+        JSON[Standardized JSON Messages&lt;br/&gt;INSTRUCTION, DATA_RESPONSE, SUCCESS]
+    end
+
+    %% Device Side
+    subgraph Microcontrollers [Microcontrollers CircuitPython]
+        subgraph FW1 [Sidekick Firmware]
+            CP1[CircuitPythonPostman]
+            SM1{StateMachine}
+            Handlers1[handlers.py]
+            States1((states.py / Sequencer))
+        end
+
+        subgraph FW2 [Colorimeter Firmware]
+            CP2[CircuitPythonPostman]
+            SM2{StateMachine}
+        end
+    end
+
+    %% Connections
+    DM == "(2) Serial Tx" ==&gt; JSON
+    JSON == "(2) Serial Tx" ==&gt; CP1 &amp; CP2
+
+    CP1 &lt;--&gt;|"(3) Route"| SM1
+    SM1 --&gt;|"(3) Dispatch"| Handlers1
+    Handlers1 --&gt;|"(4) Execute"| States1
+    States1 --&gt;|"(4) Hardware Pulse"| Hardware1((Motors / Pumps))
+
+    %% Return Path
+    CP1 -.-&gt;|"(5) Serial Rx"| JSON
+    JSON -.-&gt;|"(5) Serial Rx"| DM
+
+    %% Styling
+    classDef mvc fill:#e6e6fa,stroke:#4b0082,stroke-width:2px;
+    classDef comms fill:#ffe4e1,stroke:#8b0000,stroke-width:2px,stroke-dasharray: 5 5;
+    classDef fw fill:#e0ffff,stroke:#008b8b,stroke-width:2px;
+
+    class GUI,REPL,AI_Agent,DM,Queue,Registry,Dev1,Dev2,Plate mvc;
+    class JSON comms;
+    class CP1,SM1,Handlers1,States1,CP2,SM2 fw;</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1391,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/developer_guides/coding_style_guide/">
       
+      
+        <link rel="prev" href="../../concepts/core_philosophy_features/">
+      
+      
+        <link rel="next" href="../socratic_design_method/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>Coding Style Guide - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#automated-labroatory-instrument-framework-alif-framework-style-guide" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Coding Style Guide
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -387,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+      <a href="../../concepts/architecture_overview/" class="md-nav__link">
         
   
   
@@ -415,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../../concepts/core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -447,8 +458,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -459,13 +472,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -486,7 +497,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -501,10 +512,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Style Guide
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -520,6 +558,136 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-unified-architecture-host-device-mvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Unified Architecture (Host-Device MVC)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-standard-firmware-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Standard Firmware Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-finite-state-machine-fsm-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Finite State Machine (FSM) Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-standardized-json-messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Standardized JSON Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Naming Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-separation-of-data-and-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Separation of Data and Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-postman-secretary-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The Postman &amp; Secretary Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-command-handlers-guard-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Command Handlers &amp; Guard Conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-state-sequencer-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. State Sequencer Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-ai-ready-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. AI-Ready Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -532,7 +700,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../socratic_design_method/" class="md-nav__link">
         
   
   
@@ -560,7 +728,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+      <a href="../ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -649,7 +817,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/communication_protocol/" class="md-nav__link">
         
   
   
@@ -677,7 +845,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -705,7 +873,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/host_design_protocol/" class="md-nav__link">
         
   
   
@@ -733,7 +901,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../../design_protocols/messaging_protocol/" class="md-nav__link">
         
   
   
@@ -812,7 +980,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -840,7 +1008,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +1036,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1133,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1161,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1189,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1217,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1262,126 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-unified-architecture-host-device-mvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Unified Architecture (Host-Device MVC)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-standard-firmware-directory-structure" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Standard Firmware Directory Structure
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-finite-state-machine-fsm-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Finite State Machine (FSM) Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-standardized-json-messaging" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Standardized JSON Messaging
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#5-naming-conventions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        5. Naming Conventions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#6-separation-of-data-and-logic" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        6. Separation of Data and Logic
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#7-the-postman-secretary-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        7. The Postman &amp; Secretary Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#8-command-handlers-guard-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        8. Command Handlers &amp; Guard Conditions
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#9-state-sequencer-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        9. State Sequencer Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#10-ai-ready-protocol" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        10. AI-Ready Protocol
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1394,76 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="automated-labroatory-instrument-framework-alif-framework-style-guide">Automated Labroatory Instrument Framework ALIF Framework Style Guide</h1>
+<p><em>aka: the sdl sandbox</em></p>
+<h3 id="1-unified-architecture-host-device-mvc">1. Unified Architecture (Host-Device MVC)</h3>
+<p>The system follows a strict <strong>Model-View-Controller (MVC)</strong> pattern on the Host and a <strong>Finite State Machine (FSM)</strong> pattern on the Device.
+*   <strong>Host Model:</strong> <code>Device</code> objects act as "Digital Twins" of hardware.
+*   <strong>Host Controller:</strong> The <code>DeviceManager</code> is the sole orchestrator. No script or UI may instantiate a private <code>Postman</code> or serial connection; all must route through the <code>DeviceManager</code>.
+*   <strong>Device:</strong> Microcontrollers must run CircuitPython and adhere to the state-machine-driven firmware structure.</p>
+<h3 id="2-standard-firmware-directory-structure">2. Standard Firmware Directory Structure</h3>
+<p>Every instrument firmware must be a self-contained module in the <code>firmware/</code> directory with three mandatory files:
+1.  <strong><code>__init__.py</code></strong>: Assembly and configuration (Declarative Section + Assembly Section).
+2.  <strong><code>states.py</code></strong>: Behavior logic (State classes).
+3.  <strong><code>handlers.py</code></strong>: Interface logic (Command functions).</p>
+<h3 id="3-finite-state-machine-fsm-logic">3. Finite State Machine (FSM) Logic</h3>
+<p>Instruments must be in exactly one state at a time. 
+*   <strong>States as Classes:</strong> Every state inherits from <code>State</code> and implements <code>enter()</code>, <code>update()</code>, and <code>exit()</code>.
+*   <strong>Non-Blocking update:</strong> The <code>update()</code> method must be non-blocking. Use <code>time.monotonic()</code> comparisons instead of <code>time.sleep()</code> for timed events to ensure the machine remains responsive to <code>listen_for_instructions()</code>.
+*   <strong>Initialization:</strong> Every machine must start in an <code>Initialize</code> state before transitioning to <code>Idle</code>.</p>
+<h3 id="4-standardized-json-messaging">4. Standardized JSON Messaging</h3>
+<p>All communication is human-readable JSON. A message must contain:
+*   <code>subsystem_name</code>: Uppercase string (e.g., <code>"SIDEKICK"</code>).
+*   <code>status</code>: Must be one of: <code>INSTRUCTION</code>, <code>SUCCESS</code>, <code>PROBLEM</code>, <code>DATA_RESPONSE</code>, <code>TELEMETRY</code>, <code>INFO</code>, <code>WARNING</code>, <code>DEBUG</code>.
+*   <code>payload</code>: A dictionary. For <code>INSTRUCTION</code>, it must use a <code>func</code> string and an <code>args</code> <strong>dictionary</strong> (never a list).</p>
+<h3 id="5-naming-conventions">5. Naming Conventions</h3>
+<ul>
+<li><strong>Subsystem Names:</strong> All caps (e.g., <code>STIRPLATE</code>, <code>COLORIMETER</code>).</li>
+<li><strong>State Classes:</strong> PascalCase, typically ending in the action or role (e.g., <code>Blinking</code>, <code>GenericIdle</code>).</li>
+<li><strong>Command Handlers:</strong> <code>snake_case</code> prefixed with <code>handle_</code> (e.g., <code>handle_move_to</code>).</li>
+<li><strong>Variables/Functions:</strong> Standard <code>snake_case</code>.</li>
+<li><strong>Hardware Config:</strong> Uppercase (e.g., <code>SUBSYSTEM_CONFIG</code>).</li>
+</ul>
+<h3 id="6-separation-of-data-and-logic">6. Separation of Data and Logic</h3>
+<p>Strictly separate static configuration from dynamic runtime state:
+*   <strong><code>SUBSYSTEM_CONFIG</code></strong>: Stored in <code>__init__.py</code>. Contains immutable hardware data (pins, physical constants, safe limits).
+*   <strong><code>machine.flags</code></strong>: Dictionary for mutable runtime data (e.g., <code>is_homed</code>, <code>current_m1_steps</code>).
+*   <strong>Calculated Status:</strong> Use a <code>status_callback</code> (e.g., <code>build_status</code>) to generate real-time reports rather than storing redundant data.</p>
+<h3 id="7-the-postman-secretary-pattern">7. The Postman &amp; Secretary Pattern</h3>
+<p>Communication is abstracted through the <code>Postman</code> class. 
+*   The <strong>Postman</strong> handles low-level transport (Serial, CircuitPython CDC, or Dummy).
+*   The <strong>Secretary</strong> (on the device) or <strong>DeviceManager</strong> (on the host) handles the routing, filing, and reading of messages into buffers.</p>
+<h3 id="8-command-handlers-guard-conditions">8. Command Handlers &amp; Guard Conditions</h3>
+<p>Handlers in <code>handlers.py</code> serve as the API. 
+*   <strong>Non-Blocking:</strong> Handlers must return immediately. If a command takes time (like <code>move</code>), the handler sets target flags and changes the machine state.
+*   <strong>Guards:</strong> Handlers must validate prerequisites (e.g., <code>check_homed</code>) and argument ranges before execution.
+*   <strong>Decorators:</strong> Use the <code>try_wrapper</code> to catch exceptions and automatically send <code>PROBLEM</code> messages back to the host.</p>
+<h3 id="9-state-sequencer-pattern">9. State Sequencer Pattern</h3>
+<p>For complex, multi-step workflows (e.g., "LED on -&gt; Read -&gt; LED off"), use the <code>StateSequencer</code>.
+*   <strong>Sequence Definitions:</strong> Defined as a list of dictionaries: <code>{"state": "StateName", "label": "Description"}</code>.
+*   <strong>Context:</strong> Use the <code>sequencer.context</code> dictionary to pass data between states in a sequence (e.g., passing a sensor reading from <code>ReadSensor</code> to <code>TurnOffLED</code>).</p>
+<h3 id="10-ai-ready-protocol">10. AI-Ready Protocol</h3>
+<p>To support Autonomous Agent control (AI Planner):
+*   <strong>Metadata:</strong> Commands must include a <code>description</code>, <code>args</code> (with types and defaults), and <code>ai_enabled</code> boolean.
+*   <strong>Explicitness:</strong> Use <code>effects</code> and <code>usage_notes</code> in command definitions to provide the AI with the consequences of an action.
+*   <strong>Discovery:</strong> The host must use the <code>help</code> command to dynamically build the AI's understanding of the instrument's capabilities.</p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1500,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

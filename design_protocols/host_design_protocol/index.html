@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/host_design_protocol/">
       
+      
+        <link rel="prev" href="../firmware_design_protocol/">
+      
+      
+        <link rel="next" href="../messaging_protocol/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>Host Design Protocol - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#talos-sdl-host-design-protocol-version-10" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              Host Design Protocol
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -387,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+      <a href="../../concepts/architecture_overview/" class="md-nav__link">
         
   
   
@@ -415,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../../concepts/core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -504,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+      <a href="../../developer_guides/coding_style_guide/" class="md-nav__link">
         
   
   
@@ -532,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../../developer_guides/socratic_design_method/" class="md-nav__link">
         
   
   
@@ -560,7 +571,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+      <a href="../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -592,8 +603,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -604,13 +617,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_5" checked>
         
           
           <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
@@ -631,7 +642,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_5">
             <span class="md-nav__icon md-icon"></span>
             
@@ -649,7 +660,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../communication_protocol/" class="md-nav__link">
         
   
   
@@ -677,7 +688,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -702,10 +713,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -721,6 +759,70 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-guiding-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Guiding Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-core-architecture-model-view-controller-mvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Core Architecture: Model-View-Controller (MVC)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-two-clients-of-the-core-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Two "Clients" of the Core Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-why-this-protocol-is-critical-for-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Why This Protocol is Critical for AI
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -733,7 +835,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../messaging_protocol/" class="md-nav__link">
         
   
   
@@ -812,7 +914,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -840,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1067,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1196,60 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#1-guiding-principles" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Guiding Principles
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#2-the-core-architecture-model-view-controller-mvc" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Core Architecture: Model-View-Controller (MVC)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#3-the-two-clients-of-the-core-architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Two "Clients" of the Core Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-why-this-protocol-is-critical-for-ai" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Why This Protocol is Critical for AI
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1262,115 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="talos-sdl-host-design-protocol-version-10"><strong>Talos-SDL:</strong> Host Design Protocol (Version 1.0)</h1>
+<p>This document would define the architecture for all PC-side applications that control the Self-Driving Laboratory.</p>
+<h2 id="1-guiding-principles"><strong>1. Guiding Principles</strong></h2>
+<p>The Host World operates on four core principles that ensure stability and scalability:</p>
+<ul>
+<li><strong>Separation of Concerns:</strong> The code responsible for the user interface (the "View") is strictly separated from the core application logic (the "Controller") and the representation of device state (the "Model"). This is the essence of the MVC pattern.</li>
+<li><strong>Centralized Device Management:</strong> A single, authoritative component (the <code>DeviceManager</code>) is responsible for discovering, connecting to, and communicating with all hardware. No other part of the application should ever create its own <code>SerialPostman</code>.</li>
+<li><strong>Asynchronous Communication:</strong> The host application must never "block" or "freeze" while waiting for a device to complete a task. All communication is asynchronous. Commands are sent, and responses are processed as they arrive.</li>
+<li><strong>Abstraction:</strong> The host application should not need to know the low-level details of <em>how</em> an instrument performs a task. It should only know <em>what</em> commands the instrument accepts. The instrument is treated as a "black box" with a clearly defined API (its <code>help</code> command).</li>
+</ul>
+<h2 id="2-the-core-architecture-model-view-controller-mvc"><strong>2. The Core Architecture: Model-View-Controller (MVC)</strong></h2>
+<p>All host applications MUST be built around the three core components found in <code>host_app/core/</code>.</p>
+<ul>
+<li>
+<p><strong>The Model (<code>host_app/core/device.py</code>):</strong></p>
+<ul>
+<li><strong>Role:</strong> The "Digital Twin." A <code>Device</code> object is the host's in-memory representation of a single physical instrument.</li>
+<li><strong>Responsibilities:</strong><ul>
+<li>Holds the state of the device (port, VID/PID, firmware name, version, last-known state, latest telemetry data, etc.).</li>
+<li>Is completely UI-agnostic. It knows nothing about buttons or windows.</li>
+<li>Is responsible for updating its own state based on incoming messages (<code>update_from_message</code> method).</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>The Controller (<code>host_app/core/device_manager.py</code>):</strong></p>
+<ul>
+<li><strong>Role:</strong> The "Orchestrator" or "Middle Manager." The <code>DeviceManager</code> is the brain of the host-side operations.</li>
+<li><strong>Responsibilities:</strong><ul>
+<li>Manages the entire lifecycle of all <code>Device</code> objects (the Models).</li>
+<li>Scans for, connects to, and disconnects from physical hardware.</li>
+<li>Runs the background listener threads for each device to receive messages.</li>
+<li>Provides a single, unified interface for sending messages to any connected device (<code>send_message</code> method).</li>
+<li>Manages the central <code>incoming_message_queue</code> where all messages from all devices are placed for processing.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>
+<p><strong>The View (<code>host_app/gui/main_view.py</code>):</strong></p>
+<ul>
+<li><strong>Role:</strong> The "Face." This is the graphical user interface that the human operator interacts with.</li>
+<li><strong>Responsibilities:</strong><ul>
+<li>Displays the data contained within the <code>Device</code> models.</li>
+<li>Translates user actions (like button clicks) into commands that are sent to the <code>DeviceManager</code> (the Controller).</li>
+<li><strong>Crucially, the View NEVER talks to a <code>Device</code> model directly.</strong> It only ever communicates with the <code>DeviceManager</code>. This is the key to maintaining separation of concerns.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="3-the-two-clients-of-the-core-architecture"><strong>3. The Two "Clients" of the Core Architecture</strong></h2>
+<p>The MVC core is the stable foundation. The protocol must define how different types of applications ("clients") can use this foundation.</p>
+<ul>
+<li>
+<p><strong>Client 1: The Human-in-the-Loop (The GUI Application)</strong></p>
+<ul>
+<li><strong>Implementation:</strong> <code>run_mvc_app.py</code></li>
+<li><strong>Protocol:</strong> This client instantiates the <code>DeviceManager</code> and the <code>MainView</code>. It links them together, allowing the user to drive the laboratory through a visual interface. The flow is always <strong>User -&gt; View -&gt; Controller -&gt; Model</strong>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Client 2: The Autonomous Agent (Scripts and AI)</strong></p>
+<ul>
+<li><strong>Implementations:</strong> <code>scanning_colorimeter.py</code>, <code>vertext_test.py</code>, <code>test_phase2_backend.py</code></li>
+<li><strong>Protocol:</strong> This is where the protocol needs to be formalized.<ul>
+<li><strong>DEPRECATED PATTERN:</strong> Scripts like <code>scanning_colorimeter.py</code> currently create their own <code>SerialPostman</code>. This is now considered an anti-pattern because it bypasses the centralized state management and logging of the <code>DeviceManager</code>. It creates a "rogue agent" that the rest of the system is unaware of.</li>
+<li><strong>REQUIRED PATTERN:</strong> All future scripts, whether for simple automation or complex AI control, <strong>MUST</strong> use the <code>DeviceManager</code> as their entry point to the lab. The <code>test_phase2_backend.py</code> script is the perfect example of this correct pattern.</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p><strong>A compliant autonomous script workflow:</strong>
+1.  Instantiate <code>DeviceManager</code>.
+2.  Use <code>manager.scan_for_devices()</code> and <code>manager.connect_device()</code> to establish connections.
+3.  Send commands using <code>manager.send_message()</code>.
+4.  Process responses by reading from the <code>manager.incoming_message_queue</code>. This allows the script to get all the rich, parsed message data without having to manage its own listener thread.
+5.  When finished, call <code>manager.stop()</code> to gracefully close all connections.</p>
+<h2 id="4-why-this-protocol-is-critical-for-ai"><strong>4. Why This Protocol is Critical for AI</strong></h2>
+<p>By enforcing that AI agents use the same <code>DeviceManager</code> as the GUI, you gain several massive advantages:</p>
+<ol>
+<li><strong>Consistency:</strong> The AI interacts with the lab using the exact same API as a human user. There is no special "AI backdoor."</li>
+<li><strong>Human-in-the-Loop Supervision:</strong> You can build an advanced GUI that <strong>visualizes the state of the <code>Device</code> models</strong> while an AI script is running. The GUI and the AI script are both observing the same "source of truth." This allows a human to monitor, pause, or override an AI agent's actions.</li>
+<li><strong>Simplified AI Logic:</strong> The AI agent's job is simplified. It doesn't need to worry about low-level serial communication or threading. It only needs to focus on three things:<ul>
+<li>Choosing which device to use (<code>manager.devices</code>).</li>
+<li>Constructing the correct <code>Message</code> payload.</li>
+<li>Sending the message via <code>manager.send_message()</code>.</li>
+</ul>
+</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1407,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>

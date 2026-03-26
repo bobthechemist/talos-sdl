@@ -1,0 +1,1694 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/developer_guides/socratic_design_method/">
+      
+      
+        <link rel="prev" href="../coding_style_guide/">
+      
+      
+        <link rel="next" href="../ai_agent_prompt_templates/firmware_generation_template/">
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Socratic Design Method - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#documentation-designing-a-new-instrument" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Socratic Design Method
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/your_first_firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Your First Instrument Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/architecture_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../concepts/core_philosophy_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Philosophy & Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../coding_style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socratic Design Method
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socratic Design Method
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-designing-a-new-instrument" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation: Designing a New Instrument
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation: Designing a New Instrument">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-our-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Our Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-the-design-process-a-question-driven-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Design Process: A Question-Driven Approach
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Design Process: A Question-Driven Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-high-level-instrument-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: High-Level Instrument Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-defining-the-hardware-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Defining the Hardware Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-defining-the-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Defining the Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-defining-the-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Defining the States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-design-document-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Design Document Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instrument-design-aht20-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrument Design: AHT20 Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instrument Design: AHT20 Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-instrument-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Instrument Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-hardware-configuration-config-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hardware Configuration (CONFIG dictionary)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-state-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. State Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. State Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State: Initialize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Firmware Generation Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Protocols
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Protocols
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/communication_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/firmware_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/host_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/messaging_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colorimeter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sidekick
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stirplate Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#documentation-designing-a-new-instrument" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Documentation: Designing a New Instrument
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Documentation: Designing a New Instrument">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-our-design-philosophy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Our Design Philosophy
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-the-design-process-a-question-driven-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. The Design Process: A Question-Driven Approach
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="2. The Design Process: A Question-Driven Approach">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#step-1-high-level-instrument-definition" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 1: High-Level Instrument Definition
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-2-defining-the-hardware-configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 2: Defining the Hardware Configuration
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-3-defining-the-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 3: Defining the Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#step-4-defining-the-states" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Step 4: Defining the States
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-the-design-document-template" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. The Design Document Template
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#instrument-design-aht20-environmental-sensor" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Instrument Design: AHT20 Environmental Sensor
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Instrument Design: AHT20 Environmental Sensor">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-instrument-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Instrument Overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-hardware-configuration-config-dictionary" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Hardware Configuration (CONFIG dictionary)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-command-interface" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Command Interface
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-state-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. State Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. State Definitions">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#state-initialize" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        State: Initialize
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+  <h1>Socratic Design Method</h1>
+
+<h2 id="documentation-designing-a-new-instrument">Documentation: Designing a New Instrument</h2>
+<h3 id="1-our-design-philosophy">1. Our Design Philosophy</h3>
+<p>This framework is built on a state-machine-based design philosophy. This approach helps manage complexity, prevent bugs, and create responsive, non-blocking instruments. The core principles are:</p>
+<ul>
+<li><strong>One Machine, One State:</strong> Each instrument is represented by a single, unified <code>StateMachine</code> instance. At any given moment, the machine is in one, and only one, well-defined state (e.g., <code>Initializing</code>, <code>Idle</code>, <code>Moving</code>).</li>
+<li><strong>Separation of Data and Logic:</strong> We strictly separate the instrument's static configuration (the <em>data</em>, like pin numbers and settings) from its dynamic behavior (the <em>logic</em>, defined in states and handlers).</li>
+<li><strong>Centralized Command Handling:</strong> The <code>StateMachine</code> itself is responsible for managing and dispatching commands. States simply indicate <em>when</em> the machine should listen for those commands.</li>
+<li><strong>Common, Reusable Components:</strong> We leverage a library of common states (<code>GenericIdle</code>, <code>GenericError</code>) and command handlers (<code>ping</code>, <code>help</code>) to reduce boilerplate code and ensure consistent behavior across all instruments.</li>
+</ul>
+<p>Following this design process will produce a clear "spec sheet" for your new instrument. This document serves as a blueprint that a programmer—or a capable AI—can use to draft the firmware files (<code>__init__.py</code>, <code>states.py</code>, <code>handlers.py</code>) with high accuracy.</p>
+<h3 id="2-the-design-process-a-question-driven-approach">2. The Design Process: A Question-Driven Approach</h3>
+<p>The best way to design a new instrument is to answer a series of questions, moving from a high-level overview down to the specific details of each state. This Socratic, question-driven method ensures all aspects of the instrument's behavior are considered.</p>
+<h4 id="step-1-high-level-instrument-definition">Step 1: High-Level Instrument Definition</h4>
+<p>Before writing any code, answer these four core questions about the instrument as a whole:</p>
+<ol>
+<li><strong>What is the primary purpose of this instrument?</strong> (e.g., "To measure temperature and humidity," "To move a robotic arm to specified coordinates.")</li>
+<li><strong>What are the primary actions it can perform?</strong> (e.g., "Take a reading," "Move to an X,Y coordinate," "Turn a motor on.")</li>
+<li><strong>What data does it need to report back periodically?</strong> (This defines your telemetry. e.g., "The current temperature," "The motor's logical position.")</li>
+<li><strong>What are the critical failure conditions?</strong> (e.g., "The sensor cannot be found on the I2C bus," "An endstop is hit unexpectedly.")</li>
+<li><strong>What is the high-level operational guidance for an AI agent?</strong> (This defines your <code>ai_guidance</code>. For example: "This sensor is mounted on the robotic arm and must be positioned over a well before a measurement can be taken.")</li>
+</ol>
+<h4 id="step-2-defining-the-hardware-configuration">Step 2: Defining the Hardware Configuration</h4>
+<p>All static hardware definitions and settings belong in a single <code>CONFIG</code> dictionary in the instrument's <code>__init__.py</code> file. This creates a central "dashboard" for the instrument's physical setup.</p>
+<ul>
+<li>List every pin the microcontroller will use. Give each pin a descriptive name.</li>
+<li>List any key operational parameters (e.g., motor speeds, pump timings, physical dimensions).</li>
+<li>List any "safe limits" that the instrument must not violate.</li>
+</ul>
+<h4 id="step-3-defining-the-command-interface">Step 3: Defining the Command Interface</h4>
+<p>This defines the API that the host computer will use to control the instrument. For each custom command, define:</p>
+<ul>
+<li><strong>Function Name (<code>func</code>):</strong> A short, verb-based name (e.g., <code>read_now</code>, <code>move_to</code>).</li>
+<li><strong>Description:</strong> A clear, one-sentence description of what the command does.</li>
+<li><strong>Arguments (<code>args</code>):</strong> What data, if any, the host must provide.</li>
+<li><strong>Success Condition:</strong> What happens when the command completes successfully? (e.g., "Returns a <code>SUCCESS</code> message with the sensor data," "Transitions to the <code>Moving</code> state.")</li>
+<li><strong>Guard Conditions:</strong> What criteria must be met for this command to be accepted? (e.g., "The machine must be homed," "The target coordinates must be within safe limits.")</li>
+<li><strong><code>ai_enabled</code> (<code>Boolean</code>):</strong> Set to <code>true</code> if this command is a high-level, safe and useful function for an autonomous agent. Set to <code>false</code> for low-level debugging commands (e.g., <code>steps</code>), or for commands that are superseded by a more abstract one (e.g. <code>read_all</code> might be disabled in favor of a more comprehensive <code>measure</code> sequence).</li>
+</ul>
+<h4 id="step-4-defining-the-states">Step 4: Defining the States</h4>
+<p>Now, apply the Socratic method to each individual state your instrument will have. Remember, you get <code>GenericIdle</code> and <code>GenericError</code> for free, so you only need to design the states unique to your instrument.</p>
+<p>For each custom state, answer these five questions:</p>
+<ol>
+<li><strong>Purpose:</strong> What is this state's single, clear responsibility?</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong> What needs to be set up <em>the moment</em> we enter this state? (e.g., start a timer, reset a counter, turn on a pin).</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> What is the main work this state does on <em>every loop</em>? (e.g., check a timer, monitor a sensor, step a motor, listen for commands).</li>
+<li><strong>Exit Events &amp; Triggers:</strong> How does this state know its job is finished? What causes a transition to another state? (e.g., a timer expires, a task is complete, an error is detected, an <code>abort</code> command is received).</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> What cleanup is required when leaving this state to ensure the hardware is safe? (e.g., turn off a motor, reset a flag).</li>
+</ol>
+<h3 id="3-the-design-document-template">3. The Design Document Template</h3>
+<p>Copy the following Markdown template into a new file and fill it out for your new instrument. This completed document is the final "spec sheet."</p>
+<hr />
+<h2 id="instrument-design-aht20-environmental-sensor">Instrument Design: AHT20 Environmental Sensor</h2>
+<h3 id="1-instrument-overview">1. Instrument Overview</h3>
+<ul>
+<li><strong>Primary Purpose:</strong> To measure and report ambient temperature and relative humidity.</li>
+<li><strong>Primary Actions:</strong> Initialize the sensor, periodically read sensor values, and perform a manual read on command.</li>
+<li><strong>Periodic Telemetry Data:</strong> The current temperature (in Celsius) and relative humidity (in %).</li>
+<li><strong>Critical Failure Conditions:</strong> The AHT20 sensor is not detected on the I2C bus during initialization.</li>
+</ul>
+<h3 id="2-hardware-configuration-config-dictionary">2. Hardware Configuration (<code>CONFIG</code> dictionary)</h3>
+<p><em>(Note: The AHT20 uses the board's default I2C pins, so we don't need to define them explicitly in this simple case.)</em>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="n">AHT20_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="c1"># No custom pin definitions needed for this simple sensor.</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>    <span class="c1"># A more complex device would list all pins here.</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a><span class="p">}</span>
+</span></code></pre></div></p>
+<h3 id="3-command-interface">3. Command Interface</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><code>func</code> Name</th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Arguments</th>
+<th style="text-align: left;">Success Condition</th>
+<th style="text-align: left;">Guard Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>read_now</code></td>
+<td style="text-align: left;">Immediately reads the sensor and returns the values.</td>
+<td style="text-align: left;">None</td>
+<td style="text-align: left;">Returns a <code>SUCCESS</code> message with a payload containing the temperature and humidity.</td>
+<td style="text-align: left;">None.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-state-definitions">4. State Definitions</h3>
+<h4 id="state-initialize">State: <code>Initialize</code></h4>
+<ol>
+<li><strong>Purpose:</strong> To connect to the AHT20 sensor via the I2C bus.</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong><ul>
+<li>Attempt to create an <code>I2C</code> object for the board.</li>
+<li>Attempt to instantiate the <code>adafruit_ahtx0.AHTx0</code> sensor object using the I2C bus.</li>
+<li>Attach the sensor object to the <code>machine</code> instance (e.g., <code>machine.sensor</code>).</li>
+</ul>
+</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> None. This state should transition immediately.</li>
+<li><strong>Exit Events &amp; Triggers:</strong><ul>
+<li><strong>On Success:</strong> The sensor is instantiated without error. Trigger: Transition to <code>Idle</code>.</li>
+<li><strong>On Failure:</strong> An exception is raised (e.g., <code>ValueError</code> if the sensor is not found). Trigger: Set an <code>error_message</code> flag and transition to <code>Error</code>.</li>
+</ul>
+</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> None.</li>
+</ol>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

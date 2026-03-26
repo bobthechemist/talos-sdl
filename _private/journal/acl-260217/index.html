@@ -1,0 +1,1508 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+      
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260217/">
+      
+      
+      
+      
+        
+      
+      
+      <link rel="icon" href="../../../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
+    
+    
+      
+        <title>Continuing with the agentic loop - Talos-SDL Documentation</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
+    
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+  </head>
+  
+  
+    <body dir="ltr">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#continuing-with-the-agentic-loop" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Talos-SDL Documentation
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Continuing with the agentic loop
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+      <script>var palette=__md_get("__palette");if(palette&&palette.color){if("(prefers-color-scheme)"===palette.color.media){var media=matchMedia("(prefers-color-scheme: light)"),input=document.querySelector(media.matches?"[data-md-color-media='(prefers-color-scheme: light)']":"[data-md-color-media='(prefers-color-scheme: dark)']");palette.color.media=input.getAttribute("data-md-color-media"),palette.color.scheme=input.getAttribute("data-md-color-scheme"),palette.color.primary=input.getAttribute("data-md-color-primary"),palette.color.accent=input.getAttribute("data-md-color-accent")}for(var[key,value]of Object.entries(palette.color))document.body.setAttribute("data-md-color-"+key,value)}</script>
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    Talos-SDL Documentation
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../.." class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Home
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tutorials
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../tutorials/your_first_firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Building Your First Instrument Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../concepts/architecture_overview/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    System Architecture Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../concepts/core_philosophy_features/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Core Philosophy & Features
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Developer Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer_guides/coding_style_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Coding Style Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer_guides/socratic_design_method/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Socratic Design Method
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Firmware Generation Templates
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5" id="__nav_5_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Protocols
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Protocols
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/communication_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/firmware_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/host_design_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host Design Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/messaging_protocol/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging Protocol
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_5_5" >
+        
+          
+          <label class="md-nav__link" for="__nav_5_5" id="__nav_5_5_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Examples
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_5_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_5_5">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Examples
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Colorimeter
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Sidekick
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Stirplate Manager
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_6" id="__nav_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API Reference
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    API Reference
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/communicate/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communicate
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/firmware/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Firmware
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/host/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../../api/shared_lib/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Shared Lib
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+
+<h1 id="continuing-with-the-agentic-loop">Continuing with the agentic loop</h1>
+<p>With a larger hard drive, I can install ollama and test local models. The computer is far to low-end to run anything with decent speed, however, so this will need to be put on hold for a future project. I will need to continue with vertex. </p>
+<p>Some tasks:
+- modify the loop so that the user is not asked to approve each step in a sequence
+- Provide sequence editing capabilities
+- Test on a real sample</p>
+<p>I've fixed - perhaps - some issues with the colorimeter not exposing the settings and the chat log storing information from a DATA_RESPONSE. However, I am hitting quotas for vertex AI pretty frequently and I don't know how to resolve that issue.</p>
+<p>The issue was possibly resolved by moving to the API key via Gemini instead of using vertex. Industry-standard may not be viable since the system is simply way too confusing.</p>
+<p>Progress - planning for a multi-agent style chat that can both run and analyze data. Draft PRD</p>
+<p>Below is an edited but largely AI-generated PRD for completing the agentic chat loop. IMO there is far more sophistication here than is necessary for version 1. Modifying this to provide a solid working example of the /run and /data modes will be sufficient.</p>
+<h1 id="project-requirements-document">Project Requirements Document</h1>
+<p><strong>Project:</strong> ALIF Agentic Laboratory Cockpit – Refactored Chat Loop<br />
+<strong>Version:</strong> 1.0 (Final)  </p>
+<hr />
+<h2 id="1-executive-summary">1. Executive Summary</h2>
+<p>Refactor the chat loop to:
+- Support firmware‑resident deterministic <strong>skills</strong> (e.g., <code>optimize_gain</code>) that encapsulate closed‑loop calibration/optimization on the instrument.
+- Introduce explicit, user‑controlled modes: <strong>/run</strong> (instrument control; strict JSON plans) and <strong>/data</strong> (analysis; no device I/O).
+- Use a <strong>single LLM agent</strong> with <strong>mode‑specific contexts</strong> and <strong>separate histories</strong>, plus a <strong>temporary one‑shot analysis</strong> in /run that summarizes <code>DATA_RESPONSE</code> without changing modes.</p>
+<p>Design must anticipate future features (multi‑agent routing, control DSL, reflexive planning) without increasing complexity for v1.</p>
+<hr />
+<h2 id="2-goals-objectives">2. Goals &amp; Objectives</h2>
+<ul>
+<li><strong>G1:</strong> Deterministic, firmware‑driven procedures callable through a stable JSON planning interface.</li>
+<li><strong>G2:</strong> Explicit, intentional mode switching via slash commands to prevent accidental actuation.</li>
+<li><strong>G3:</strong> Single agent, multiple contexts (RUN/DATA), isolated histories; temporary, no‑history <strong>one‑shot analysis</strong> in /run.</li>
+<li><strong>G4:</strong> Preserve the existing JSON plan schema; <strong>no host‑side DSL</strong> in v1.</li>
+<li><strong>G5:</strong> Strong logging/observability, dataset registry, and artifact lineage.</li>
+<li><strong>G6:</strong> Architecture ready for future <strong>multi‑agent routing</strong> and <strong>control DSL</strong>.</li>
+</ul>
+<hr />
+<h2 id="3-inscope-v1">3. In‑Scope (v1)</h2>
+<ul>
+<li>Firmware <strong>skills</strong> integration (host invokes skills as normal commands; instrument performs closed‑loop logic).</li>
+<li><strong>/run</strong> and <strong>/data</strong> modes with explicit user control.</li>
+<li>Single agent with mode‑specific system contexts and histories.</li>
+<li><strong>Plan review</strong> gate in /run (confirm/edit/reject).</li>
+<li><strong>One‑shot analysis</strong> in /run upon <code>DATA_RESPONSE</code> (no mode switch).</li>
+<li>Minimal <strong>analysis tools</strong> in /data (list/summarize/plot).</li>
+<li><strong>Dataset registry</strong> and <strong>session logging</strong>.</li>
+<li>Safety: timeouts, validation, dry‑run.</li>
+</ul>
+<hr />
+<h2 id="4-outofscope-v1">4. Out‑of‑Scope (v1)</h2>
+<ul>
+<li>Host‑side <strong>control DSL</strong> (loops/ifs).</li>
+<li><strong>Reflexive</strong> multi‑turn planning with observation between each step.</li>
+<li>On‑device skill authoring from host.</li>
+<li>Advanced analytics beyond summarize/plot.</li>
+<li>Cloud/remote multi‑user services.</li>
+</ul>
+<hr />
+<h2 id="5-stakeholders-roles">5. Stakeholders &amp; Roles</h2>
+<ul>
+<li><strong>Product/PI:</strong> Scientific goals, acceptance criteria.</li>
+<li><strong>Firmware Team:</strong> FSM skills, capability schema, deterministic routines.</li>
+<li><strong>Host Team:</strong> REPL, Planner/Executor, modes, logging, analysis tools.</li>
+<li><strong>Operators/Researchers:</strong> Use /run and /data; provide usability and safety feedback.</li>
+</ul>
+<hr />
+<h2 id="6-key-assumptions">6. Key Assumptions</h2>
+<ul>
+<li>Firmware exposes <strong>self‑documenting capabilities/skills</strong> via structured help (<code>DATA_RESPONSE</code>) including args, constraints, and return schema.</li>
+<li>Instruments are deterministic; closed‑loop logic resides on the device.</li>
+<li>DeviceManager and message protocol remain stable.</li>
+<li>Single LLM agent suffices for v1; context isolation is feasible.</li>
+</ul>
+<hr />
+<h2 id="7-functional-requirements">7. Functional Requirements</h2>
+<h3 id="71-mode-system-repl-routing">7.1 Mode System (REPL &amp; Routing)</h3>
+<ul>
+<li><strong>FR‑RUN‑1:</strong> <code>/run</code> activates instrument‑control mode; agent responses must be <strong>JSON plans only</strong>.</li>
+<li><strong>FR‑RUN‑2:</strong> <code>/run</code> enforces <strong>plan review</strong>: <code>run/y</code>, <code>reject/n</code>, <code>del &lt;#&gt;</code>, <code>edit &lt;#&gt;</code>.</li>
+<li><strong>FR‑RUN‑3:</strong> <code>/run</code> prohibits analysis tools except one‑shot summaries (see 7.4.1).</li>
+<li><strong>FR‑DATA‑1:</strong> <code>/data</code> activates analysis mode; <strong>no device I/O</strong> permitted.</li>
+<li><strong>FR‑DATA‑2:</strong> <code>/data</code> allows natural‑language replies and use of analysis tools.</li>
+<li><strong>FR‑MODE‑UX:</strong> Provide <code>/mode</code>, <code>/status</code>, <code>/help</code> with clear state feedback.</li>
+</ul>
+<h3 id="72-firmware-skills-closedloop-procedures">7.2 Firmware Skills (Closed‑Loop Procedures)</h3>
+<ul>
+<li><strong>FR‑SKILL‑1:</strong> Host enumerates device <strong>skills</strong> from the capability/help payload at startup.</li>
+<li><strong>FR‑SKILL‑2:</strong> Skills are invoked as normal commands in plans:<ul>
+<li>Example:<ul>
+<li>{ "device": "colorimeter", "command": "optimize_gain", "args": { "channel": "yellow", "target_pct": 98, "backoff_levels": 1 } }</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>FR‑SKILL‑3:</strong> Skills return <strong>structured</strong> <code>DATA_RESPONSE</code> results (e.g., <code>final_gain</code>, <code>iterations</code>, <code>trace</code>).</li>
+<li><strong>FR‑SKILL‑4:</strong> Host validates args against the device capability schema; rejects invalid plans at review.</li>
+</ul>
+<h3 id="73-planner-agent-behavior">7.3 Planner / Agent Behavior</h3>
+<ul>
+<li><strong>FR‑PLAN‑1:</strong> Planner RUN context lists available commands/skills, operational guidance, world model, and strict JSON rules.</li>
+<li><strong>FR‑PLAN‑2:</strong> Planner leverages world model safety constraints (e.g., volume caps).</li>
+<li><strong>FR‑AGT‑1:</strong> Single agent with <strong>two contexts</strong> and <strong>two isolated histories</strong> (/run and /data).</li>
+<li><strong>FR‑AGT‑2:</strong> Switching modes must <strong>not</strong> leak history; the system switches system prompts and uses the appropriate history.</li>
+</ul>
+<h3 id="74-data-analysis">7.4 Data Analysis</h3>
+<h4 id="741-oneshot-analysis-in-run-new">7.4.1 One‑Shot Analysis in <code>/run</code> (NEW)</h4>
+<ul>
+<li><strong>FR‑RUN‑ANALYSIS‑1:</strong> When a <code>DATA_RESPONSE</code> is received in /run, the system invokes a <strong>temporary analysis context</strong> using the <strong>same agent</strong>, with:</li>
+<li>Short, deterministic system instruction.</li>
+<li><strong>No device‑control affordances</strong>.</li>
+<li><strong>No history</strong> (does not append to /run or /data histories).</li>
+<li>Input template:
+        - The user asked: "<user_prompt>"
+          I executed: <device>.<command>(<args>)
+          I received: <payload>
+          Summarize concisely and answer the user’s question.</li>
+<li><strong>FR‑RUN‑ANALYSIS‑2:</strong> Output a <strong>human‑readable summary</strong> (e.g., “LED intensity is 4 mA; LED is off.”) and remain in /run.</li>
+<li><strong>FR‑RUN‑ANALYSIS‑3:</strong> The temporary analysis must never emit device commands or plan JSON.</li>
+<li><strong>FR‑RUN‑ANALYSIS‑4:</strong> Print a hint: “Type <code>/data</code> for deeper analysis or <code>/explain last</code> to revisit this summary.”</li>
+<li><strong>FR‑RUN‑ANALYSIS‑5:</strong> Store the raw <code>DATA_RESPONSE</code> and the <strong>generated summary</strong> for recall.</li>
+</ul>
+<h4 id="742-minimal-analysis-tools-in-data">7.4.2 Minimal Analysis Tools in <code>/data</code></h4>
+<ul>
+<li><strong>FR‑DATA‑TOOLS:</strong> Provide tools:</li>
+<li><code>list_datasets()</code></li>
+<li><code>describe(id)</code></li>
+<li><code>summarize(id, columns)</code></li>
+<li><code>plot(id, x, y, kind)</code></li>
+<li><strong>FR‑DATA‑EXEC:</strong> Run tools in a constrained sandbox; save artifacts to <code>temp/analysis</code> and <code>temp/plots</code>.</li>
+<li><strong>FR‑DATA‑NOACT:</strong> <code>/data</code> forbids any device I/O.</li>
+</ul>
+<h3 id="75-dataset-registry-artifacts">7.5 Dataset Registry &amp; Artifacts</h3>
+<ul>
+<li><strong>FR‑DS‑1:</strong> Register datasets on each <code>DATA_RESPONSE</code> (and analysis outputs) with:</li>
+<li><code>id</code>, <code>path</code>, <code>schema</code>, <code>origin_device</code>, <code>origin_command</code>, <code>timestamp</code>, <code>tags</code>.</li>
+<li><strong>FR‑DS‑2:</strong> Provide <code>/datasets</code> and <code>/artifacts</code> commands to browse.</li>
+</ul>
+<h3 id="76-logging-observability">7.6 Logging &amp; Observability</h3>
+<ul>
+<li><strong>FR‑LOG‑1:</strong> Extend <code>session_history</code> with: session start, mode switches, plans, confirmations, step results, datasets, artifacts, errors.</li>
+<li><strong>FR‑LOG‑2:</strong> <code>executor.save_log()</code> writes JSON to <code>temp/chat-session-*.json</code>.</li>
+<li><strong>FR‑LOG‑3:</strong> For skills, capture and store iteration traces returned by firmware.</li>
+<li><strong>FR‑LOG‑4:</strong> Log one‑shot summaries tagged as <code>"analysis_reply": "one_shot"</code> and link to the originating <code>DATA_RESPONSE</code>.</li>
+<li><strong>FR‑LOG‑5:</strong> Store raw <code>DATA_RESPONSE</code> for <code>/last</code> and <code>/explain last</code>.</li>
+</ul>
+<h3 id="77-safety-guardrails">7.7 Safety &amp; Guardrails</h3>
+<ul>
+<li><strong>FR‑SAFE‑1:</strong> Timeouts and retries on device comms; safe aborts.</li>
+<li><strong>FR‑SAFE‑2:</strong> Strict validation: unknown device/command/args → reject at review.</li>
+<li><strong>FR‑SAFE‑3:</strong> <code>/data</code> enforces <strong>no device actions</strong> at routing and execution layers.</li>
+<li><strong>FR‑SAFE‑4:</strong> Default <strong>dry‑run</strong> option in /run (configurable).</li>
+<li><strong>FR‑SAFE‑5:</strong> Temporary analysis in /run is sandboxed to <strong>prohibit device commands</strong>.</li>
+<li><strong>FR‑SAFE‑6:</strong> If the question cannot be answered from the payload, the summary must say so and suggest <code>/data</code>.</li>
+</ul>
+<h3 id="78-error-handling">7.8 Error Handling</h3>
+<ul>
+<li><strong>FR‑ERR‑1:</strong> Non‑JSON LLM output in /run → treated as completion/refusal; no actuation.</li>
+<li><strong>FR‑ERR‑2:</strong> Device errors → clear message, abort safely.</li>
+<li><strong>FR‑ERR‑3:</strong> <code>/data</code> tool errors return structured messages without terminating the session.</li>
+</ul>
+<h3 id="79-performance">7.9 Performance</h3>
+<ul>
+<li><strong>FR‑PERF‑1:</strong> Incremental logging to avoid data loss.</li>
+</ul>
+<h3 id="710-ux-commands-repl">7.10 UX Commands (REPL)</h3>
+<ul>
+<li><code>/run</code>, <code>/data</code>, <code>/mode</code>, <code>/status</code>, <code>/help</code>, <code>/clear</code>, <code>/log</code>, <code>/datasets</code>, <code>/artifacts</code>, <code>/dryrun on|off</code></li>
+<li><code>/explain last</code> (replay last one‑shot summary; no I/O), <code>/last</code> (print raw last <code>DATA_RESPONSE</code>), <code>/summary</code> (recap: last command, last dataset, last summary).</li>
+</ul>
+<hr />
+<h2 id="8-nonfunctional-requirements">8. Non‑Functional Requirements</h2>
+<ul>
+<li><strong>Reliability:</strong> No device action in /data; retries/timeouts on I/O.</li>
+<li><strong>Safety:</strong> Human‑in‑the‑loop by default in /run.</li>
+<li><strong>Maintainability:</strong> Adding firmware skills does not require host code changes; auto‑discovered via schema.</li>
+<li><strong>Extensibility:</strong> Clear interfaces for future router, DSL, and multi‑agent support.</li>
+<li><strong>Security:</strong> No external network execution; analysis sandbox without external I/O.</li>
+<li><strong>Portability:</strong> Cross‑platform compatible with current environment.</li>
+</ul>
+<hr />
+<h2 id="9-interfaces-data-contracts-illustrative">9. Interfaces &amp; Data Contracts (Illustrative)</h2>
+<h3 id="91-capabilityhelp-schema-device-host">9.1 Capability/Help Schema (Device → Host)</h3>
+<div class="language-text highlight"><pre><span></span><code>{
+  &quot;metadata&quot;: {
+    &quot;device&quot;: &quot;colorimeter&quot;,
+    &quot;ai_guidance&quot;: &quot;Prefer device skills for calibration; avoid host loops.&quot;
+  },
+  &quot;data&quot;: {
+    &quot;measure_spectrum&quot;: {
+      &quot;ai_enabled&quot;: true,
+      &quot;args&quot;: { &quot;avg&quot;: { &quot;type&quot;: &quot;int&quot;, &quot;min&quot;: 1, &quot;max&quot;: 10 } }
+    },
+    &quot;optimize_gain&quot;: {
+      &quot;ai_enabled&quot;: true,
+      &quot;args&quot;: {
+        &quot;channel&quot;: { &quot;type&quot;: &quot;enum&quot;, &quot;values&quot;: [&quot;yellow&quot;,&quot;red&quot;,&quot;green&quot;,&quot;blue&quot;] },
+        &quot;target_pct&quot;: { &quot;type&quot;: &quot;number&quot;, &quot;min&quot;: 50, &quot;max&quot;: 100, &quot;default&quot;: 98 },
+        &quot;backoff_levels&quot;: { &quot;type&quot;: &quot;int&quot;, &quot;min&quot;: 0, &quot;max&quot;: 3, &quot;default&quot;: 1 },
+        &quot;max_iters&quot;: { &quot;type&quot;: &quot;int&quot;, &quot;min&quot;: 1, &quot;max&quot;: 16, &quot;default&quot;: 8 }
+      },
+      &quot;returns&quot;: { &quot;final_gain&quot;: &quot;int&quot;, &quot;iterations&quot;: &quot;int&quot;, &quot;saturated&quot;: &quot;bool&quot;, &quot;trace&quot;: &quot;array&quot; }
+    }
+  }
+}
+</code></pre></div>
+<h3 id="92-plan-host-device">9.2 Plan (Host → Device)</h3>
+<div class="language-text highlight"><pre><span></span><code>{
+  &quot;plan&quot;: [
+    {
+      &quot;device&quot;: &quot;colorimeter&quot;,
+      &quot;command&quot;: &quot;optimize_gain&quot;,
+      &quot;args&quot;: { &quot;channel&quot;: &quot;yellow&quot;, &quot;target_pct&quot;: 98, &quot;backoff_levels&quot;: 1 }
+    }
+  ]
+}
+</code></pre></div>
+<h3 id="93-skill-result-device-host">9.3 Skill Result (Device → Host)</h3>
+<div class="language-text highlight"><pre><span></span><code>{
+  &quot;status&quot;: &quot;DATA_RESPONSE&quot;,
+  &quot;payload&quot;: {
+    &quot;data&quot;: {
+      &quot;final_gain&quot;: 5,
+      &quot;iterations&quot;: 4,
+      &quot;saturated&quot;: false,
+      &quot;trace&quot;: [
+        { &quot;gain&quot;: 2, &quot;peak&quot;: 0.42 },
+        { &quot;gain&quot;: 3, &quot;peak&quot;: 0.71 },
+        { &quot;gain&quot;: 4, &quot;peak&quot;: 0.89 },
+        { &quot;gain&quot;: 5, &quot;peak&quot;: 0.97 }
+      ]
+    }
+  }
+}
+</code></pre></div>
+<h3 id="94-dataset-registry-entry">9.4 Dataset Registry Entry</h3>
+<div class="language-text highlight"><pre><span></span><code>{
+  &quot;id&quot;: &quot;ds_20260217_1139_01&quot;,
+  &quot;path&quot;: &quot;temp/data/ds_20260217_1139_01.csv&quot;,
+  &quot;schema&quot;: [&quot;wavelength_nm&quot;,&quot;yellow&quot;,&quot;red&quot;,&quot;green&quot;,&quot;blue&quot;],
+  &quot;origin_device&quot;: &quot;colorimeter&quot;,
+  &quot;origin_command&quot;: &quot;measure_spectrum&quot;,
+  &quot;timestamp&quot;: &quot;2026-02-17T16:39:12Z&quot;,
+  &quot;tags&quot;: [&quot;spectrum&quot;,&quot;post_optimize_gain&quot;]
+}
+</code></pre></div>
+<hr />
+<h2 id="10-architecture-overview-v1">10. Architecture Overview (v1)</h2>
+<ul>
+<li><strong>REPL (<code>chat.py</code>)</strong>: Parses slash commands; manages current mode; displays status/help. Delegates to <strong>AgentExecutor</strong> for /run and <strong>Analysis tools</strong> for /data. Provides <code>/explain last</code>, <code>/last</code>, <code>/summary</code>.</li>
+<li><strong>Planner</strong>: Builds mode‑specific system prompts. RUN prompt enumerates commands/skills and strict JSON response rules.</li>
+<li><strong>Agent (single)</strong>: One instance, two contexts, two histories. Temporary <strong>one‑shot analysis</strong> in /run uses the same agent with <strong>no history</strong> and <strong>no device tools</strong>.</li>
+<li><strong>AgentExecutor</strong>: Validates plans; plan review; sends commands; waits for results; updates logs, plate state, and dataset registry; triggers one‑shot analysis on <code>DATA_RESPONSE</code>.</li>
+<li><strong>Analysis Tools</strong>: Minimal local toolkit for /data; no device access.</li>
+<li><strong>DeviceManager</strong>: Unchanged serial/message I/O.</li>
+<li><strong>Firmware</strong>: FSM with self‑documented skills; deterministic routines.</li>
+</ul>
+<hr />
+<h2 id="11-acceptance-criteria">11. Acceptance Criteria</h2>
+<h3 id="run-mode">/Run Mode</h3>
+<ul>
+<li>Agent outputs <strong>JSON‑only</strong>; non‑JSON handled gracefully (no actuation).</li>
+<li>Human can <strong>review/edit/reject</strong> plans.</li>
+<li>Skill invocation (e.g., <code>optimize_gain</code>) completes with structured results logged.</li>
+<li>On <code>DATA_RESPONSE</code>, a <strong>natural‑language</strong> one‑shot summary is printed; mode remains /run.</li>
+</ul>
+<h3 id="data-mode">/Data Mode</h3>
+<ul>
+<li>No device commands are issued.</li>
+<li><code>list_datasets</code>, <code>summarize</code>, <code>plot</code> operate on sample datasets; artifacts saved and listed.</li>
+</ul>
+<h3 id="general">General</h3>
+<ul>
+<li><code>/mode</code>, <code>/status</code>, <code>/help</code> reflect state.</li>
+<li><code>save_log</code> includes plans, steps, datasets, artifacts, one‑shot summaries, errors.</li>
+</ul>
+<hr />
+<h2 id="12-risks-mitigations">12. Risks &amp; Mitigations</h2>
+<ul>
+<li><strong>R1: Firmware bottleneck for new skills.</strong><br />
+<em>Mitigation:</em> Clear skill schema; prioritize a core set; version skills.</li>
+<li><strong>R2: Context leakage between modes.</strong><br />
+<em>Mitigation:</em> Separate histories; hard prompt switch; no‑history temporary analyses.</li>
+<li><strong>R3: LLM fabricates commands.</strong><br />
+<em>Mitigation:</em> Validate strictly against discovered capability schema; review gate.</li>
+<li><strong>R4: User confusion about modes.</strong><br />
+<em>Mitigation:</em> Prominent status; <code>/mode</code> echo; <code>/help</code>; hints after one‑shot summaries.</li>
+<li><strong>R5: Analysis scope creep.</strong><br />
+<em>Mitigation:</em> Minimal toolset in v1; stable extensible interfaces.</li>
+</ul>
+<hr />
+<h2 id="13-deliverables">13. Deliverables</h2>
+<ul>
+<li>Updated <strong>REPL</strong> with slash commands, status, and one‑shot summary helpers.</li>
+<li>Revised <strong>Planner</strong> with two contexts.</li>
+<li><strong>AgentExecutor</strong> changes: skill‑aware validation, one‑shot analysis trigger, enhanced logging.</li>
+<li>Minimal <strong>Analysis Tools</strong> and <strong>Dataset Registry</strong>.</li>
+<li>Docs: user guide, developer guide, capability/skill schema reference.</li>
+<li>Test plan and simulated device scripts.</li>
+</ul>
+<hr />
+<h2 id="14-milestones-timeline-indicative">14. Milestones &amp; Timeline (Indicative)</h2>
+<ul>
+<li><strong>M1 – Design freeze (schemas, prompts, modes):</strong> </li>
+<li><strong>M2 – REPL + modes + contexts:</strong> </li>
+<li><strong>M3 – Skill integration + plan review hardening:</strong> </li>
+<li><strong>M4 – Dataset registry + minimal analysis tools:</strong> </li>
+<li><strong>M5 – Logging/observability + docs + tests:</strong> </li>
+<li><strong>M6 – Pilot &amp; feedback:</strong> </li>
+</ul>
+<hr />
+<h2 id="15-future-direction-not-in-v1">15. Future Direction (Not in v1)</h2>
+<ul>
+<li><strong>Multi‑agent router:</strong> PlannerAgent (/run) + AnalystAgent (/data) with explicit overrides.</li>
+<li><strong>Control DSL:</strong> Host‑side structured plans (LOOP/IF/UNTIL/OBSERVE) and variable store.</li>
+<li><strong>Reflexive planning:</strong> Iterative stepwise plans with intermediate observations.</li>
+<li><strong>Richer analytics:</strong> Fitting, calibration curves, reports.</li>
+<li><strong>Policy engine:</strong> Safety policies and authorization.</li>
+</ul>
+<hr />
+<h2 id="16-dependencies">16. Dependencies</h2>
+<ul>
+<li>Stable DeviceManager and message protocol.</li>
+<li>Firmware emitting structured, self‑documented capabilities and skills.</li>
+<li>LLM provider availability/config.</li>
+<li>Local filesystem for <code>temp/</code> logging and artifacts.</li>
+</ul>
+<hr />
+<h2 id="17-glossary">17. Glossary</h2>
+<ul>
+<li><strong>Skill:</strong> Firmware‑resident deterministic routine (e.g., <code>optimize_gain</code>) exposed as a command.</li>
+<li><strong>/run:</strong> Instrument control mode; strict JSON plans; one‑shot summaries allowed.</li>
+<li><strong>/data:</strong> Analysis mode; no device I/O.</li>
+<li><strong>Dataset Registry:</strong> Index of datasets with path, schema, provenance, tags.</li>
+<li><strong>Planner:</strong> Builds system prompt/context; constrains model outputs by mode.</li>
+</ul>
+<hr />
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
+      
+    
+  </body>
+</html>

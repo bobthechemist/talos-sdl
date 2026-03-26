@@ -8,22 +8,28 @@
       
       
       
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/">
       
+      
+        <link rel="prev" href="../../socratic_design_method/">
+      
+      
+        <link rel="next" href="../../../design_protocols/communication_protocol/">
       
       
         
       
       
-      <link rel="icon" href="/talos-sdl/assets/images/favicon.png">
+      <link rel="icon" href="../../../assets/images/favicon.png">
       <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.7.6">
     
     
       
-        <title>Talos-SDL Documentation</title>
+        <title>AI Agent Firmware Generation Templates - Talos-SDL Documentation</title>
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/stylesheets/main.484c7ddc.min.css">
+      <link rel="stylesheet" href="../../../assets/stylesheets/main.484c7ddc.min.css">
       
       
 
@@ -42,9 +48,9 @@
       
     
     
-      <link rel="stylesheet" href="/talos-sdl/assets/_mkdocstrings.css">
+      <link rel="stylesheet" href="../../../assets/_mkdocstrings.css">
     
-    <script>__md_scope=new URL("/talos-sdl/",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    <script>__md_scope=new URL("../../..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
     
       
 
@@ -61,6 +67,11 @@
     <label class="md-overlay" for="__drawer"></label>
     <div data-md-component="skip">
       
+        
+        <a href="#future-ai-prompt-template-new-instrument-firmware-generation" class="md-skip">
+          Skip to content
+        </a>
+      
     </div>
     <div data-md-component="announce">
       
@@ -73,7 +84,7 @@
 
 <header class="md-header md-header--shadow" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-header__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -93,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              
+              AI Agent Firmware Generation Templates
             
           </span>
         </div>
@@ -171,7 +182,7 @@
 
 <nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
-    <a href="/talos-sdl/." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
+    <a href="../../.." title="Talos-SDL Documentation" class="md-nav__button md-logo" aria-label="Talos-SDL Documentation" data-md-component="logo">
       
   
   <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
@@ -189,7 +200,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/." class="md-nav__link">
+      <a href="../../.." class="md-nav__link">
         
   
   
@@ -270,7 +281,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/user_guide/" class="md-nav__link">
+      <a href="../../../tutorials/user_guide/" class="md-nav__link">
         
   
   
@@ -298,7 +309,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/tutorials/your_first_firmware/" class="md-nav__link">
+      <a href="../../../tutorials/your_first_firmware/" class="md-nav__link">
         
   
   
@@ -387,7 +398,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/architecture_overview/" class="md-nav__link">
+      <a href="../../../concepts/architecture_overview/" class="md-nav__link">
         
   
   
@@ -415,7 +426,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/concepts/core_philosophy_features/" class="md-nav__link">
+      <a href="../../../concepts/core_philosophy_features/" class="md-nav__link">
         
   
   
@@ -447,8 +458,10 @@
       
   
   
+    
   
   
+  
     
     
     
@@ -459,13 +472,11 @@
       
     
     
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
       
         
         
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -486,7 +497,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -504,7 +515,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/coding_style_guide/" class="md-nav__link">
+      <a href="../../coding_style_guide/" class="md-nav__link">
         
   
   
@@ -532,7 +543,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/socratic_design_method/" class="md-nav__link">
+      <a href="../../socratic_design_method/" class="md-nav__link">
         
   
   
@@ -557,10 +568,37 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Firmware Generation Templates
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
@@ -576,6 +614,98 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#persona-and-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persona and Role
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#primary-goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Primary Goal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-process-to-follow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Process to Follow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-provided-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User-Provided Inputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User-Provided Inputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-1-current-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input 1: Current Software Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-2-new-instrument-design-spec-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input 2: New Instrument Design Spec Sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -649,7 +779,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../../../design_protocols/communication_protocol/" class="md-nav__link">
         
   
   
@@ -677,7 +807,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../../../design_protocols/firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -705,7 +835,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../../../design_protocols/host_design_protocol/" class="md-nav__link">
         
   
   
@@ -733,7 +863,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../../../design_protocols/messaging_protocol/" class="md-nav__link">
         
   
   
@@ -812,7 +942,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -840,7 +970,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
         
   
   
@@ -868,7 +998,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
         
   
   
@@ -965,7 +1095,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/communicate/" class="md-nav__link">
+      <a href="../../../api/communicate/" class="md-nav__link">
         
   
   
@@ -993,7 +1123,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/firmware/" class="md-nav__link">
+      <a href="../../../api/firmware/" class="md-nav__link">
         
   
   
@@ -1021,7 +1151,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/host/" class="md-nav__link">
+      <a href="../../../api/host/" class="md-nav__link">
         
   
   
@@ -1049,7 +1179,7 @@
   
   
     <li class="md-nav__item">
-      <a href="/talos-sdl/api/shared_lib/" class="md-nav__link">
+      <a href="../../../api/shared_lib/" class="md-nav__link">
         
   
   
@@ -1094,6 +1224,88 @@
   
   
   
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#persona-and-role" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Persona and Role
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#primary-goal" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Primary Goal
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-process-to-follow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Process to Follow
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#user-provided-inputs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        User-Provided Inputs
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="User-Provided Inputs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#input-1-current-software-stack" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input 1: Current Software Stack
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#input-2-new-instrument-design-spec-sheet" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Input 2: New Instrument Design Spec Sheet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
   
 </nav>
                   </div>
@@ -1106,8 +1318,90 @@
               
               <article class="md-content__inner md-typeset">
                 
-  <h1>404 - Not found</h1>
+                  
 
+
+
+<h1 id="future-ai-prompt-template-new-instrument-firmware-generation">Future AI Prompt Template: New Instrument Firmware Generation</h1>
+<h2 id="persona-and-role">Persona and Role</h2>
+<p>You are an expert firmware developer specializing in state-machine-based architectures for laboratory automation. You are intimately familiar with the provided software stack and its core design principles (unified state machine, separation of configuration from logic, centralized command handling, and use of common libraries).</p>
+<h2 id="primary-goal">Primary Goal</h2>
+<p>Your primary goal is to draft the initial, high-quality firmware files (<code>__init__.py</code>, <code>states.py</code>, <code>handlers.py</code>) for a new instrument that will be integrated into the provided software framework. The output should be a robust and well-commented starting point for further development.</p>
+<h2 id="the-process-to-follow">The Process to Follow</h2>
+<p>You will follow a strict, three-step process:</p>
+<p><strong>Step 1: Analyze the Provided Materials</strong>
+First, thoroughly analyze the two inputs I will provide below:
+1.  <strong>The Current Software Stack:</strong> Internalize the existing architectural patterns, the structure of the <code>StateMachine</code> class, the function of common libraries (<code>common_states</code>, <code>command_library</code>), and how existing instruments are assembled.
+2.  <strong>The New Instrument Design Spec Sheet:</strong> Carefully review the user-provided specifications for the new instrument. Understand its purpose, hardware, commands, and states.</p>
+<p><strong>Step 2: Ask Clarifying Questions (Critical Step)</strong>
+This is the most important step. Before writing any code, identify any ambiguities, potential design conflicts, missing information, or architectural decisions that need to be made based on the spec sheet. Formulate a series of clear, numbered questions for me (the user) to answer.</p>
+<p>Your questions should be designed to solidify the instrument's logic, focusing on areas such as:
+*   <strong>State Transition Logic:</strong> "In the <code>Homing</code> state, what is the exact physical sequence of motor movements and endstop checks?"
+*   <strong>Command Behavior:</strong> "For the <code>dispense</code> command, if the requested volume is not a multiple of the pump's increment, what is the desired rounding behavior (reject, round up, or round down)?"
+*   <strong>Hardware Assumptions:</strong> "The spec sheet mentions a user button. What action should this button trigger in the <code>Idle</code> state versus the <code>Dispensing</code> state?"
+*   <strong>Complex Workflows:</strong> "The <code>calibrate</code> command seems to involve multiple steps. Can you describe the ideal user story for how this interactive process should work?"</p>
+<p><strong>Do not proceed to Step 3 until I have provided answers to your questions.</strong></p>
+<p><strong>Step 3: Draft the Firmware Files</strong>
+Once I have provided answers to your clarifying questions, generate the first draft of the three core firmware files: <code>__init__.py</code>, <code>states.py</code>, and <code>handlers.py</code>.</p>
+<p>The draft must adhere to the following quality standards:</p>
+<p><strong>A. Core Architectural Patterns to Enforce</strong></p>
+<p><strong>1. Declarative Assembly (<code>__init__.py</code>):</strong></p>
+<ul>
+<li>Define <code>SUBSYSTEM_NAME</code>, <code>SUBSYSTEM_VERSION</code>, and <code>SUBSYSTEM_INIT_STATE</code> at the top.</li>
+<li>The <code>SUBSYSTEM_CONFIG</code> dictionary must contain all static hardware data. If the instrument is intended for AI control, it <strong>must</strong> include an <code>ai_guidance</code> string explaining its operational constraints.</li>
+<li>A <code>build_status(machine)</code> callback function <strong>must</strong> be defined and passed to the <code>StateMachine</code> constructor to support the <code>get_info</code> command.</li>
+<li>A <code>send_telemetry(machine)</code> callback function <strong>should</strong> be defined and passed to the <code>GenericIdle</code> state.</li>
+</ul>
+<p><strong>2. Command Definition Schema (<code>__init__.py</code>):</strong></p>
+<ul>
+<li>All custom commands <strong>must</strong> be registered with <code>machine.add_command()</code>.</li>
+<li>The documentation for each command <strong>must</strong> be a dictionary including:<ul>
+<li><code>description</code> (str): What the command does.</li>
+<li><code>args</code> (list of dicts): A list of arguments, each defined as <code>{"name": "...", "type": "...", "default": ...}</code>.</li>
+<li><code>ai_enabled</code> (bool): <code>true</code> if the AI planner is allowed to use this command.</li>
+<li><code>effects</code> (list of str, optional): A list of state changes the AI can expect.</li>
+<li><code>usage_notes</code> (str, optional): Critical context for the AI (e.g., "Must be homed first").</li>
+</ul>
+</li>
+</ul>
+<p><strong>3. Handler and Messaging Logic (<code>handlers.py</code>):</strong></p>
+<ul>
+<li>All handler functions <strong>must</strong> be decorated with the <code>@try_wrapper</code> from <code>shared_lib.error_handling</code> to ensure robust error handling.</li>
+<li>Handlers <strong>must</strong> communicate back to the host using the helper functions <code>send_success(machine, "...")</code>, <code>send_problem(machine, "...")</code>, or by creating a full <code>Message</code> object for <code>DATA_RESPONSE</code>. Adhere to the <code>messaging.md</code> protocol.</li>
+<li>For long-running tasks, handlers <strong>must</strong> start a <code>StateSequencer</code> and return immediately. They must not block.</li>
+</ul>
+<p><strong>4. State Logic (<code>states.py</code>):</strong></p>
+<ul>
+<li>The <code>enter</code> method of any <code>State</code> class must have the signature <code>enter(self, machine, context=None)</code>.</li>
+<li>States used in a sequence must signal their completion by setting <code>self.task_complete = True</code>.</li>
+</ul>
+<p><strong>B. General Quality Standards</strong></p>
+<ul>
+<li><strong>Heavily Commented:</strong> Explain the purpose of key blocks of code, especially where it relates to the spec sheet and my clarifying answers.</li>
+<li><strong>Architecturally Sound:</strong> Adhere strictly to the existing patterns of the framework (e.g., using the <code>CONFIG</code> dictionary, placing guards in handlers, using the state sequencer pattern if necessary).</li>
+<li><strong>Includes Placeholders:</strong> For complex, domain-specific logic that cannot be fully implemented without real-world testing (like kinematics calculations or trajectory planning), create clearly marked placeholder functions or comments (e.g., <code># TODO: Implement kinematics calculation here</code>).</li>
+<li><strong>Functional Core:</strong> The generated code should be syntactically correct and provide a working foundation for the instrument. Basic commands and states should be functional, even if complex parts are placeholders.</li>
+</ul>
+<hr />
+<h2 id="user-provided-inputs">User-Provided Inputs</h2>
+<p><em>You will fill out these sections when using this template.</em></p>
+<h3 id="input-1-current-software-stack">Input 1: Current Software Stack</h3>
+<p><code>[PASTE ALL RELEVANT .py FILES FROM YOUR PROJECT HERE, INCLUDING aht20_sensor AND sidekick EXAMPLES FOR CONTEXT]. An easy way to do this is with the all-in-one.py script found [here](https://raw.githubusercontent.com/bobthechemist/codecave/master/all-in-one.py)</code></p>
+<h3 id="input-2-new-instrument-design-spec-sheet">Input 2: New Instrument Design Spec Sheet</h3>
+<p><code>[PASTE THE COMPLETED SPEC SHEET TEMPLATE FOR YOUR NEW INSTRUMENT HERE]. Examples of the template are provided in the documentation.</code></p>
+
+
+
+
+
+
+
+
+
+
+
+
+                
               </article>
             </div>
           
@@ -1144,10 +1438,10 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "/talos-sdl/", "features": ["navigation.sections", "navigation.expand"], "search": "/talos-sdl/assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../../..", "features": ["navigation.sections", "navigation.expand"], "search": "../../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
-      <script src="/talos-sdl/assets/javascripts/bundle.79ae519e.min.js"></script>
+      <script src="../../../assets/javascripts/bundle.79ae519e.min.js"></script>
       
     
   </body>
