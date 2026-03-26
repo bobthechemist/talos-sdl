@@ -1221,18 +1221,24 @@
 
 
 <h1 id="talos-sdl-documentation">Talos-SDL Documentation</h1>
-<p>Welcome to the Talos-SDL project documentation.</p>
+<p>Welcome to the comprehensive documentation for the Talos-SDL Orchestrator – an open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.</p>
+<p>This documentation serves as your guide to understanding, operating, and extending Talos-SDL, designed to empower researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows.</p>
 <h2 id="documentation-sections">Documentation Sections</h2>
+<p>Explore the different facets of Talos-SDL:</p>
 <ul>
-<li><strong><a href="tutorials/user_guide/">Tutorials</a></strong>: Conceptual overviews and step-by-step guides for end-users.</li>
-<li><strong><a href="api/communicate/">API Reference</a></strong>: Technical documentation automatically generated from the Python source code.</li>
+<li><strong><a href="tutorials/user_guide/">Tutorials</a></strong>: Step-by-step guides for users to operate the system and for new developers to get started with firmware creation.</li>
+<li><strong><a href="concepts/architecture_overview/">Concepts</a></strong>: High-level overviews of the project's core philosophy, features, and overall architectural design.</li>
+<li><strong><a href="developer_guides/coding_style_guide/">Developer Guides</a></strong>: Practical guides, best practices, and templates for developers looking to extend, modify, or contribute to the Talos-SDL framework.</li>
+<li><strong><a href="design_protocols/communication_protocol/">Design Protocols</a></strong>: Formal specifications and normative guidelines for how various components and systems within Talos-SDL are designed and expected to behave.</li>
+<li><strong><a href="api/communicate/">API Reference</a></strong>: Technical documentation automatically generated from the Python source code, detailing classes, methods, and functions.</li>
 </ul>
 <h2 id="project-structure">Project Structure</h2>
+<p>The repository is organized to separate the high-level AI logic from the low-level hardware control, ensuring modularity and maintainability:</p>
 <ul>
-<li><strong>Communicate</strong>: Messaging and protocol handling.</li>
-<li><strong>Firmware</strong>: Embedded logic and hardware control.</li>
-<li><strong>Host</strong>: Orchestration and high-level control systems.</li>
-<li><strong>Shared Lib</strong>: Common utilities used across all modules.</li>
+<li><strong><code>host/</code></strong>: The "Brain." Contains the Python application that runs on your PC, including AI agents, graphical user interfaces, and device management logic.</li>
+<li><strong><code>firmware/</code></strong>: The "Hands." Contains the CircuitPython code that runs on your microcontrollers, tailored for specific instruments like the <code>sidekick</code> robotic arm or <code>colorimeter</code>.</li>
+<li><strong><code>shared_lib/</code></strong>: Common protocols, utilities, and message definitions that ensure consistent communication and behavior across both host and firmware.</li>
+<li><strong><code>docs/</code></strong>: This documentation! Containing all guides, concepts, protocols, and API references.</li>
 </ul>
 
 
