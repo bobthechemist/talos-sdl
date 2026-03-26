@@ -8,13 +8,13 @@
       
       
       
-        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/tutorials/user_guide/">
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/communication/">
       
       
-        <link rel="prev" href="../..">
+        <link rel="prev" href="../../tutorials/user_guide/">
       
       
-        <link rel="next" href="../../design_protocols/communication/">
+        <link rel="next" href="../firmware/">
       
       
         
@@ -25,7 +25,7 @@
     
     
       
-        <title>End-User Guide - Talos-SDL Documentation</title>
+        <title>Communication Protocol - Talos-SDL Documentation</title>
       
     
     
@@ -68,7 +68,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#talos-sdl-user-guide" class="md-skip">
+        <a href="#talos-sdl-communication-protocol-and-the-postman-pattern" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +104,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              End-User Guide
+              Communication Protocol
             
           </span>
         </div>
@@ -224,8 +224,6 @@
       
   
   
-    
-  
   
   
     
@@ -238,11 +236,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_2" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_2" >
         
           
           <label class="md-nav__link" for="__nav_2" id="__nav_2_label" tabindex="">
@@ -263,12 +263,101 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_2_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_2">
             <span class="md-nav__icon md-icon"></span>
             
   
     Tutorials
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../tutorials/user_guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    End-User Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+        
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Design Protocols
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Design Protocols
   
 
           </label>
@@ -290,97 +379,25 @@
         
       
       
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Communication Protocol
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
       <a href="./" class="md-nav__link md-nav__link--active">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    End-User Guide
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-      
-    </li>
-  
-
-              
-            
-          </ul>
-        </nav>
-      
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
-    
-      
-        
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-          
-        
-        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
-        
-          
-          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
-            
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Design Protocols
-  
-
-    
-  </span>
-  
-  
-
-            <span class="md-nav__icon md-icon"></span>
-          </label>
-        
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3">
-            <span class="md-nav__icon md-icon"></span>
-            
-  
-    Design Protocols
-  
-
-          </label>
-          <ul class="md-nav__list" data-md-scrollfix>
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../design_protocols/communication/" class="md-nav__link">
         
   
   
@@ -396,6 +413,131 @@
   
 
       </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-postman-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Postman Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-postman-interface-shared_libcommunicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Postman Interface (shared_lib/communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Implementations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Implementations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serialpostman-communicateserial_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SerialPostman (communicate/serial_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuitpythonpostman-communicatecircuitpython_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPythonPostman (communicate/circuitpython_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dummypostman-communicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DummyPostman (communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Message Format Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#circuitpython-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPython Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -408,7 +550,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/firmware/" class="md-nav__link">
+      <a href="../firmware/" class="md-nav__link">
         
   
   
@@ -436,7 +578,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/host/" class="md-nav__link">
+      <a href="../host/" class="md-nav__link">
         
   
   
@@ -464,7 +606,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../design_protocols/messaging/" class="md-nav__link">
+      <a href="../messaging/" class="md-nav__link">
         
   
   
@@ -685,6 +827,119 @@
     
   
   
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Introduction
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#the-postman-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        The Postman Pattern
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-postman-interface-shared_libcommunicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core Postman Interface (shared_lib/communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#concrete-implementations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Concrete Implementations
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Concrete Implementations">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#serialpostman-communicateserial_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        SerialPostman (communicate/serial_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#circuitpythonpostman-communicatecircuitpython_postmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPythonPostman (communicate/circuitpython_postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#dummypostman-communicatepostmanpy" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        DummyPostman (communicate/postman.py)
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#message-format-standard" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Message Format Standard
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#circuitpython-compatibility-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        CircuitPython Compatibility Notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
 </nav>
                   </div>
                 </div>
@@ -700,8 +955,45 @@
 
 
 
-<h1 id="talos-sdl-user-guide">Talos-sdl user guide</h1>
-<p>to be written</p>
+<h1 id="talos-sdl-communication-protocol-and-the-postman-pattern">Talos-SDL: Communication Protocol and the Postman Pattern</h1>
+<p>This document outlines the standardized communication protocol and the <strong>Postman Pattern</strong> employed in the Talos-SDL framework. This architecture is crucial for abstracting the complexities of inter-process communication between the host computer (running Python) and the microcontroller-based instruments (running CircuitPython).</p>
+<h2 id="introduction">Introduction</h2>
+<p>The Talos-SDL framework operates across diverse computing environments: a powerful host computer for orchestration and AI, and resource-constrained microcontrollers for direct hardware control. These environments utilize different underlying communication mechanisms (e.g., <code>pyserial</code> on the host, <code>usb_cdc.data</code> on CircuitPython). To ensure flexible, testable, and robust message exchange, an abstraction layer is necessary to decouple high-level application logic from low-level transport specifics.</p>
+<h2 id="the-postman-pattern">The Postman Pattern</h2>
+<p>The <strong>Postman Pattern</strong> defines a clear, abstract interface for sending and receiving messages over any communication channel. In this pattern:</p>
+<ul>
+<li><strong>The Postman:</strong> Handles the low-level mechanics of message transport. This includes actions like opening and closing a serial port, encoding/decoding data, writing bytes, and reading incoming lines. Each specific communication medium (e.g., standard serial, CircuitPython's USB CDC data channel, or a dummy channel for testing) will have its own concrete <code>Postman</code> implementation.</li>
+<li><strong>The Clients (Secretary/DeviceManager):</strong> High-level components like the <code>DeviceManager</code> on the host or the <code>StateMachine</code> (acting as a "Secretary" on the device) <em>use</em> an instance of a <code>Postman</code> to communicate. These clients interact with the standardized <code>Postman</code> interface and do not need to know the intricate details of how the message is physically transmitted or received. This separation ensures that changing the communication hardware or protocol does not impact the core control logic.</li>
+</ul>
+<h2 id="core-postman-interface-shared_libcommunicatepostmanpy">Core <code>Postman</code> Interface (<code>shared_lib/communicate/postman.py</code>)</h2>
+<p>The <code>Postman</code> base class defines the essential methods for any communication channel:</p>
+<ul>
+<li><code>open_channel()</code>: Establishes the communication link.</li>
+<li><code>close_channel()</code>: Terminates the communication link.</li>
+<li><code>send(value)</code>: Transmits a message (<code>value</code> is typically a serialized JSON string).</li>
+<li><code>receive()</code>: Attempts to read an incoming message.</li>
+</ul>
+<p>Subclasses of <code>Postman</code> are required to implement the private methods (<code>_open_channel()</code>, <code>_close_channel()</code>, <code>_send(value)</code>, <code>_receive()</code>) that provide the concrete, channel-specific logic.</p>
+<h2 id="concrete-implementations">Concrete Implementations</h2>
+<h3 id="serialpostman-communicateserial_postmanpy"><code>SerialPostman</code> (<code>communicate/serial_postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This implementation is used exclusively on the <strong>Host computer</strong>. It facilitates communication with physical CircuitPython devices by interacting with standard serial ports (e.g., COM ports on Windows, <code>/dev/ttyACM*</code> on Linux).</li>
+<li><strong>Technology:</strong> Leverages the <code>pyserial</code> library for serial communication.</li>
+</ul>
+<h3 id="circuitpythonpostman-communicatecircuitpython_postmanpy"><code>CircuitPythonPostman</code> (<code>communicate/circuitpython_postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This implementation resides on the <strong>CircuitPython microcontroller</strong>. Its role is to enable the device to send messages back to the Host computer using CircuitPython's native USB CDC (Communications Device Class) data channel.</li>
+<li><strong>Technology:</strong> Utilizes the CircuitPython-specific <code>usb_cdc.data</code> object, which represents a separate serial stream distinct from the REPL console. This data channel is typically enabled in <code>boot.py</code>.</li>
+</ul>
+<h3 id="dummypostman-communicatepostmanpy"><code>DummyPostman</code> (<code>communicate/postman.py</code>)</h3>
+<ul>
+<li><strong>Purpose:</strong> This is a mock implementation used primarily for <strong>unit testing and offline development</strong>. It simulates sending and receiving messages without requiring any physical hardware or active serial connections.</li>
+<li><strong>Functionality:</strong> Can be configured with "canned responses" to mimic device behavior, allowing for isolated testing of Host-side or Device-side logic.</li>
+</ul>
+<h2 id="message-format-standard">Message Format Standard</h2>
+<p>All messages exchanged via any <code>Postman</code> implementation <strong>must</strong> adhere to the standardized JSON message structure defined in the <a href="../messaging/">Standard Messaging Protocol</a>. This ensures that messages are unambiguous, machine-readable, and consistently processed by both host and device.</p>
+<h2 id="circuitpython-compatibility-notes">CircuitPython Compatibility Notes</h2>
+<p>You will observe <code>type: ignore</code> comments within <code>communicate/postman.py</code> and <code>communicate/circuitpython_postman.py</code>. These are used to inform type checkers (like MyPy) to ignore specific imports or type issues that arise because <code>usb_cdc</code> is a module only available in the CircuitPython environment. This allows the host-side Python code to be type-checked without errors, even though it references CircuitPython-specific modules indirectly.</p>
 
 
 
