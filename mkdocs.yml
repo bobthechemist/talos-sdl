@@ -23,6 +23,11 @@ nav:
   - Home: index.md
   - Tutorials:
       - End-User Guide: tutorials/user_guide.md
+  - Design Protocols: 
+      - Communication Protocol: design_protocols/communication.md 
+      - Firmware Design: design_protocols/firmware.md 
+      - Host Design: design_protocols/host.md 
+      - Messaging Protocol: design_protocols/messaging.md 
   - API Reference:
       - Communicate: api/communicate.md
       - Firmware: api/firmware.md
