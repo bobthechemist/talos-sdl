@@ -15,7 +15,7 @@ class AgentExecutor:
         self.agent = agent
         self.planner = planner
         self.plate_manager = plate_manager
-        self.session_manager = session_manager # DLN Session Manager
+        self.session_manager = session_manager 
         self.total_tokens = 0
         self.require_confirmation = require_confirmation
         
@@ -77,7 +77,6 @@ class AgentExecutor:
                 ai_data = json.loads(json_str.strip())
             except Exception as e:
                 print(f"{C.WARN}[Agent] Message: {response.strip()}{C.END}")
-                # Log as a natural language response / parse error
                 self.session_manager.log_event("parse_error", {"raw_text": response, "error": str(e)})
                 return True
 
@@ -104,39 +103,50 @@ class AgentExecutor:
             # --- PLAN REVIEW & EDITING ---
             if self.require_confirmation:
                 plan = self._review_and_edit_plan(plan)
-                
                 if plan is None:
                     print(f"{C.ERR}Plan rejected by human.{C.END}")
                     observation = "ERROR: Human operator rejected the plan. Ask what they want to change."
                     self.session_manager.log_event("human_intervention", {"action": "rejected"})
                     continue 
 
-                if not plan:
-                    print(f"{C.WARN}Plan is empty. Returning control to AI.{C.END}")
-                    observation = "WARNING: The human cleared the plan. No actions were taken."
-                    self.session_manager.log_event("human_intervention", {"action": "cleared_plan"})
-                    continue
-
-            # --- BATCH EXECUTION ---
+            # --- BATCH EXECUTION (Protocol Aware) ---
             execution_success = True
-            failed_step = None
             step_results = []
             collected_data = [] 
             
             print(f"\n{C.INFO}Executing Plan...{C.END}")
-            for step_idx, step in enumerate(plan):
+            
+            # Use index-based loop to allow for Protocol Macro Injection
+            current_plan = list(plan)
+            step_idx = 0
+            
+            while step_idx < len(current_plan):
+                step = current_plan[step_idx]
                 device = step.get("device", "").lower()
                 command = step.get("command")
                 args = step.get("args", {})
+                
+                print(f"  -> Step {step_idx+1}/{len(current_plan)}: {device} {command}...", end="", flush=True)
+
+                # --- VIRTUAL DEVICE: DLN (Notebook commands) ---
+                if device == "dln":
+                    res = self._handle_dln_command(command, args, current_plan, step_idx)
+                    step_results.append(res)
+                    if res['status'] == "SUCCESS":
+                        print(f" {C.OK}[NOTEBOOK OK]{C.END}")
+                        step_idx += 1
+                        continue
+                    else:
+                        print(f" {C.ERR}[NOTEBOOK ERROR]{C.END}")
+                        print(f"     Details: {res['payload']}")
+                        execution_success = False
+                        break
+
+                # --- PHYSICAL DEVICES ---
                 port = self.device_ports.get(device)
-
-                print(f"  -> Step {step_idx+1}/{len(plan)}: {device} {command}...", end="", flush=True)
-
                 if not port:
                     print(f" {C.ERR}[FAILED]{C.END} (Device not found)")
                     execution_success = False
-                    failed_step = f"Step {step_idx+1}: Device '{device}' not connected."
-                    step_results.append({"step": step_idx + 1, "status": "FAILED", "error": "Device not connected"})
                     break
 
                 instruction_msg = Message.create_message(
@@ -154,15 +164,15 @@ class AgentExecutor:
                     
                     if result['status'] == "DATA_RESPONSE":
                         payload = result['payload']
-                        # --- DLN: Save Artifact directly to Experiment Folder ---
                         artifact_id = self.session_manager.save_data(current_entry_id, device, command, payload)
-                        print(f"     {C.OK}[Notebook] Saved as artifact {artifact_id}{C.END}")
+                        print(f"     {C.OK}[Notebook] Saved artifact {artifact_id}{C.END}")
                         
+                        # --- FIX IS HERE: Included 'args' in the collection buffer ---
                         collected_data.append({
                             "id": artifact_id,
                             "device": device,
                             "command": command,
-                            "args": args,
+                            "args": args, # Passed through for analysis context
                             "payload": payload
                         })
 
@@ -171,14 +181,14 @@ class AgentExecutor:
                     print(f" {C.ERR}[PROBLEM]{C.END}")
                     print(f"     Details: {result['payload']}")
                     execution_success = False
-                    failed_step = f"Step {step_idx+1} ({command}) failed: {result['payload']}"
                     break
+                
+                step_idx += 1
             
-            # --- DLN: Log result of the whole sequence ---
+            # Log the total result of this plan execution
             self.session_manager.log_event("execution_result", {
                 "success": execution_success,
-                "steps": step_results,
-                "error_detail": failed_step if not execution_success else None
+                "steps": step_results
             })
             
             if execution_success:
@@ -187,21 +197,49 @@ class AgentExecutor:
                 
                 if collected_data:
                     analysis_text = self._perform_aggregated_analysis(goal, collected_data)
-                    # --- DLN: Log the Final Analysis ---
                     self.session_manager.log_event("one_shot_analysis", {"summary": analysis_text})
                 
                 return True 
             else:
                 print(f"{C.ERR}[Agent] Plan aborted due to error.{C.END}")
-                observation = f"EXECUTION FAILED: {failed_step}"
+                observation = f"EXECUTION FAILED at step {step_idx+1}"
                 self.last_failed_plan = plan
 
         return False
 
+    def _handle_dln_command(self, command, args, current_plan, current_idx):
+        """Processes virtual notebook commands (protocols)."""
+        try:
+            if command == "save_protocol":
+                name = args.get("name")
+                desc = args.get("description", "No description")
+                plan_to_save = args.get("plan")
+                if not name or not plan_to_save:
+                    return {"status": "PROBLEM", "payload": "Missing name or plan data."}
+                self.session_manager.save_protocol(name, desc, plan_to_save)
+                return {"status": "SUCCESS", "payload": f"Protocol '{name}' saved to notebook."}
+
+            elif command == "execute_protocol":
+                name = args.get("name")
+                steps = self.session_manager.load_protocol(name)
+                if not steps:
+                    return {"status": "PROBLEM", "payload": f"Protocol '{name}' not found."}
+                # Macro Injection: insert protocol steps after current step
+                for i, s in enumerate(steps):
+                    current_plan.insert(current_idx + 1 + i, s)
+                return {"status": "SUCCESS", "payload": f"Injected {len(steps)} steps from '{name}'."}
+
+            elif command == "list_protocols":
+                protos = self.session_manager.list_protocols()
+                return {"status": "SUCCESS", "payload": {"protocols": protos}}
+
+            return {"status": "PROBLEM", "payload": f"Unknown DLN command: {command}"}
+        except Exception as e:
+            return {"status": "PROBLEM", "payload": str(e)}
+
     def _perform_aggregated_analysis(self, user_goal, data_list):
         """
-        Performs a One-Shot analysis on the COMPLETE set of data collected 
-        during the plan execution.
+        Performs a One-Shot analysis on data collected during the plan execution.
         """
         print(f"\n{C.INFO}[Analysis] Aggregating results from {len(data_list)} datasets...{C.END}")
         
@@ -216,13 +254,14 @@ class AgentExecutor:
         for item in data_list:
             core_data = item['payload'].get('data', item['payload'])
             data_summary += f"\n--- DATASET {item['id']} ---\n"
+            # Now item['args'] is guaranteed to exist
             data_summary += f"Source: {item['device']}.{item['command']}({item['args']})\n"
             data_summary += f"Content: {json.dumps(core_data, indent=None)}\n"
 
         system_prompt = (
             "You are a Scientific Data Analyst. "
-            "Interpret experimental results concierge-style. Identify trends and peaks. "
-            "Be concise. Describe the science, not the JSON."
+            "Interpret experimental results in the context of the user's goal. "
+            "Be concise. Describe the chemistry/physics, not the JSON structure."
         )
         
         user_prompt = (
