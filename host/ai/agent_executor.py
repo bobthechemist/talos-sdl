@@ -6,19 +6,17 @@ import queue
 from datetime import datetime
 from host.gui.console import C
 from shared_lib.messages import Message
-from host.core.registry import Registry
 from host.ai.llm_manager import LLMManager
 
 class AgentExecutor:
-    def __init__(self, manager, device_ports, agent, planner, plate_manager, require_confirmation=True):
+    def __init__(self, manager, device_ports, agent, planner, plate_manager, session_manager, require_confirmation=True):
         self.manager = manager
         self.device_ports = device_ports
         self.agent = agent
         self.planner = planner
         self.plate_manager = plate_manager
-        self.registry = Registry()
+        self.session_manager = session_manager # DLN Session Manager
         self.total_tokens = 0
-        self.session_history = []
         self.require_confirmation = require_confirmation
         
         # --- Context Memory ---
@@ -26,21 +24,10 @@ class AgentExecutor:
         self.last_failed_plan = None 
 
     def run(self, goal, max_turns=3):
-        # Initialize session history
-        if not self.session_history:
-            self.session_history.append({
-                "timestamp": datetime.now().isoformat(),
-                "event": "session_start",
-                "system_context": self.planner.build_system_context(),
-                "world_model": self.planner.world_model
-            })
-
-        self.session_history.append({
-            "timestamp": datetime.now().isoformat(),
-            "event": "new_goal",
-            "goal": goal
-        })
-        
+        """
+        The main ReAct loop. Executes turns until the goal is met or max_turns is reached.
+        Everything is logged to the Digital Lab Notebook via session_manager.
+        """
         observation = None
         self.last_failed_plan = None
         
@@ -54,25 +41,32 @@ class AgentExecutor:
                 observation=observation
             )
             
+            # --- DLN: Log the specific prompt for this turn ---
+            current_entry_id = self.session_manager.log_event("prompt", {
+                "turn": i + 1,
+                "prompt_text": prompt,
+                "current_well": self.last_known_well
+            })
+
             print(f"[*] Thinking... (Turn {i+1}/{max_turns})")
             response = self.agent.prompt(prompt, use_history=True)
             
             if response is None:
                 print(f"{C.ERR}[Agent] Critical: The AI provider failed to return a response.{C.END}")
+                self.session_manager.log_event("error", {"detail": "AI Provider failed to respond"})
                 break
 
             usage = self.agent.last_run_info
             self.total_tokens += usage.get('total_tokens', 0)
             
-            turn_log = {
-                "turn": i + 1,
-                "timestamp": datetime.now().isoformat(),
-                "prompt_sent": prompt,
-                "response_raw": response,
+            # --- DLN: Log the raw response and token usage ---
+            self.session_manager.log_event("ai_response", {
+                "raw_text": response,
                 "usage": usage
-            }
+            })
 
             # --- Parse AI Response ---
+            ai_data = None
             try:
                 json_str = response
                 if "```json" in response:
@@ -81,19 +75,16 @@ class AgentExecutor:
                     json_str = response.split("```")[1].split("```")[0]
                 
                 ai_data = json.loads(json_str.strip())
-                turn_log["parsed_data"] = ai_data
             except Exception as e:
                 print(f"{C.WARN}[Agent] Message: {response.strip()}{C.END}")
-                turn_log["error"] = "JSON Parse Error - Text Response Recieved"
-                turn_log["raw_text"] = response
-                self.session_history.append(turn_log)
+                # Log as a natural language response / parse error
+                self.session_manager.log_event("parse_error", {"raw_text": response, "error": str(e)})
                 return True
 
             # --- Check for Completion ---
             if ai_data.get("status") == "COMPLETE":
                 print(f"\n{C.OK}[Agent] {ai_data.get('message')}{C.END}")
-                turn_log["event"] = "task_complete"
-                self.session_history.append(turn_log)
+                self.session_manager.log_event("task_complete", {"message": ai_data.get('message')})
                 return True
 
             # --- Extract Plan ---
@@ -104,9 +95,11 @@ class AgentExecutor:
             # --- DUPLICATE PLAN SAFEGUARD ---
             if plan == self.last_failed_plan:
                 print(f"{C.ERR}[Safeguard] Aborting: Agent generated the exact same failing plan.{C.END}")
-                turn_log["status"] = "ABORT_INFINITE_LOOP"
-                self.session_history.append(turn_log)
+                self.session_manager.log_event("abort", {"reason": "Infinite loop detected - plan repeated"})
                 return False
+
+            # --- DLN: Log the Proposed Plan ---
+            self.session_manager.log_event("plan_proposed", {"plan": plan})
 
             # --- PLAN REVIEW & EDITING ---
             if self.require_confirmation:
@@ -115,21 +108,19 @@ class AgentExecutor:
                 if plan is None:
                     print(f"{C.ERR}Plan rejected by human.{C.END}")
                     observation = "ERROR: Human operator rejected the plan. Ask what they want to change."
-                    turn_log["status"] = "REJECTED_BY_HUMAN"
-                    self.session_history.append(turn_log)
+                    self.session_manager.log_event("human_intervention", {"action": "rejected"})
                     continue 
 
                 if not plan:
                     print(f"{C.WARN}Plan is empty. Returning control to AI.{C.END}")
                     observation = "WARNING: The human cleared the plan. No actions were taken."
+                    self.session_manager.log_event("human_intervention", {"action": "cleared_plan"})
                     continue
 
             # --- BATCH EXECUTION ---
             execution_success = True
             failed_step = None
             step_results = []
-            
-            # --- NEW: Data Buffer for this Plan ---
             collected_data = [] 
             
             print(f"\n{C.INFO}Executing Plan...{C.END}")
@@ -145,11 +136,7 @@ class AgentExecutor:
                     print(f" {C.ERR}[FAILED]{C.END} (Device not found)")
                     execution_success = False
                     failed_step = f"Step {step_idx+1}: Device '{device}' not connected."
-                    step_results.append({
-                        "step": step_idx + 1,
-                        "status": "FAILED",
-                        "error": "Device not connected"
-                    })
+                    step_results.append({"step": step_idx + 1, "status": "FAILED", "error": "Device not connected"})
                     break
 
                 instruction_msg = Message.create_message(
@@ -167,12 +154,12 @@ class AgentExecutor:
                     
                     if result['status'] == "DATA_RESPONSE":
                         payload = result['payload']
-                        ds_id, entry = self.registry.register(device, command, payload)
-                        print(f"     {C.OK}[Registry] Saved as {ds_id} ({entry['files']}){C.END}")
+                        # --- DLN: Save Artifact directly to Experiment Folder ---
+                        artifact_id = self.session_manager.save_data(current_entry_id, device, command, payload)
+                        print(f"     {C.OK}[Notebook] Saved as artifact {artifact_id}{C.END}")
                         
-                        # --- NEW: Buffer data, do not analyze yet ---
                         collected_data.append({
-                            "id": ds_id,
+                            "id": artifact_id,
                             "device": device,
                             "command": command,
                             "args": args,
@@ -180,7 +167,6 @@ class AgentExecutor:
                         })
 
                     self._update_executor_state(command, args)
-
                 else:
                     print(f" {C.ERR}[PROBLEM]{C.END}")
                     print(f"     Details: {result['payload']}")
@@ -188,24 +174,26 @@ class AgentExecutor:
                     failed_step = f"Step {step_idx+1} ({command}) failed: {result['payload']}"
                     break
             
-            turn_log["step_results"] = step_results
+            # --- DLN: Log result of the whole sequence ---
+            self.session_manager.log_event("execution_result", {
+                "success": execution_success,
+                "steps": step_results,
+                "error_detail": failed_step if not execution_success else None
+            })
             
             if execution_success:
                 print(f"{C.OK}[Agent] Plan executed successfully.{C.END}")
-                turn_log["execution_result"] = "Success"
-                self.session_history.append(turn_log)
                 self.last_failed_plan = None 
                 
-                # --- NEW: Trigger Aggregated Analysis ---
                 if collected_data:
-                    self._perform_aggregated_analysis(goal, collected_data)
+                    analysis_text = self._perform_aggregated_analysis(goal, collected_data)
+                    # --- DLN: Log the Final Analysis ---
+                    self.session_manager.log_event("one_shot_analysis", {"summary": analysis_text})
                 
                 return True 
             else:
                 print(f"{C.ERR}[Agent] Plan aborted due to error.{C.END}")
                 observation = f"EXECUTION FAILED: {failed_step}"
-                turn_log["execution_result"] = f"Failed: {failed_step}"
-                self.session_history.append(turn_log)
                 self.last_failed_plan = plan
 
         return False
@@ -217,8 +205,6 @@ class AgentExecutor:
         """
         print(f"\n{C.INFO}[Analysis] Aggregating results from {len(data_list)} datasets...{C.END}")
         
-        # 1. Compile Unique Firmware Guidance
-        # We only need guidance for the devices that actually produced data.
         relevant_devices = set(d['device'] for d in data_list)
         guidance_text = ""
         for dev in relevant_devices:
@@ -226,23 +212,17 @@ class AgentExecutor:
             if text:
                 guidance_text += f"[{dev.upper()} Guidance]: {text}\n"
 
-        # 2. Compile Data Content
         data_summary = ""
         for item in data_list:
-            # We strip out metadata from the payload to save context tokens, keeping the 'data' key
             core_data = item['payload'].get('data', item['payload'])
-            
             data_summary += f"\n--- DATASET {item['id']} ---\n"
             data_summary += f"Source: {item['device']}.{item['command']}({item['args']})\n"
-            data_summary += f"Content: {json.dumps(core_data, indent=None)}\n" # Compact JSON
+            data_summary += f"Content: {json.dumps(core_data, indent=None)}\n"
 
         system_prompt = (
             "You are a Scientific Data Analyst. "
-            "Your job is to interpret experimental results in the context of the user's goal. "
-            "You have just completed a sequence of actions. Review the collected data collectively.\n"
-            "- Identify trends, peaks, or relationships between the datasets.\n"
-            "- Relate the findings directly back to the User Goal.\n"
-            "- Be concise. Describe the chemistry/physics, not the JSON structure."
+            "Interpret experimental results concierge-style. Identify trends and peaks. "
+            "Be concise. Describe the science, not the JSON."
         )
         
         user_prompt = (
@@ -253,27 +233,19 @@ class AgentExecutor:
         )
 
         try:
-            # Use a temporary analyst agent
             analyst = LLMManager.get_agent(context=system_prompt) 
             summary = analyst.prompt(user_prompt, use_history=False)
             
             print(f"\n{C.INFO}--- EXPERIMENT ANALYSIS ---{C.END}")
             print(f"{summary}")
             print(f"{C.INFO}---------------------------{C.END}\n")
-            
-            # Append analysis to history so the main agent "remembers" the result 
-            # if we were to continue the conversation (though currently this method 
-            # returns True immediately after, ending the turn).
-            self.session_history.append({
-                "event": "one_shot_analysis",
-                "summary": summary
-            })
+            return summary
             
         except Exception as e:
             print(f"{C.ERR}     [Analysis Failed] {e}{C.END}")
+            return f"Analysis failed: {e}"
 
     def _review_and_edit_plan(self, plan):
-        # ... (Existing implementation unchanged) ...
         while True:
             print(f"\n{C.WARN}--- PLAN REVIEW (CTRL-C to abort) ---{C.END}")
             if not plan:
@@ -286,11 +258,12 @@ class AgentExecutor:
                     print(f"  {C.INFO}{idx+1}.{C.END} {dev}: {cmd} {args}")
 
             print(f"\n{C.INFO}Commands: 'run' (or y), 'reject' (or n), 'del <#>', 'edit <#>'{C.END}")
-            user_input = input(f"Action > ").strip()
+            try:
+                user_input = input(f"Action > ").strip()
+            except EOFError: return None
             
             if user_input.lower() in ('run', 'y', 'yes'):
                 return plan
-            
             if user_input.lower() in ('reject', 'no', 'n'):
                 return None
             
@@ -300,7 +273,6 @@ class AgentExecutor:
                 continue
                 
             action, target = parts[0].lower(), parts[1]
-            
             try:
                 idx = int(target) - 1
                 if idx < 0 or idx >= len(plan):
@@ -313,23 +285,17 @@ class AgentExecutor:
             if action == 'del':
                 removed = plan.pop(idx)
                 print(f"{C.WARN}Removed step {target}: {removed['command']}{C.END}")
-            
             elif action == 'edit':
                 step = plan[idx]
                 print(f"{C.INFO}Editing Step {target}:{C.END} {step['device']} -> {step['command']}")
                 print(f"Current Args: {json.dumps(step.get('args', {}))}")
-                
-                new_args_raw = input("Enter new args (JSON format) or 'c' to cancel: ").strip()
-                if new_args_raw.lower() == 'c':
-                    continue
-                    
+                new_args_raw = input("Enter new args (JSON) or 'c': ").strip()
+                if new_args_raw.lower() == 'c': continue
                 try:
                     new_args = json.loads(new_args_raw)
                     if isinstance(new_args, dict):
                         plan[idx]['args'] = new_args
                         print(f"{C.OK}Step updated.{C.END}")
-                    else:
-                        print(f"{C.ERR}Args must be a JSON object (dictionary).{C.END}")
                 except json.JSONDecodeError:
                     print(f"{C.ERR}Invalid JSON string.{C.END}")
 
@@ -337,19 +303,16 @@ class AgentExecutor:
         """Updates internal memory of well position and plate contents."""
         if command in ('to_well', 'dispense_at', 'to_well_and_dispense'):
             well = args.get('well')
-            if well:
-                self.last_known_well = well.upper()
+            if well: self.last_known_well = well.upper()
         
         if command in ('dispense', 'dispense_at', 'to_well_and_dispense'):
             well = args.get('well') or args.get('to_well') or self.last_known_well
             pump = args.get('pump')
             vol = args.get('vol', 0)
-            
             if well and pump and vol > 0:
                 self.plate_manager.add_liquid(well, pump, vol)
 
     def _wait_for_result(self, port, timeout=60):
-        # ... (Existing implementation unchanged) ...
         start = time.time()
         while time.time() - start < timeout:
             try:
@@ -361,16 +324,3 @@ class AgentExecutor:
             except queue.Empty:
                 continue
         return {"status": "ERROR", "payload": "Hardware timeout."}
-
-    def save_log(self):
-        # ... (Existing implementation unchanged) ...
-        if not self.session_history: return
-        if not os.path.exists("temp"): os.makedirs("temp")
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        filename = f"temp/chat-session-{timestamp}.json"
-        try:
-            with open(filename, 'w') as f:
-                json.dump(self.session_history, f, indent=2)
-            print(f"\n{C.INFO}[Log] Session saved: {filename}{C.END}")
-        except Exception as e:
-            print(f"{C.ERR}Failed to save log: {e}{C.END}")

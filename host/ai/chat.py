@@ -16,21 +16,20 @@ from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, check_devices_attached, get_instructions, load_world_from_file
 from host.gui.console import C
-from host.core.registry import Registry
+from host.dln.session_manager import SessionManager
 
 def print_help():
     print(f"\n{C.INFO}--- Available Commands ---{C.END}")
     print(f"  {C.OK}/run [goal]{C.END}    : Switch to Controller Mode (or execute a goal).")
     print(f"  {C.OK}/data [query]{C.END}  : Switch to Analyst Mode (or ask a question).")
     print(f"  {C.OK}/confirm [on|off]{C.END}: Toggle human confirmation before hardware execution.")
-    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets.")
-    print(f"  {C.OK}/log{C.END}           : Save the current session log to disk.")
-    print(f"  {C.OK}/clear{C.END}         : Clear the AI's conversation history.")
-    print(f"  {C.OK}/quit{C.END}          : Exit the application.")
+    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets in this notebook.")
+    print(f"  {C.OK}/clear{C.END}         : Clear the AI's short-term context.")
+    print(f"  {C.OK}/quit{C.END}          : Exit the application and save session.")
 
 def main():
     parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
-    parser.add_argument("--provider", type=str, help="AI Provider (vertex, ollama, openai).")
+    parser.add_argument("--provider", type=str, help="AI Provider (gemini, ollama, openai).")
     parser.add_argument("--model", type=str, help="Specific model name.")
     args = parser.parse_args()
 
@@ -38,29 +37,35 @@ def main():
     print("      ALIF AGENTIC LABORATORY COCKPIT      ")
     print(f"=========================================={C.END}")
     
-    # 1. World & Hardware Setup
+    # 1. World Model Setup
     world_path = "job_world.json"
     if os.path.exists(world_path):
         world_model = load_world_from_file(world_path)
     else:
         print(f"{C.WARN}No world model found. Defaulting to generic setup.{C.END}")
-        world_model = {"reagents":
-                       {"p1": "0.1 M acetic acid", 
-                        "p2": "0.1 M sodium hydroxide",
-                        "p3": "universal indicator",
-                        "p4": "water"},
-                        "waste": {"x": 5, "y": -5.3},
-                         "max_well_volume_ul": 250.0, 
-                         "experiment_name": "Acid-Base Titration"}
+        world_model = {
+            "reagents": {"p1": "acetic acid", "p2": "sodium hydroxide", "p3": "indicator", "p4": "water"},
+            "max_well_volume_ul": 250.0, 
+            "experiment_name": "General Experiment"
+        }
 
+    # 2. Initialize Digital Lab Notebook
+    print(f"{C.INFO}[+] Initializing Digital Lab Notebook...{C.END}")
+    session_manager = SessionManager(base_dir=".talos")
+    session_manager.start_session(
+        world_model=world_model,
+        title=world_model.get('experiment_name'),
+        objective="Agentic session started via Laboratory Cockpit"
+    )
+
+    # 3. Hardware Setup
     if not check_devices_attached(): sys.exit(1)
     manager, device_ports = connect_devices()
     if not manager: sys.exit(1)
 
     plate_manager = PlateManager(max_volume_ul=world_model['max_well_volume_ul'])
-    registry = Registry()
     
-    # 2. Capabilities & Planner
+    # 4. Capabilities Discovery
     full_caps = get_instructions(manager, device_ports)
     ai_commands = {}
     ai_guidance = {}
@@ -70,16 +75,14 @@ def main():
 
     planner = Planner(world_model, ai_commands, ai_guidance)
     
-    # 3. Initialize AGENTS (Dual Contexts)
-    print(f"{C.INFO}[+] Initializing AI Agents...{C.END}")
-    
+    # 5. Agent Initialization
+    print(f"{C.INFO}[+] Initializing AI Agents (Dual Contexts)...{C.END}")
     planner.set_mode(Planner.MODE_RUN)
     run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
     planner.set_mode(Planner.MODE_DATA)
     data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
-    # Default to RUN mode
     planner.set_mode(Planner.MODE_RUN)
     current_agent = run_agent
     
@@ -89,33 +92,31 @@ def main():
         agent=current_agent,
         planner=planner, 
         plate_manager=plate_manager,
+        session_manager=session_manager,
         require_confirmation=True 
     )
 
-    print(f"\n{C.INFO}System Online. Mode: /run (Laboratory Controller){C.END}")
+    print(f"\n{C.INFO}System Online. Notebook Session: {session_manager.current_exp_id}{C.END}")
     print(f"{C.INFO}Type /help for a list of commands.{C.END}")
 
-    # 4. REPL Loop
+    # 6. REPL Loop
     try:
         while True:
             try:
                 mode_str = "RUN" if planner.current_mode == Planner.MODE_RUN else "DATA"
                 prompt_color = C.WARN if mode_str == "RUN" else C.OK
-                
                 safety_char = "🔒" if executor.require_confirmation else "⚡"
                 
                 user_input = input(f"\n{prompt_color}[{mode_str} {safety_char}] > {C.END}").strip()
-                
                 if not user_input: continue
                 
-                # --- Slash Command Handling ---
+                # --- Slash Commands ---
                 if user_input.startswith("/"):
                     parts = user_input.split()
                     cmd = parts[0].lower()
                     remainder = " ".join(parts[1:])
                     
-                    if cmd in ("/quit", "/exit"):
-                        break
+                    if cmd in ("/quit", "/exit"): break
                     
                     elif cmd == "/help":
                         print_help()
@@ -123,79 +124,71 @@ def main():
 
                     elif cmd == "/clear":
                         current_agent.clear_history()
-                        print(f"{C.INFO}Conversation history cleared for {mode_str} mode.{C.END}")
-                        continue
-
-                    elif cmd == "/log":
-                        executor.save_log()
+                        print(f"{C.INFO}Context cleared for {mode_str}.{C.END}")
                         continue
 
                     elif cmd == "/confirm":
-                        if "off" in remainder.lower():
-                            executor.require_confirmation = False
-                            print(f"{C.WARN}⚠️ Safety OFF. Plans will execute immediately.{C.END}")
-                        else:
-                            executor.require_confirmation = True
-                            print(f"{C.OK}🔒 Safety ON. Plans require confirmation.{C.END}")
+                        executor.require_confirmation = not ("off" in remainder.lower())
+                        status = "OFF ⚡" if not executor.require_confirmation else "ON 🔒"
+                        print(f"{C.INFO}Safety Gate: {status}{C.END}")
                         continue
 
                     elif cmd == "/datasets":
-                        datasets = registry.list_datasets()
-                        print(f"\n{C.INFO}--- Registered Datasets ---{C.END}")
-                        if not datasets:
-                            print("No datasets recorded yet.")
-                        else:
-                            for ds in datasets:
-                                print(f"ID: {C.OK}{ds['id']}{C.END} | Dev: {ds['origin_device']} | Time: {ds['timestamp']}")
-                                print(f"   Files: {ds['files']}")
+                        # Query StorageManager directly via SessionManager
+                        session = session_manager.storage.Session()
+                        from host.dln.storage_manager import Attachment
+                        attachments = session.query(Attachment).all()
+                        print(f"\n{C.INFO}--- Lab Notebook: Registered Datasets ---{C.END}")
+                        if not attachments:
+                            print("No data recorded yet.")
+                        for att in attachments:
+                            print(f"ID: {C.OK}{att.id}{C.END} | Type: {att.data_type} | File: {att.filename}")
+                        session.close()
                         continue
 
                     elif cmd == "/run":
                         planner.set_mode(Planner.MODE_RUN)
                         current_agent = run_agent
-                        print(f"{C.INFO}Switched to RUN mode (Controller).{C.END}")
+                        print(f"{C.INFO}Switched to RUN (Controller).{C.END}")
                         if remainder: user_input = remainder
                         else: continue
                     
                     elif cmd == "/data":
                         planner.set_mode(Planner.MODE_DATA)
                         current_agent = data_agent
-                        print(f"{C.INFO}Switched to DATA mode (Analyst).{C.END}")
+                        print(f"{C.INFO}Switched to DATA (Analyst).{C.END}")
                         if remainder: user_input = remainder
                         else: continue
                     
                     else:
-                        print(f"{C.ERR}Unknown command: {cmd}. Type /help for options.{C.END}")
+                        print(f"{C.ERR}Unknown command: {cmd}{C.END}")
                         continue
 
-                # --- Execution ---
+                # --- Execution Logic ---
                 executor.agent = current_agent
                 
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
                 else:
-                    # Data Mode: Check for dataset references and inject content
-                    print(f"[*] Analyzing...")
-                    
-                    # Regex to find IDs like ds_20260218_130448
-                    found_ids = re.findall(r"(ds_\d{8}_\d{6})", user_input)
+                    # Data Mode: Dataset content injection
+                    found_ids = re.findall(r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8})", user_input)
                     injected_context = ""
                     
                     if found_ids:
-                        print(f"{C.INFO}    -> Found dataset references: {found_ids}{C.END}")
-                        for ds_id in found_ids:
-                            content = registry.get_dataset_content(ds_id)
-                            if content:
-                                injected_context += f"\n--- DATASET {ds_id} CONTENT ---\n{content}\n"
-                                print(f"{C.OK}    -> Loaded content for {ds_id}{C.END}")
-                            else:
-                                print(f"{C.ERR}    -> Could not load {ds_id}{C.END}")
-                    
-                    # Construct the final prompt for the agent
-                    final_prompt = user_input
-                    if injected_context:
-                        final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
-                    
+                        session = session_manager.storage.Session()
+                        from host.dln.storage_manager import Attachment
+                        for aid in found_ids:
+                            # Match full UUID or the 8-char short ID used in filenames
+                            att = session.query(Attachment).filter(
+                                (Attachment.id == aid) | (Attachment.filename.contains(aid))
+                            ).first()
+                            if att and os.path.exists(att.file_path):
+                                with open(att.file_path, 'r') as f:
+                                    injected_context += f"\n--- DATASET {aid} ---\n{f.read()}\n"
+                        session.close()
+
+                    final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}" if injected_context else user_input
+                    print(f"[*] Analyzing...")
                     response = current_agent.prompt(final_prompt, use_history=True)
                     print(f"\n{C.OK}{response}{C.END}")
 
@@ -205,7 +198,7 @@ def main():
 
     finally:
         print(f"\n{C.INFO}Shutting down...")
-        executor.save_log()
+        session_manager.end_session(summary="User exited Cockpit.")
         manager.stop()
         print(f"{C.OK}Goodbye.{C.END}")
 

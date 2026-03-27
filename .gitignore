@@ -164,6 +164,9 @@ cython_debug/
 # BoB puts a lot of junk in the temp folder so let's ignore that
 temp/
 
+# Local experiment database and files
+.talos/
+
 # Planning files
 CURRENT_FOCUS.md
 BRANCH_GOALS.md
