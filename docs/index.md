@@ -1,8 +1,10 @@
 # Talos-SDL Documentation
 
-Welcome to the comprehensive documentation for the Talos-SDL Orchestrator – an open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.
+Welcome to the documentation for the Talos-SDL Orchestrator – an open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.
 
-This documentation serves as your guide to understanding, operating, and extending Talos-SDL, designed to empower researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows.
+This documentation serves as your guide to understanding, operating, and extending Talos-SDL, designed to empower researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows. Talos-SDL is designed with rapid prototyping and deployment in mind and targets single users and small groups interested in exploring agentic scientific laboratory instrumentation.
+
+>Much of this documentation is in *draft* form and has been written by AI based on the codebase and journals the developer has kept during the framework design process. Revisions and review are in process.
 
 ## Documentation Sections
 
@@ -20,5 +22,6 @@ The repository is organized to separate the high-level AI logic from the low-lev
 
 *   **`host/`**: The "Brain." Contains the Python application that runs on your PC, including AI agents, graphical user interfaces, and device management logic.
 *   **`firmware/`**: The "Hands." Contains the CircuitPython code that runs on your microcontrollers, tailored for specific instruments like the `sidekick` robotic arm or `colorimeter`.
+*   **`communicate/`**: The "Language." Contains the abstracted classes and code to ensure communication between host, firmware, and other devices follow well-formatted constructs.
 *   **`shared_lib/`**: Common protocols, utilities, and message definitions that ensure consistent communication and behavior across both host and firmware.
 *   **`docs/`**: This documentation! Containing all guides, concepts, protocols, and API references.

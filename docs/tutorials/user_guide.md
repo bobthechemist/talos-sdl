@@ -63,6 +63,7 @@ python host/ai/chat.py
 ```
 
 Upon launching, the system will:
+
 1.  **Load the World Model:** It will attempt to load `job_world.json` if present, or fall back to a default configuration. This model tells the AI what reagents are in which pumps, the maximum well volume, etc.
 2.  **Scan and Connect Devices:** It will automatically scan your system for connected Talos-SDL instruments (Sidekick, Colorimeter, Stirplate Manager, etc.) and establish communication.
 3.  **Initialize AI Agents:** It sets up the AI models for both "run" (control) and "data" (analysis) modes.
@@ -168,7 +169,7 @@ Talos-SDL is designed for "Documentation-While-Doing."
 *   **AI produces "PROBLEM" messages:**
     *   Carefully read the error message in the payload. It often indicates invalid arguments, a device in the wrong state (e.g., not homed), or a hardware fault.
     *   Check the relevant [Design Protocols](../design_protocols/firmware_design_protocol.md) and [API Reference](../api/firmware.md) for the device's commands to ensure correct usage.
-*   **Mermaid diagrams not rendering:** Ensure you have `pymdown-extensions` installed (`pip install pymdown-extensions`) and your `mkdocs.yml` is configured correctly for `pymdownx.superfences`.
+
 
 ## 7. Next Steps: Beyond Basic Operation
 
