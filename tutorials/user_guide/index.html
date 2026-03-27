@@ -1619,10 +1619,12 @@
 <p>From the project's root directory, run:</p>
 <div class="language-bash highlight"><pre><span></span><code><span id="__span-3-1"><a id="__codelineno-3-1" name="__codelineno-3-1" href="#__codelineno-3-1"></a>python<span class="w"> </span>host/ai/chat.py
 </span></code></pre></div>
-<p>Upon launching, the system will:
-1.  <strong>Load the World Model:</strong> It will attempt to load <code>job_world.json</code> if present, or fall back to a default configuration. This model tells the AI what reagents are in which pumps, the maximum well volume, etc.
-2.  <strong>Scan and Connect Devices:</strong> It will automatically scan your system for connected Talos-SDL instruments (Sidekick, Colorimeter, Stirplate Manager, etc.) and establish communication.
-3.  <strong>Initialize AI Agents:</strong> It sets up the AI models for both "run" (control) and "data" (analysis) modes.</p>
+<p>Upon launching, the system will:</p>
+<ol>
+<li><strong>Load the World Model:</strong> It will attempt to load <code>job_world.json</code> if present, or fall back to a default configuration. This model tells the AI what reagents are in which pumps, the maximum well volume, etc.</li>
+<li><strong>Scan and Connect Devices:</strong> It will automatically scan your system for connected Talos-SDL instruments (Sidekick, Colorimeter, Stirplate Manager, etc.) and establish communication.</li>
+<li><strong>Initialize AI Agents:</strong> It sets up the AI models for both "run" (control) and "data" (analysis) modes.</li>
+</ol>
 <h3 id="32-understanding-modes-run-and-data">3.2. Understanding Modes: <code>/run</code> and <code>/data</code></h3>
 <p>The Laboratory Cockpit operates in two distinct modes to ensure clarity and safety:</p>
 <ul>
@@ -1732,7 +1734,6 @@
 <li>Check the relevant <a href="../../design_protocols/firmware_design_protocol/">Design Protocols</a> and <a href="../../api/firmware/">API Reference</a> for the device's commands to ensure correct usage.</li>
 </ul>
 </li>
-<li><strong>Mermaid diagrams not rendering:</strong> Ensure you have <code>pymdown-extensions</code> installed (<code>pip install pymdown-extensions</code>) and your <code>mkdocs.yml</code> is configured correctly for <code>pymdownx.superfences</code>.</li>
 </ul>
 <h2 id="7-next-steps-beyond-basic-operation">7. Next Steps: Beyond Basic Operation</h2>
 <p>Once you're comfortable operating the lab, you might want to:</p>

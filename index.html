@@ -1221,8 +1221,11 @@
 
 
 <h1 id="talos-sdl-documentation">Talos-SDL Documentation</h1>
-<p>Welcome to the comprehensive documentation for the Talos-SDL Orchestrator – an open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.</p>
-<p>This documentation serves as your guide to understanding, operating, and extending Talos-SDL, designed to empower researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows.</p>
+<p>Welcome to the documentation for the Talos-SDL Orchestrator – an open-source, agentic host framework for Self-Driving Laboratories (SDLs) and autonomous experimentation.</p>
+<p>This documentation serves as your guide to understanding, operating, and extending Talos-SDL, designed to empower researchers to rapidly build bespoke robotic instruments, integrate custom sensors, and execute AI-orchestrated workflows. Talos-SDL is designed with rapid prototyping and deployment in mind and targets single users and small groups interested in exploring agentic scientific laboratory instrumentation.</p>
+<blockquote>
+<p>Much of this documentation is in <em>draft</em> form and has been written by AI based on the codebase and journals the developer has kept during the framework design process. Revisions and review are in process.</p>
+</blockquote>
 <h2 id="documentation-sections">Documentation Sections</h2>
 <p>Explore the different facets of Talos-SDL:</p>
 <ul>
@@ -1237,6 +1240,7 @@
 <ul>
 <li><strong><code>host/</code></strong>: The "Brain." Contains the Python application that runs on your PC, including AI agents, graphical user interfaces, and device management logic.</li>
 <li><strong><code>firmware/</code></strong>: The "Hands." Contains the CircuitPython code that runs on your microcontrollers, tailored for specific instruments like the <code>sidekick</code> robotic arm or <code>colorimeter</code>.</li>
+<li><strong><code>communicate/</code></strong>: The "Language." Contains the abstracted classes and code to ensure communication between host, firmware, and other devices follow well-formatted constructs.</li>
 <li><strong><code>shared_lib/</code></strong>: Common protocols, utilities, and message definitions that ensure consistent communication and behavior across both host and firmware.</li>
 <li><strong><code>docs/</code></strong>: This documentation! Containing all guides, concepts, protocols, and API references.</li>
 </ul>
