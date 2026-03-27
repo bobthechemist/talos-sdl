@@ -1,0 +1,11 @@
+{
+  "metadata": {
+    "data_type": "spectrum",
+    "units": "counts"
+  },
+  "data": {
+    "415nm": 100,
+    "445nm": 150,
+    "480nm": 200
+  }
+}
