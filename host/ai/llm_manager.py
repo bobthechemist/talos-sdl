@@ -22,9 +22,12 @@ class LLMManager:
             return VertexAgent(context=context, model_name=model)
             
         elif provider == "ollama":
-            model = model or os.getenv("AI_MODEL", "llama3")
+            model = model or os.getenv("AI_MODEL", "llama3.1")
             url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
-            return OpenAIAgent(context=context, model_name=model, base_url=url)
+            # Request the 32k context window here
+            ollama_config = {"num_ctx": 32768}
+
+            return OpenAIAgent(context=context, model_name=model, base_url=url,model_kwargs=ollama_config)
 
         elif provider == "gemini":
             # Google AI Studio (requires API Key)

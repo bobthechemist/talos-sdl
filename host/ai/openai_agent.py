@@ -5,9 +5,10 @@ from .base_agent import BaseAgent
 class OpenAIAgent(BaseAgent):
     """Implementation for OpenAI-compatible APIs (Ollama, Groq, OpenAI)."""
     
-    def __init__(self, context=None, model_name="llama3", base_url="http://localhost:11434/v1"):
+    def __init__(self, context=None, model_name="llama3", base_url="http://localhost:11434/v1", model_kwargs=None):
         BaseAgent.__init__(self, context)
         self.model_name = model_name
+        self.model_kwargs = model_kwargs or {}
         self.client = OpenAI(
             base_url=base_url,
             api_key=os.getenv("OPENAI_API_KEY", "ollama") 
@@ -27,8 +28,10 @@ class OpenAIAgent(BaseAgent):
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=messages,
+                extra_body=self.model_kwargs,
                 **kwargs
             )
+
 
             usage = response.usage
             self.last_run_info = {
