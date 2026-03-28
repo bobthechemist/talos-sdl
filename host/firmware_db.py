@@ -10,6 +10,12 @@ FIRMWARE_DATABASE = {
             813: 'Colorimeter'
         }
     },
+    0x2EBA: {
+        'manufacturer': 'Cytron Technologies',
+        'products': {
+            0x814: "Maker Pi Lab Alert Module"
+        }
+    }
     # 909: {
     #     'manufacturer': 'My Lab',
     #     'products': {

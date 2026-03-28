@@ -11,6 +11,7 @@ We will build firmware for a microcontroller connected to an Adafruit AHT20 Temp
 *   Responding to custom commands (e.g., "read the sensor right now").
 
 **Prerequisites:**
+
 *   A PC running Python 3.8+ with the Talos-SDL repository cloned and dependencies installed (`pip install -r requirements.txt`).
 *   A CircuitPython-compatible microcontroller (e.g., Raspberry Pi Pico, Adafruit Feather M4) with an AHT20 sensor wired to its I2C pins.
 *   The necessary CircuitPython library for the AHT20 sensor. You must copy the `adafruit_ahtx0.mpy` file to the `lib` folder on your microcontroller's `CIRCUITPY` drive.
