@@ -1674,10 +1674,12 @@
 *   Periodically reading data (temperature and humidity).
 *   Sending this data back to the host as telemetry.
 *   Responding to custom commands (e.g., "read the sensor right now").</p>
-<p><strong>Prerequisites:</strong>
-*   A PC running Python 3.8+ with the Talos-SDL repository cloned and dependencies installed (<code>pip install -r requirements.txt</code>).
-*   A CircuitPython-compatible microcontroller (e.g., Raspberry Pi Pico, Adafruit Feather M4) with an AHT20 sensor wired to its I2C pins.
-*   The necessary CircuitPython library for the AHT20 sensor. You must copy the <code>adafruit_ahtx0.mpy</code> file to the <code>lib</code> folder on your microcontroller's <code>CIRCUITPY</code> drive.</p>
+<p><strong>Prerequisites:</strong></p>
+<ul>
+<li>A PC running Python 3.8+ with the Talos-SDL repository cloned and dependencies installed (<code>pip install -r requirements.txt</code>).</li>
+<li>A CircuitPython-compatible microcontroller (e.g., Raspberry Pi Pico, Adafruit Feather M4) with an AHT20 sensor wired to its I2C pins.</li>
+<li>The necessary CircuitPython library for the AHT20 sensor. You must copy the <code>adafruit_ahtx0.mpy</code> file to the <code>lib</code> folder on your microcontroller's <code>CIRCUITPY</code> drive.</li>
+</ul>
 <hr />
 <h2 id="part-1-designing-your-instrument-with-the-socratic-method">Part 1: Designing Your Instrument with the Socratic Method</h2>
 <p>Before writing any code, it's crucial to clearly define your instrument's purpose, capabilities, and behavior. The Talos-SDL framework is built on a state-machine-based design philosophy that prioritizes clarity, modularity, and non-blocking operations.</p>

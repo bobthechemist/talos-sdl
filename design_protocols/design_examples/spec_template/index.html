@@ -8,13 +8,9 @@
       
       
       
-        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/">
+        <link rel="canonical" href="https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/spec_template/">
       
       
-        <link rel="prev" href="../../socratic_design_method/">
-      
-      
-        <link rel="next" href="../../../design_protocols/communication_protocol/">
       
       
         
@@ -25,7 +21,7 @@
     
     
       
-        <title>AI Agent Firmware Generation Templates - Talos-SDL Documentation</title>
+        <title>Instrument Design: [Instrument Name] ([slug_name]) - Talos-SDL Documentation</title>
       
     
     
@@ -68,7 +64,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#future-ai-prompt-template-new-instrument-firmware-generation" class="md-skip">
+        <a href="#instrument-design-instrument-name-slug_name" class="md-skip">
           Skip to content
         </a>
       
@@ -104,7 +100,7 @@
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              AI Agent Firmware Generation Templates
+              Instrument Design: [Instrument Name] ([slug_name])
             
           </span>
         </div>
@@ -458,8 +454,6 @@
       
   
   
-    
-  
   
   
     
@@ -472,11 +466,13 @@
       
     
     
-    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" checked>
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_4" >
         
           
           <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="">
@@ -497,7 +493,7 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="true">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
           <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
@@ -515,7 +511,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../coding_style_guide/" class="md-nav__link">
+      <a href="../../../developer_guides/coding_style_guide/" class="md-nav__link">
         
   
   
@@ -543,7 +539,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../socratic_design_method/" class="md-nav__link">
+      <a href="../../../developer_guides/socratic_design_method/" class="md-nav__link">
         
   
   
@@ -568,37 +564,10 @@
                 
   
   
-    
   
   
-  
-    <li class="md-nav__item md-nav__item--active">
-      
-      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
-      
-      
-        
-      
-      
-        <label class="md-nav__link md-nav__link--active" for="__toc">
-          
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Firmware Generation Templates
-  
-
-    
-  </span>
-  
-  
-
-          <span class="md-nav__icon md-icon"></span>
-        </label>
-      
-      <a href="./" class="md-nav__link md-nav__link--active">
+    <li class="md-nav__item">
+      <a href="../../../developer_guides/ai_agent_prompt_templates/firmware_generation_template/" class="md-nav__link">
         
   
   
@@ -614,126 +583,6 @@
   
 
       </a>
-      
-        
-
-<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
-  
-  
-  
-    
-  
-  
-    <label class="md-nav__title" for="__toc">
-      <span class="md-nav__icon md-icon"></span>
-      Table of contents
-    </label>
-    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
-      
-        <li class="md-nav__item">
-  <a href="#persona-and-role" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Persona and Role
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#primary-goal" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Primary Goal
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#the-process-to-follow" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        The Process to Follow
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="The Process to Follow">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#a-core-architectural-patterns" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        A. Core Architectural Patterns
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#b-quality-standards" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        B. Quality Standards
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#user-provided-inputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        User-Provided Inputs
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="User-Provided Inputs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#input-1-current-software-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input 1: Current Software Stack
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#input-2-new-instrument-design-spec-sheet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input 2: New Instrument Design Spec Sheet
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-    </ul>
-  
-</nav>
-      
     </li>
   
 
@@ -807,7 +656,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/communication_protocol/" class="md-nav__link">
+      <a href="../../communication_protocol/" class="md-nav__link">
         
   
   
@@ -835,7 +684,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/firmware_design_protocol/" class="md-nav__link">
+      <a href="../../firmware_design_protocol/" class="md-nav__link">
         
   
   
@@ -863,7 +712,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/host_design_protocol/" class="md-nav__link">
+      <a href="../../host_design_protocol/" class="md-nav__link">
         
   
   
@@ -891,7 +740,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/messaging_protocol/" class="md-nav__link">
+      <a href="../../messaging_protocol/" class="md-nav__link">
         
   
   
@@ -970,7 +819,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/design_examples/colorimeter_spec/" class="md-nav__link">
+      <a href="../colorimeter_spec/" class="md-nav__link">
         
   
   
@@ -998,7 +847,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/design_examples/sidekick_spec/" class="md-nav__link">
+      <a href="../sidekick_spec/" class="md-nav__link">
         
   
   
@@ -1026,7 +875,7 @@
   
   
     <li class="md-nav__item">
-      <a href="../../../design_protocols/design_examples/stirplate_spec/" class="md-nav__link">
+      <a href="../stirplate_spec/" class="md-nav__link">
         
   
   
@@ -1262,10 +1111,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#persona-and-role" class="md-nav__link">
+  <a href="#1-instrument-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Persona and Role
+        1. Instrument Overview
       
     </span>
   </a>
@@ -1273,10 +1122,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#primary-goal" class="md-nav__link">
+  <a href="#2-hardware-configuration-config-dictionary" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Primary Goal
+        2. Hardware Configuration (CONFIG dictionary)
       
     </span>
   </a>
@@ -1284,22 +1133,33 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#the-process-to-follow" class="md-nav__link">
+  <a href="#3-command-interface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        The Process to Follow
+        3. Command Interface
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="The Process to Follow">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#4-state-definitions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. State Definitions
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="4. State Definitions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#a-core-architectural-patterns" class="md-nav__link">
+  <a href="#state-initialize" class="md-nav__link">
     <span class="md-ellipsis">
       
-        A. Core Architectural Patterns
+        State: Initialize
       
     </span>
   </a>
@@ -1307,49 +1167,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#b-quality-standards" class="md-nav__link">
+  <a href="#state-customstatename" class="md-nav__link">
     <span class="md-ellipsis">
       
-        B. Quality Standards
-      
-    </span>
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#user-provided-inputs" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        User-Provided Inputs
-      
-    </span>
-  </a>
-  
-    <nav class="md-nav" aria-label="User-Provided Inputs">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#input-1-current-software-stack" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input 1: Current Software Stack
-      
-    </span>
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#input-2-new-instrument-design-spec-sheet" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Input 2: New Instrument Design Spec Sheet
+        State: [CustomStateName]
       
     </span>
   </a>
@@ -1378,62 +1199,87 @@
 
 
 
-<h1 id="future-ai-prompt-template-new-instrument-firmware-generation">Future AI Prompt Template: New Instrument Firmware Generation</h1>
-<h2 id="persona-and-role">Persona and Role</h2>
-<p>You are an expert firmware developer specializing in state-machine-based architectures for laboratory automation. You are intimately familiar with the provided software stack and its core design principles: unified state machine, separation of configuration from logic, centralized command handling, and "Instruments as Peers" AI readiness.</p>
-<h2 id="primary-goal">Primary Goal</h2>
-<p>Your goal is to draft the initial firmware files (<code>__init__.py</code>, <code>states.py</code>, <code>handlers.py</code>) for a new instrument. You will provide a robust, commented, and syntactically correct foundation.</p>
-<h2 id="the-process-to-follow">The Process to Follow</h2>
-<p><strong>Step 1: Analyze the Provided Materials</strong>
-Review the Software Stack (Input 1) and the Design Spec Sheet (Input 2).</p>
-<p><strong>Step 2: Ask Clarifying Questions (Critical)</strong>
-Do not write code yet. Identify ambiguities regarding pin behaviors, rounding logic, hardware constraints, or state transitions. Await user response.</p>
-<p><strong>Step 3: Draft the Firmware Files</strong>
-Adhere to the following standards:</p>
-<h3 id="a-core-architectural-patterns">A. Core Architectural Patterns</h3>
-<ol>
-<li><strong>Declarative Assembly (<code>__init__.py</code>):</strong></li>
-<li>Must define <code>SUBSYSTEM_NAME</code>, <code>SUBSYSTEM_VERSION</code>, and <code>SUBSYSTEM_INIT_STATE</code>.</li>
-<li><code>SUBSYSTEM_CONFIG</code> must include pin definitions and an <code>ai_guidance</code> string.</li>
-<li>Implement <code>build_status(machine)</code> for the <code>get_info</code> command.</li>
-<li>Implement <code>send_telemetry(machine)</code> and pass it to <code>GenericIdle</code>: <code>machine.add_state(GenericIdle(telemetry_callback=send_telemetry))</code>.</li>
-<li>
-<p><strong>Crucial:</strong> After calling <code>register_common_commands(machine)</code>, you must manually set <code>ai_enabled = False</code> for 'help', 'ping', 'set_time', and 'get_info' to keep the AI focused on high-level actions.</p>
-</li>
-<li>
-<p><strong>Command Definition Schema:</strong></p>
-</li>
-<li>Registration: <code>machine.add_command(name, handler_func, doc_dict)</code>.</li>
-<li>
-<p><code>doc_dict</code> must include: <code>description</code>, <code>args</code> (list of dicts), <code>ai_enabled</code> (bool), and optionally <code>effects</code> (list) and <code>usage_notes</code> (str).</p>
-</li>
-<li>
-<p><strong>Handler Logic (<code>handlers.py</code>):</strong></p>
-</li>
-<li>Every handler must use the <code>@try_wrapper</code> decorator.</li>
-<li>Handlers must be non-blocking. Use <code>machine.sequencer.start()</code> for timed actions.</li>
-<li>
-<p>Use <code>send_success(machine, "msg")</code> or <code>send_problem(machine, "msg")</code>.</p>
-</li>
-<li>
-<p><strong>State Logic (<code>states.py</code>):</strong></p>
-</li>
-<li>Signature: <code>enter(self, machine, context=None)</code>.</li>
-<li>Inherit from <code>State</code>.</li>
-<li>For sequencer steps, set <code>self.task_complete = True</code> to advance.</li>
-</ol>
-<h3 id="b-quality-standards">B. Quality Standards</h3>
+<h1 id="instrument-design-instrument-name-slug_name">Instrument Design: [Instrument Name] ([slug_name])</h1>
+<h2 id="1-instrument-overview">1. Instrument Overview</h2>
 <ul>
-<li><strong>Imports:</strong> Always <code>import board</code> and <code>from shared_lib.statemachine import State</code>.</li>
-<li><strong>Commentary:</strong> Explain pin logic and state transitions clearly.</li>
-<li><strong>Syntactic Correctness:</strong> Ensure no placeholder syntax (like <code>&lt;...&gt;</code> inside code).</li>
+<li><strong>Primary Purpose:</strong> [e.g., To measure ambient light and control an indicator LED.]</li>
+<li><strong>Primary Actions:</strong> [e.g., Read sensor, set LED brightness, blink.]</li>
+<li><strong>Periodic Telemetry Data:</strong> [Define what the device reports every few seconds, e.g., current sensor value.]</li>
+<li><strong>Critical Failure Conditions:</strong> [e.g., I2C sensor not found, motor stall detected.]</li>
+<li><strong>AI Guidance:</strong> [High-level instruction for the LLM, e.g., "Use this device to signal status. Do not exceed brightness level 5 during night cycles."]</li>
 </ul>
-<hr />
-<h2 id="user-provided-inputs">User-Provided Inputs</h2>
-<h3 id="input-1-current-software-stack">Input 1: Current Software Stack</h3>
-<p>[PASTE CONTEXT-SPECIFIC CODEBASE HERE]</p>
-<h3 id="input-2-new-instrument-design-spec-sheet">Input 2: New Instrument Design Spec Sheet</h3>
-<p>[PASTE COMPLETED SPEC SHEET HERE]</p>
+<h2 id="2-hardware-configuration-config-dictionary">2. Hardware Configuration (<code>CONFIG</code> dictionary)</h2>
+<div class="language-python highlight"><pre><span></span><code><span id="__span-0-1"><a id="__codelineno-0-1" name="__codelineno-0-1" href="#__codelineno-0-1"></a><span class="p">[</span><span class="n">SLUG</span><span class="p">]</span><span class="n">_CONFIG</span> <span class="o">=</span> <span class="p">{</span>
+</span><span id="__span-0-2"><a id="__codelineno-0-2" name="__codelineno-0-2" href="#__codelineno-0-2"></a>    <span class="s2">&quot;pins&quot;</span><span class="p">:</span> <span class="p">{</span>
+</span><span id="__span-0-3"><a id="__codelineno-0-3" name="__codelineno-0-3" href="#__codelineno-0-3"></a>        <span class="c1"># List every physical pin used</span>
+</span><span id="__span-0-4"><a id="__codelineno-0-4" name="__codelineno-0-4" href="#__codelineno-0-4"></a>        <span class="s2">&quot;SCL&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">SCL</span><span class="p">,</span>
+</span><span id="__span-0-5"><a id="__codelineno-0-5" name="__codelineno-0-5" href="#__codelineno-0-5"></a>        <span class="s2">&quot;SDA&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">SDA</span><span class="p">,</span>
+</span><span id="__span-0-6"><a id="__codelineno-0-6" name="__codelineno-0-6" href="#__codelineno-0-6"></a>        <span class="s2">&quot;indicator_led&quot;</span><span class="p">:</span> <span class="n">board</span><span class="o">.</span><span class="n">GP2</span><span class="p">,</span>
+</span><span id="__span-0-7"><a id="__codelineno-0-7" name="__codelineno-0-7" href="#__codelineno-0-7"></a>    <span class="p">},</span>
+</span><span id="__span-0-8"><a id="__codelineno-0-8" name="__codelineno-0-8" href="#__codelineno-0-8"></a>    <span class="c1"># Operational parameters</span>
+</span><span id="__span-0-9"><a id="__codelineno-0-9" name="__codelineno-0-9" href="#__codelineno-0-9"></a>    <span class="s2">&quot;default_setting&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span>
+</span><span id="__span-0-10"><a id="__codelineno-0-10" name="__codelineno-0-10" href="#__codelineno-0-10"></a>    <span class="s2">&quot;max_safe_value&quot;</span><span class="p">:</span> <span class="mi">100</span><span class="p">,</span>
+</span><span id="__span-0-11"><a id="__codelineno-0-11" name="__codelineno-0-11" href="#__codelineno-0-11"></a>
+</span><span id="__span-0-12"><a id="__codelineno-0-12" name="__codelineno-0-12" href="#__codelineno-0-12"></a>    <span class="c1"># AI Guidance (included in metadata for the agent)</span>
+</span><span id="__span-0-13"><a id="__codelineno-0-13" name="__codelineno-0-13" href="#__codelineno-0-13"></a>    <span class="s2">&quot;ai_guidance&quot;</span><span class="p">:</span> <span class="s2">&quot;...&quot;</span><span class="p">,</span>
+</span><span id="__span-0-14"><a id="__codelineno-0-14" name="__codelineno-0-14" href="#__codelineno-0-14"></a><span class="p">}</span>
+</span></code></pre></div>
+<h2 id="3-command-interface">3. Command Interface</h2>
+<table>
+<thead>
+<tr>
+<th style="text-align: left;"><code>func</code> Name</th>
+<th style="text-align: left;"><code>ai_enabled</code></th>
+<th style="text-align: left;">Description</th>
+<th style="text-align: left;">Arguments</th>
+<th style="text-align: left;">Success Condition</th>
+<th style="text-align: left;">Guard Conditions</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: left;"><code>read_now</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">Reads the sensor immediately.</td>
+<td style="text-align: left;"><code>[]</code></td>
+<td style="text-align: left;">Returns <code>DATA_RESPONSE</code> with value.</td>
+<td style="text-align: left;">None.</td>
+</tr>
+<tr>
+<td style="text-align: left;"><code>set_led</code></td>
+<td style="text-align: left;"><code>true</code></td>
+<td style="text-align: left;">Sets LED brightness.</td>
+<td style="text-align: left;"><code>[{"name": "level", "type": "int"}]</code></td>
+<td style="text-align: left;">Returns <code>SUCCESS</code>.</td>
+<td style="text-align: left;">Level must be 0-255.</td>
+</tr>
+</tbody>
+</table>
+<h2 id="4-state-definitions">4. State Definitions</h2>
+<h4 id="state-initialize">State: <code>Initialize</code></h4>
+<ol>
+<li><strong>Purpose:</strong> [e.g., Establish I2C communication and set pins to safe defaults.]</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong><ul>
+<li>[e.g., Instantiate I2C bus.]</li>
+<li>[e.g., Setup digital IO pins.]</li>
+</ul>
+</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> None. (Immediate transition)</li>
+<li><strong>Exit Events &amp; Triggers:</strong><ul>
+<li><strong>On Success:</strong> Trigger: Transition to <code>Idle</code>.</li>
+<li><strong>On Failure:</strong> Trigger: Set <code>error_message</code> and transition to <code>Error</code>.</li>
+</ul>
+</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> None.</li>
+</ol>
+<h4 id="state-customstatename">State: <code>[CustomStateName]</code></h4>
+<ol>
+<li><strong>Purpose:</strong> [What is the specific job of this state?]</li>
+<li><strong>Entry Actions (<code>enter()</code>):</strong> [e.g., Start a timer, turn on a motor.]</li>
+<li><strong>Internal Actions (<code>update()</code>):</strong> [e.g., Check if goal reached, monitor safety.]</li>
+<li><strong>Exit Events &amp; Triggers:</strong> [e.g., Task complete, timeout, or abort command.]</li>
+<li><strong>Exit Actions (<code>exit()</code>):</strong> [e.g., Stop motor, reset flags.]</li>
+</ol>
 
 
 
