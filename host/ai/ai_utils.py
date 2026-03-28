@@ -20,10 +20,6 @@ def world_building():
     """
     Conducts an interactive user interview to build the initial "world model"
     for the AI to operate within, including save/load functionality.
-
-    Returns:
-        dict: A dictionary containing the established world model, or None if the
-              user chooses to abort.
     """
     world_model = {}
     
@@ -52,7 +48,7 @@ def world_building():
             break
         elif resp in ('n', 'no'):
             print(f"{C.ERR}  This script currently only supports starting with an empty plate. Aborting.{C.END}")
-            return None # Abort the setup
+            return None 
         else:
             print(f"{C.ERR}  Invalid response. Please enter 'y' or 'n'.{C.END}")
 
@@ -109,8 +105,6 @@ def world_building():
                 with open(filename, 'w') as f:
                     json.dump(world_model, f, indent=4)
                 print(f"{C.OK}  -> World model saved successfully to '{filename}'.{C.END}")
-                print(f"{C.INFO}     You can reload this configuration later using:{C.END}")
-                print(f"{C.INFO}     python ai-plan.py --world {filename}{C.END}") # Corrected example use
             except Exception as e:
                 print(f"{C.ERR}  -> Error saving file: {e}{C.END}")
             break
@@ -133,88 +127,65 @@ def load_world_from_file(filepath: str):
         with open(filepath, 'r') as f:
             world_model = json.load(f)
         print(f"{C.OK}  -> World model loaded successfully.{C.END}")
-        print("\n" + "="*60)
-        print(f"{C.OK}The AI will operate with this loaded configuration.{C.END}")
-        print("="*60)
         return world_model
-    except FileNotFoundError:
-        print(f"{C.ERR}  -> Error: The file was not found.{C.END}")
-        return None
-    except json.JSONDecodeError:
-        print(f"{C.ERR}  -> Error: The file contains invalid JSON.{C.END}")
-        return None
     except Exception as e:
-        print(f"{C.ERR}  -> An unexpected error occurred while loading the file: {e}{C.END}")
+        print(f"{C.ERR}  -> Error loading world file: {e}{C.END}")
         return None
 
-def check_devices_attached():
+def connect_any_devices():
     """
-    Scans for connected CircuitPython devices and checks if both the
-    Sidekick and Colorimeter are present.
+    Decoupled Connection Logic:
+    Scans for and connects to ANY recognized Talos devices found in firmware_db.py.
+    Automatically generates logical slugs for the AI (e.g., 'Maker Pi' -> 'maker_pi').
+    
+    Returns:
+        tuple: (DeviceManager, dict of {device_slug: port})
     """
-    print(f"{C.INFO}[+] Scanning for required devices (Sidekick and Colorimeter)...{C.END}")
-    connected_ports = find_data_comports()
-
-    if not connected_ports:
-        print(f"{C.ERR}  -> No CircuitPython devices found.{C.END}")
-        return False
-
-    sidekick_found = False
-    colorimeter_found = False
-
-    print("  -> Found the following devices:")
-    for port_info in connected_ports:
-        friendly_name = get_device_name(port_info['VID'], port_info['PID'])
-        print(f"     - {friendly_name} on {port_info['port']}")
-        
-        if 'sidekick' in friendly_name.lower(): sidekick_found = True
-        if 'colorimeter' in friendly_name.lower(): colorimeter_found = True
-
-    if sidekick_found and colorimeter_found:
-        print(f"{C.OK}\n[SUCCESS] Both Sidekick and Colorimeter are attached.{C.END}")
-        return True
-    else:
-        print(f"{C.ERR}\n[FAILURE] One or more required devices were not found.{C.END}")
-        if not sidekick_found: print(f"{C.ERR}  - Sidekick is missing.{C.END}")
-        if not colorimeter_found: print(f"{C.ERR}  - Colorimeter is missing.{C.END}")
-        return False
-
-def connect_devices():
-    """
-    Initializes the DeviceManager and connects to the Sidekick and Colorimeter.
-    """
-    print(f"\n{C.INFO}[+] Initializing Device Manager and connecting to devices...{C.END}")
+    print(f"\n{C.INFO}[+] Scanning for recognized Talos instruments...{C.END}")
     manager = DeviceManager()
     manager.start()
 
     device_ports_map = {}
     all_ports = find_data_comports()
 
+    if not all_ports:
+        print(f"{C.WARN}  -> No CircuitPython devices detected.{C.END}")
+        return manager, {}
+
     for port_info in all_ports:
         port, vid, pid = port_info['port'], port_info['VID'], port_info['PID']
         friendly_name = get_device_name(vid, pid)
-        device_key = None
-        if 'sidekick' in friendly_name.lower(): device_key = 'sidekick'
-        elif 'colorimeter' in friendly_name.lower(): device_key = 'colorimeter'
         
-        if device_key:
-            print(f"  -> Attempting to connect to {friendly_name} on {port}...")
+        # If the device is recognized in our firmware database
+        if "Unknown" not in friendly_name:
+            # Create a slug/key for the AI (e.g., "Maker Pi Alert Module (Cytron)" -> "maker_pi_alert_module")
+            # We strip the manufacturer info in parentheses and convert to snake_case
+            clean_name = friendly_name.split('(')[0].strip()
+            device_key = clean_name.lower().replace(" ", "_")
+            
+            print(f"  -> Connecting to {C.OK}{friendly_name}{C.END} on {port}...")
             if manager.connect_device(port, vid, pid):
                 device_ports_map[device_key] = port
-                print(f"{C.OK}     Connection successful.{C.END}")
             else:
-                print(f"{C.ERR}     Connection failed.{C.END}")
-                manager.stop()
-                return None, None
+                print(f"{C.ERR}     Failed to connect to {port}{C.END}")
     
+    if not device_ports_map:
+        print(f"{C.WARN}  -> No recognized devices connected. AI will run in simulation mode.{C.END}")
+    else:
+        print(f"{C.OK}[SUCCESS] Connected to: {list(device_ports_map.keys())}{C.END}")
+        
     return manager, device_ports_map
 
 def get_instructions(manager: DeviceManager, device_ports: dict, timeout: int = 5):
     """
-    Sends 'help' commands to connected devices and returns the FULL payload
-    (including metadata/guidance) for each device.
+    Generic Capability Discovery:
+    Sends 'help' commands to all connected devices and returns the FULL 
+    payload (including metadata/guidance) for each device.
     """
-    print(f"\n{C.INFO}[+] Retrieving capabilities from all devices...{C.END}")
+    if not device_ports:
+        return {}
+
+    print(f"\n{C.INFO}[+] Retrieving capabilities from {len(device_ports)} device(s)...{C.END}")
     help_payload = {"func": "help", "args": {}}
     help_message = Message.create_message("AI_HOST", "INSTRUCTION", payload=help_payload)
     
@@ -224,18 +195,22 @@ def get_instructions(manager: DeviceManager, device_ports: dict, timeout: int = 
     all_responses = {}
     start_time = time.time()
     
+    # Wait until all devices respond or we hit the timeout
     while len(all_responses) < len(device_ports) and time.time() - start_time < timeout:
         try:
             msg_type, port, msg_data = manager.incoming_message_queue.get_nowait()
             if msg_type == 'RECV' and msg_data.status == "DATA_RESPONSE":
-                # Find which device this port belongs to
+                # Match the port back to the device slug
                 for name, p in device_ports.items():
                     if p == port and name not in all_responses:
-                        # --- KEY CHANGE: Return the whole payload, not just .get('data') ---
                         all_responses[name] = msg_data.payload
                         print(f"{C.OK}     Received capabilities and metadata from {name}.{C.END}")
                         break
         except queue.Empty:
             time.sleep(0.1)
 
-    return all_responses if len(all_responses) == len(device_ports) else None
+    if len(all_responses) < len(device_ports):
+        missing = [d for d in device_ports if d not in all_responses]
+        print(f"{C.WARN}  -> Warning: Did not receive help response from: {missing}{C.END}")
+
+    return all_responses

@@ -15,7 +15,7 @@ class LLMManager:
         Factory method to return the configured agent.
         Provider defaults to .env variable 'AI_PROVIDER'
         """
-        provider = provider or os.getenv("AI_PROVIDER", "vertex").lower()
+        provider = provider or os.getenv("AI_PROVIDER", "gemini").lower()
         
         if provider == "vertex":
             model = model or os.getenv("AI_MODEL", "gemini-2.5-flash-lite")

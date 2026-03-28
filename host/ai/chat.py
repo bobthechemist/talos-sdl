@@ -14,7 +14,7 @@ from host.lab.sidekick_plate_manager import PlateManager
 from host.ai.llm_manager import LLMManager
 from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
-from host.ai.ai_utils import connect_devices, check_devices_attached, get_instructions, load_world_from_file
+from host.ai.ai_utils import connect_any_devices, get_instructions, load_world_from_file
 from host.gui.console import C
 from host.dln.session_manager import SessionManager
 
@@ -44,7 +44,7 @@ def main():
     else:
         print(f"{C.WARN}No world model found. Defaulting to generic setup.{C.END}")
         world_model = {
-            "reagents": {"p1": "acetic acid", "p2": "sodium hydroxide", "p3": "indicator", "p4": "water"},
+            "reagents": {"p1": "reagent 1", "p2": "reagent 2", "p3": "reagent 3", "p4": "reagent 4"},
             "max_well_volume_ul": 250.0, 
             "experiment_name": "General Experiment"
         }
@@ -58,31 +58,39 @@ def main():
         objective="Agentic session started via Laboratory Cockpit"
     )
 
-    # 3. Hardware Setup
-    if not check_devices_attached(): sys.exit(1)
-    manager, device_ports = connect_devices()
-    if not manager: sys.exit(1)
-
-    plate_manager = PlateManager(max_volume_ul=world_model['max_well_volume_ul'])
+    # 3. Hardware Setup (Decoupled)
+    manager, device_ports = connect_any_devices()
     
-    # 4. Capabilities Discovery
+    # 4. Capabilities Discovery (Dynamic)
     full_caps = get_instructions(manager, device_ports)
     ai_commands = {}
     ai_guidance = {}
-    for dev, payload in full_caps.items():
-        ai_commands[dev] = {k: v for k, v in payload.get('data', {}).items() if v.get('ai_enabled', False)}
-        ai_guidance[dev] = payload.get('metadata', {}).get('ai_guidance', "")
+    
+    if full_caps:
+        for dev, payload in full_caps.items():
+            # Filter for commands the AI is allowed to use
+            ai_commands[dev] = {k: v for k, v in payload.get('data', {}).items() if v.get('ai_enabled', False)}
+            # Capture instrument-specific guidance for the prompt
+            ai_guidance[dev] = payload.get('metadata', {}).get('ai_guidance', "")
+    else:
+        print(f"{C.WARN}No instrument capabilities discovered. AI will operate with restricted tools.{C.END}")
 
+    # Initialize state managers
+    plate_manager = PlateManager(max_volume_ul=world_model.get('max_well_volume_ul', 250))
     planner = Planner(world_model, ai_commands, ai_guidance)
     
     # 5. Agent Initialization
     print(f"{C.INFO}[+] Initializing AI Agents (Dual Contexts)...{C.END}")
+    
+    # Setup the Controller (Run) Agent
     planner.set_mode(Planner.MODE_RUN)
     run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
+    # Setup the Analyst (Data) Agent
     planner.set_mode(Planner.MODE_DATA)
     data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
+    # Default to Run mode
     planner.set_mode(Planner.MODE_RUN)
     current_agent = run_agent
     
@@ -134,7 +142,7 @@ def main():
                         continue
 
                     elif cmd == "/datasets":
-                        # Query StorageManager directly via SessionManager
+                        # Query StorageManager via SessionManager to list entries in the notebook
                         session = session_manager.storage.Session()
                         from host.dln.storage_manager import Attachment
                         attachments = session.query(Attachment).all()
@@ -170,7 +178,7 @@ def main():
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
                 else:
-                    # Data Mode: Dataset content injection
+                    # Data Mode: Automatically inject dataset content if a UUID is mentioned
                     found_ids = re.findall(r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8})", user_input)
                     injected_context = ""
                     
@@ -178,7 +186,7 @@ def main():
                         session = session_manager.storage.Session()
                         from host.dln.storage_manager import Attachment
                         for aid in found_ids:
-                            # Match full UUID or the 8-char short ID used in filenames
+                            # Match full UUID or the short ID used in file naming
                             att = session.query(Attachment).filter(
                                 (Attachment.id == aid) | (Attachment.filename.contains(aid))
                             ).first()
