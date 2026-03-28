@@ -18,7 +18,12 @@ class CircuitPythonPostman(Postman):
         # Nothing to do here
 
     def _send(self, value):
-        """Sends data over the serial port."""
+        """
+        Sends data over the serial port.
+        
+        Parameters:
+        value (any): The data to be sent. It will be converted to a string and encoded as bytes.
+        """
         message = str(value)
         if not message.endswith('\n'):
             message += '\n'
@@ -29,6 +34,9 @@ class CircuitPythonPostman(Postman):
     def _receive(self):
         """
         Receives data from the serial port in a NON-BLOCKING way.
+        
+        Returns:
+        str: The received data as a string, or an empty string if no data is available.
         """
         # --- FIX IS HERE ---
         # First, check if there is any data waiting to be read.
