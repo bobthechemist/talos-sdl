@@ -22,7 +22,12 @@ class SerialPostman(Postman):
         self.channel.close()
 
     def _send(self, value):
-        """Sends data over the serial port."""
+        """
+        Sends data over the serial port.
+
+        Parameters:
+        value (any): The data to be sent. It will be converted to a string and encoded to bytes.
+        """
         message = str(value)
         if not message.endswith('\n'):
             message += '\n'
@@ -31,7 +36,12 @@ class SerialPostman(Postman):
         self.channel.write(data)
 
     def _receive(self):
-        """Receives data from the serial port."""
+        """
+        Receives data from the serial port.
+
+        Returns:
+        str: The received data as a string, stripped of any trailing whitespace.
+        """
         # Read a line of data (terminated by newline character)
         data = self.channel.readline()
         # Decode the bytes to a string, stripping any trailing whitespace
