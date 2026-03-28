@@ -50,14 +50,22 @@ class StateMachine:
         Stops the state machine.
     """
 
-    def __init__(self, name, config, version="0.0.0", init_state='Initialize', status_callback=None):
+    def __init__(self, name: str, config: dict, version: str = "0.0.0", init_state: str = 'Initialize', status_callback=None):
         """
         Constructs all the necessary attributes for the state machine object.
 
         Parameters:
         -----------
+        name : str
+            The name of the state machine.
+        config : dict
+            Configuration settings for the state machine.
+        version : str, optional
+            The version of the state machine (default is '0.0.0').
         init_state : str, optional
             The initial state of the state machine (default is 'Initialize').
+        status_callback : callable, optional
+            A callback function to build status information (default is None).
         """
 
         # Read only properties
@@ -89,23 +97,63 @@ class StateMachine:
 
     # Read only properites
     @property
-    def name(self):
+    def name(self) -> str:
+        """
+        Returns the name of the state machine.
+
+        Returns:
+        --------
+        str
+            The name of the state machine.
+        """
         return self._name
     
     @property
-    def version(self):
+    def version(self) -> str:
+        """
+        Returns the version of the state machine.
+
+        Returns:
+        --------
+        str
+            The version of the state machine.
+        """
         return self._version
     
     @property
-    def config(self):
+    def config(self) -> dict:
+        """
+        Returns the configuration settings of the state machine.
+
+        Returns:
+        --------
+        dict
+            Configuration settings of the state machine.
+        """
         return self._config
     
     @property
-    def init_state(self):
+    def init_state(self) -> str:
+        """
+        Returns the initial state of the state machine.
+
+        Returns:
+        --------
+        str
+            The initial state of the state machine.
+        """
         return self._init_state
     
     @property
-    def idle_state(self):
+    def idle_state(self) -> str:
+        """
+        Returns the idle state of the state machine.
+
+        Returns:
+        --------
+        str
+            The idle state of the state machine.
+        """
         return self._idle_state
 
     def add_command(self, name: str, handler, doc: dict):
@@ -114,7 +162,14 @@ class StateMachine:
         self.supported_commands[name] = doc
         
     def handle_instruction(self, payload: dict):
-        """Dispatches an instruction payload to the correct handler."""
+        """
+        Dispatches an instruction payload to the correct handler.
+
+        Parameters:
+        -----------
+        payload : dict
+            The instruction payload to be handled.
+        """
         # Handler should set any flags and move to a different state
         
         func_name = payload.get("func") if isinstance(payload, dict) else None
@@ -127,8 +182,15 @@ class StateMachine:
         else:
             self._handle_unknown(payload)
             
-    def _handle_unknown(self, payload):
-        """Default handler for any command not found."""
+    def _handle_unknown(self, payload: dict):
+        """
+        Default handler for any command not found.
+
+        Parameters:
+        -----------
+        payload : dict
+            The unknown instruction payload.
+        """
         func_name = payload.get("func") if payload else "N/A"
         self.log.error(f"Received an unknown instruction: {func_name}")
         send_problem(self, {"message": f"{func_name} is unknown."})
@@ -136,6 +198,16 @@ class StateMachine:
     def add_state(self, state):
         """
         Adds a state to the state machine.
+
+        Parameters:
+        -----------
+        state : State
+            The state to be added.
+        
+        Raises:
+        -------
+        ValueError:
+            If the state does not define a non-empty 'name' or if there is a duplicate state name.
         """
         if not getattr(state, "name", None):
             raise ValueError(f"State {state.__class__.__name__} must define a non-empty 'name'.")
@@ -143,7 +215,7 @@ class StateMachine:
             raise ValueError(f"Duplicate state name: {state.name}")
         self.states[state.name] = state
 
-    def add_flag(self, flag, init_value):
+    def add_flag(self, flag: str, init_value):
         """
         Adds a flag to the state machine.
 
@@ -156,9 +228,21 @@ class StateMachine:
         """
         self.flags[flag] = init_value
 
-    def go_to_state(self, state_name, context=None):
+    def go_to_state(self, state_name: str, context=None):
         """
         Transitions the state machine to the specified state.
+
+        Parameters:
+        -----------
+        state_name : str
+            The name of the state to transition to.
+        context : dict, optional
+            Context data for the new state (default is None).
+        
+        Raises:
+        -------
+        Exception:
+            If the state machine is not running or if the specified state does not exist.
         """
         if not self.running:
             raise Exception('State machine must be running to do this.')
@@ -190,7 +274,7 @@ class StateMachine:
         if self.state:
             self.state.update(self)
 
-    def run(self, state_name=None):
+    def run(self, state_name: str = None):
         """
         Starts the state machine.
 
@@ -228,9 +312,21 @@ class State:
         self.required_context = []
         self.task_complete = False
 
-    def _validate_context(self, machine, context):
+    def _validate_context(self, machine: StateMachine, context: dict):
         """
-        A private helper called by enter() to ensure the state has what it needs
+        A private helper called by enter() to ensure the state has what it needs.
+
+        Parameters:
+        -----------
+        machine : StateMachine
+            The state machine instance.
+        context : dict
+            Context data for the state.
+        
+        Raises:
+        -------
+        ContextError:
+            If a required context key is missing.
         """
         if machine.sequencer.is_active:
             for key in self.required_context:
@@ -238,16 +334,28 @@ class State:
                     raise ContextError(f"State '{self.name}' requires '{key}'.")
  
     @property
-    def name(self):
+    def name(self) -> str:
         """
         Returns the name of the state.
+
+        Returns:
+        --------
+        str
+            The name of the state.
         """
         return ''
 
     # <<< FIX IS HERE: Signature updated.
-    def enter(self, machine, context=None):
+    def enter(self, machine: StateMachine, context=None):
         """
         Actions to perform when entering the state.
+
+        Parameters:
+        -----------
+        machine : StateMachine
+            The state machine instance.
+        context : dict, optional
+            Context data for the new state (default is None).
         """
         self.entered_at = monotonic()
         self.local_context = context or {}
@@ -255,15 +363,25 @@ class State:
         self.task_complete = False
         machine.log.info(f'{machine.name} entered {self.name} with context={self.local_context}.')
 
-    def exit(self, machine):
+    def exit(self, machine: StateMachine):
         """
         Actions to perform when exiting the state. Override default behavior with custom exit function
+
+        Parameters:
+        -----------
+        machine : StateMachine
+            The state machine instance.
         """
         machine.log.info(f'{machine.name} left {self.name} after {round(monotonic()-self.entered_at,3)} seconds.')
 
-    def update(self, machine):
+    def update(self, machine: StateMachine):
         """
         Handles advancement logic. Should be called at the end of a state's update function
+
+        Parameters:
+        -----------
+        machine : StateMachine
+            The state machine instance.
         """
         if self.task_complete:
             # Let the sequencer know this state's task is done.
@@ -297,7 +415,7 @@ class StateMachineOrchestrator:
         """
         self.state_machines = {}
 
-    def add_state_machine(self, name, state_machine):
+    def add_state_machine(self, name: str, state_machine: StateMachine):
         """
         Adds a state machine to the orchestrator.
 
@@ -310,7 +428,7 @@ class StateMachineOrchestrator:
         """
         self.state_machines[name] = state_machine
 
-    def remove_state_machine(self, name):
+    def remove_state_machine(self, name: str):
         """
         Removes a state machine from the orchestrator.
 
@@ -347,7 +465,7 @@ class StateSequencer:
     """
     Manages INSTRUCTION-initiated workflows for a StateMachine
     """
-    def __init__(self, machine):
+    def __init__(self, machine: StateMachine):
         self.machine = machine
         self.queue = []
         self.context = {}
@@ -355,12 +473,34 @@ class StateSequencer:
         self._persistent = False # Default to transient behavior
 
     @property
-    def is_active(self):
+    def is_active(self) -> bool:
+        """
+        Returns whether the sequencer is active.
+
+        Returns:
+        --------
+        bool
+            True if the sequencer is active, False otherwise.
+        """
         return self._is_active
     
     def start(self, sequence_list: list, persistent: bool = False, initial_context: dict = None):
         """
         Initiates a workflow
+
+        Parameters:
+        -----------
+        sequence_list : list
+            A list of steps in the sequence.
+        persistent : bool, optional
+            Whether the sequence should be persistent (default is False).
+        initial_context : dict, optional
+            Initial context for the sequence (default is None).
+        
+        Raises:
+        -------
+        Exception:
+            If the sequencer is already active or if the sequence list is empty.
         """
         if self._is_active:
             send_problem(self.machine, "Device is busy with another task.")
