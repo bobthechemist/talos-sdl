@@ -52,6 +52,9 @@ class Postman():
     def send(self, value):
         """
         Sends a message (implementation-specific).
+
+        Args:
+            value: The message to be sent.
         """
         if not self.is_open:
             raise ValueError("Channel is not open.  Must call open_channel() first.")
@@ -60,6 +63,9 @@ class Postman():
     def receive(self):
         """
         Receives a message (implementation-specific).
+
+        Returns:
+            The received message.
         """
         if not self.is_open:
             raise ValueError("Channel is not open.  Must call open_channel() first.")
@@ -117,11 +123,21 @@ class DummyPostman(Postman):
         pass  # No real channel to close
 
     def _send(self, value):
-        """Stores the sent value for later retrieval."""
+        """
+        Stores the sent value for later retrieval.
+
+        Args:
+            value: The message to be sent.
+        """
         self.sent_values.append(value)
 
     def _receive(self):
-        """Returns a canned response or an empty string."""
+        """
+        Returns a canned response or an empty string.
+
+        Returns:
+            A canned response if available, otherwise an empty string.
+        """
         if self.response_index < len(self.canned_responses):
             response = self.canned_responses[self.response_index]
             self.response_index += 1
@@ -130,7 +146,12 @@ class DummyPostman(Postman):
             return ""
 
     def get_sent_values(self):
-        """Returns a list of all values sent."""
+        """
+        Returns a list of all values sent.
+
+        Returns:
+            A list of all sent messages.
+        """
         return self.sent_values
 
     def clear_sent_values(self):
