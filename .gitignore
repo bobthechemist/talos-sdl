@@ -167,6 +167,7 @@ temp/
 # Local experiment database and files
 .talos/
 .talos_phase1_test/
+*.bin
 
 # testing
 # Planning files
