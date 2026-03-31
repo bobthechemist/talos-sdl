@@ -166,7 +166,9 @@ temp/
 
 # Local experiment database and files
 .talos/
+.talos_phase1_test/
 
+# testing
 # Planning files
 CURRENT_FOCUS.md
 BRANCH_GOALS.md
