@@ -132,7 +132,7 @@ def load_world_from_file(filepath: str):
         print(f"{C.ERR}  -> Error loading world file: {e}{C.END}")
         return None
 
-def connect_any_devices():
+def connect_devices():
     """
     Decoupled Connection Logic:
     Scans for and connects to ANY recognized Talos devices found in firmware_db.py.

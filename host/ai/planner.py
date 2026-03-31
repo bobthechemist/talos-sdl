@@ -81,7 +81,7 @@ Your goal is to help the user understand experimental data.
 # CAPABILITIES
 1. You CANNOT control hardware.
 2. You can discuss chemistry, analyze results, and answer questions.
-3. **DATA ACCESS**: If the user provides a Dataset ID (e.g., ds_2026...), the system will automatically find that file and paste its contents into the chat for you. 
+3.  **HISTORICAL RECORDS**: The system automatically retrieves relevant past experiments based on the user's query and injects them under the header "=== RELEVANT HISTORICAL RECORDS ===". Use this to answer questions about the past. 
 
 # INSTRUCTIONS
 - Respond in clear natural language.
@@ -94,11 +94,6 @@ Your goal is to help the user understand experimental data.
             return f"""# USER GOAL
 {goal}
 
-# CURRENT STATE
-Arm Position: {current_well}
-Plate Contents:
-{plate_summary}
-{obs_section}
 
 Generate the execution plan."""
         else:

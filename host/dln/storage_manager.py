@@ -10,9 +10,6 @@ from sqlalchemy.orm import sessionmaker, relationship, declarative_base
 
 Base = declarative_base()
 
-# --- Existing Schema (SchemaInfo, Experiment, Entry, Attachment) ---
-# [Keep existing classes exactly as they were...]
-
 class SchemaInfo(Base):
     __tablename__ = 'schema_info'
     version = Column(Integer, primary_key=True)
@@ -23,25 +20,33 @@ class Experiment(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(255))
     objective = Column(Text)
-    summary = Column(Text)
+    summary = Column(Text) # Reflection summary of the whole session
     status = Column(String(50))
     start_time = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime)
-    world_model = Column(JSON)
+    world_model = Column(JSON) # Snapshot of lab state at start
     entries = relationship("Entry", back_populates="experiment", cascade="all, delete-orphan")
     attachments = relationship("Attachment", back_populates="experiment", cascade="all, delete-orphan")
 
 class Entry(Base):
+    """
+    Generic event ledger. 
+    Types: INTENT (User Goal), PLAN (AI JSON), OBSERVATION (Hardware Response), REFLECTION (AI Summary)
+    """
     __tablename__ = 'entries'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     experiment_id = Column(String(36), ForeignKey('experiments.id'))
     timestamp = Column(DateTime, default=datetime.utcnow)
-    entry_type = Column(String(50))
+    event_type = Column(String(50)) 
     content = Column(JSON)
     experiment = relationship("Experiment", back_populates="entries")
     attachments = relationship("Attachment", back_populates="entry", cascade="all, delete-orphan")
 
 class Attachment(Base):
+    """
+    Hardware-agnostic data storage. 
+    Use context_tags for IDs like 'well', 'electrode', 'vial_id', etc.
+    """
     __tablename__ = 'attachments'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     experiment_id = Column(String(36), ForeignKey('experiments.id'))
@@ -49,34 +54,12 @@ class Attachment(Base):
     filename = Column(String(255))
     file_path = Column(String(512))
     data_type = Column(String(50))
-    metadata_json = Column(JSON)
+    context_tags = Column(JSON) # Generic bucket for hardware-specific identifiers
     experiment = relationship("Experiment", back_populates="attachments")
     entry = relationship("Entry", back_populates="attachments")
 
-# --- NEW SCHEMA FOR PROTOCOLS ---
-
-class Protocol(Base):
-    __tablename__ = 'protocols'
-    id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
-    name = Column(String(100), unique=True, nullable=False)
-    description = Column(Text)
-    created_at = Column(DateTime, default=datetime.utcnow)
-    steps = relationship("ProtocolStep", back_populates="protocol", order_by="ProtocolStep.step_number", cascade="all, delete-orphan")
-
-class ProtocolStep(Base):
-    __tablename__ = 'protocol_steps'
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    protocol_id = Column(String(36), ForeignKey('protocols.id'))
-    step_number = Column(Integer)
-    device = Column(String(50))
-    command = Column(String(100))
-    args = Column(JSON)
-    protocol = relationship("Protocol", back_populates="steps")
-
-# --- Manager Logic Update ---
-
 class StorageManager:
-    SCHEMA_VERSION = 2 # Increment version
+    SCHEMA_VERSION = 3 
 
     def __init__(self, base_dir=".talos"):
         self.base_dir = Path(base_dir).resolve()
@@ -101,12 +84,11 @@ class StorageManager:
                 session.add(SchemaInfo(version=self.SCHEMA_VERSION))
                 session.commit()
             elif v.version < self.SCHEMA_VERSION:
+                # Basic migration: logic could be expanded here
                 v.version = self.SCHEMA_VERSION
                 session.commit()
         finally:
             session.close()
-
-    # [Keep existing Experiment/Entry/Artifact methods...]
 
     def create_experiment(self, title, objective=None, world_model=None):
         session = self.Session()
@@ -119,41 +101,51 @@ class StorageManager:
             return exp_id
         finally: session.close()
 
-    def update_experiment(self, exp_id, **kwargs):
+    def log_event(self, exp_id, event_type, content):
+        """Logs a generic transaction event (INTENT, PLAN, OBSERVATION, REFLECTION)."""
         session = self.Session()
         try:
-            exp = session.query(Experiment).filter_by(id=exp_id).first()
-            if exp:
-                for key, value in kwargs.items():
-                    if hasattr(exp, key): setattr(exp, key, value)
-                if kwargs.get('status') in ('completed', 'failed', 'aborted'): exp.end_time = datetime.utcnow()
-                session.commit()
-        finally: session.close()
-
-    def log_entry(self, exp_id, entry_type, content):
-        session = self.Session()
-        try:
-            entry = Entry(experiment_id=exp_id, entry_type=entry_type, content=content)
+            entry = Entry(experiment_id=exp_id, event_type=event_type, content=content)
             session.add(entry)
             session.commit()
             return entry.id
         finally: session.close()
 
-    def save_artifact(self, exp_id, entry_id, device, command, payload):
+    def save_artifact(self, exp_id, entry_id, device, command, payload, tags=None):
+        """
+        Saves raw instrument data and registers it with context tags.
+        Replaces the old Registry logic.
+        """
         session = self.Session()
         try:
+            # 1. File management
             timestamp_str = datetime.now().strftime('%Y%m%d_%H%M%S')
-            unique_suffix = str(uuid.uuid4())[:8]
-            filename_base = f"data_{timestamp_str}_{unique_suffix}"
+            unique_id = str(uuid.uuid4())[:8]
+            filename_base = f"{device}_{command}_{timestamp_str}_{unique_id}"
             exp_folder = self.storage_path / exp_id
-            exp_folder.mkdir(parents=True, exist_ok=True)
+            
             json_path = exp_folder / f"{filename_base}.json"
-            with open(json_path, 'w') as f: json.dump(payload, f, indent=2)
+            with open(json_path, 'w') as f:
+                json.dump(payload, f, indent=2)
+
+            # 2. Metadata and Tags
             metadata = payload.get('metadata', {})
-            attachment = Attachment(experiment_id=exp_id, entry_id=entry_id, filename=f"{filename_base}.json",
-                                    file_path=str(json_path), data_type=metadata.get('data_type', 'unknown'),
-                                    metadata_json=metadata)
+            # Ensure tags is a dictionary
+            context_tags = tags if isinstance(tags, dict) else {}
+            context_tags['device'] = device
+            context_tags['command'] = command
+
+            attachment = Attachment(
+                experiment_id=exp_id, 
+                entry_id=entry_id, 
+                filename=f"{filename_base}.json",
+                file_path=str(json_path), 
+                data_type=metadata.get('data_type', 'unknown'),
+                context_tags=context_tags
+            )
             session.add(attachment)
+
+            # 3. Best-effort CSV (for flat data)
             data_content = payload.get('data', {})
             if isinstance(data_content, dict):
                 is_flat = all(isinstance(v, (int, float, str, bool)) for v in data_content.values())
@@ -161,55 +153,11 @@ class StorageManager:
                     csv_path = exp_folder / f"{filename_base}.csv"
                     try:
                         with open(csv_path, 'w', newline='') as f:
-                            writer = csv.DictWriter(f, fieldnames=data_content.keys()); writer.writeheader(); writer.writerow(data_content)
+                            writer = csv.DictWriter(f, fieldnames=data_content.keys())
+                            writer.writeheader()
+                            writer.writerow(data_content)
                     except Exception: pass 
+
             session.commit()
             return attachment.id
-        finally: session.close()
-
-    # --- NEW PROTOCOL METHODS ---
-
-    def save_protocol(self, name, description, plan_list):
-        """Saves a plan as a named protocol."""
-        session = self.Session()
-        try:
-            # Upsert logic: Delete existing protocol with same name
-            existing = session.query(Protocol).filter_by(name=name).first()
-            if existing: session.delete(existing)
-            
-            proto = Protocol(name=name, description=description)
-            session.add(proto)
-            session.flush() # Get ID
-            
-            for idx, step_data in enumerate(plan_list):
-                step = ProtocolStep(
-                    protocol_id=proto.id,
-                    step_number=idx + 1,
-                    device=step_data.get('device'),
-                    command=step_data.get('command'),
-                    args=step_data.get('args')
-                )
-                session.add(step)
-            session.commit()
-            return proto.id
-        finally: session.close()
-
-    def load_protocol(self, name):
-        """Retrieves plan steps by protocol name."""
-        session = self.Session()
-        try:
-            proto = session.query(Protocol).filter_by(name=name).first()
-            if not proto: return None
-            return [
-                {"device": s.device, "command": s.command, "args": s.args} 
-                for s in proto.steps
-            ]
-        finally: session.close()
-
-    def list_protocols(self):
-        """Returns a list of all protocol names and descriptions."""
-        session = self.Session()
-        try:
-            protos = session.query(Protocol).all()
-            return [{"name": p.name, "description": p.description} for p in protos]
         finally: session.close()

@@ -14,7 +14,7 @@ from host.lab.sidekick_plate_manager import PlateManager
 from host.ai.llm_manager import LLMManager
 from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
-from host.ai.ai_utils import connect_any_devices, get_instructions, load_world_from_file
+from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
 from host.gui.console import C
 from host.dln.session_manager import SessionManager
 
@@ -59,7 +59,7 @@ def main():
     )
 
     # 3. Hardware Setup (Decoupled)
-    manager, device_ports = connect_any_devices()
+    manager, device_ports = connect_devices()
     
     # 4. Capabilities Discovery (Dynamic)
     full_caps = get_instructions(manager, device_ports)
@@ -178,24 +178,35 @@ def main():
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
                 else:
-                    # Data Mode: Automatically inject dataset content if a UUID is mentioned
-                    found_ids = re.findall(r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8})", user_input)
-                    injected_context = ""
+                    # --- DATA MODE: Automatic Memory Retrieval ---
+                    print(f"[*] Querying Digital Lab Notebook records...")
                     
+                    injected_context = ""
+
+                    # 1. AUTOMATIC SEMANTIC SEARCH
+                    mem_results = session_manager.search_memory(user_input, n_results=2)
+                    if mem_results:
+                        injected_context += "\n=== RELEVANT HISTORICAL RECORDS ===\n"
+                        for res in mem_results:
+                            injected_context += f"Experiment ID: {res['id']}\nNarrative: {res['content']}\n---\n"
+
+                    # 2. DATASET ARTIFACT INJECTION (Regex for ds_ or UUIDs)
+                    found_ids = re.findall(r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8}|ds_\d{8}_\d{6})", user_input)
                     if found_ids:
                         session = session_manager.storage.Session()
                         from host.dln.storage_manager import Attachment
                         for aid in found_ids:
-                            # Match full UUID or the short ID used in file naming
                             att = session.query(Attachment).filter(
                                 (Attachment.id == aid) | (Attachment.filename.contains(aid))
                             ).first()
                             if att and os.path.exists(att.file_path):
                                 with open(att.file_path, 'r') as f:
-                                    injected_context += f"\n--- DATASET {aid} ---\n{f.read()}\n"
+                                    injected_context += f"\n=== DATASET {aid} ===\n{f.read()}\n"
                         session.close()
 
+                    # 3. ASSEMBLY
                     final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}" if injected_context else user_input
+                    
                     print(f"[*] Analyzing...")
                     response = current_agent.prompt(final_prompt, use_history=True)
                     print(f"\n{C.OK}{response}{C.END}")

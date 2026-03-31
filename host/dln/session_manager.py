@@ -1,41 +1,48 @@
 # host/dln/session_manager.py
-from host.dln.storage_manager import StorageManager
+from host.dln.storage_manager import StorageManager, Experiment, Entry, Attachment
+from host.dln.memory_manager import MemoryManager
 from datetime import datetime
-
-# host/dln/session_manager.py
-# [Keep existing imports...]
+import json
 
 class SessionManager:
     def __init__(self, base_dir=".talos"):
         self.storage = StorageManager(base_dir=base_dir)
+        self.memory = MemoryManager(base_dir=base_dir)
         self.current_exp_id = None
 
-    # [Keep existing session/event/data methods...]
-
     def start_session(self, world_model, title=None, objective=None):
-        if not title: title = f"Experiment {datetime.now().strftime('%Y-%m-%d %H:%M')}"
-        self.current_exp_id = self.storage.create_experiment(title=title, objective=objective, world_model=world_model)
+        self.current_exp_id = self.storage.create_experiment(
+            title=title, 
+            objective=objective, 
+            world_model=world_model
+        )
         return self.current_exp_id
 
-    def log_event(self, entry_type, content):
-        if not self.current_exp_id: return None
-        return self.storage.log_entry(self.current_exp_id, entry_type, content)
+    def log_intent(self, goal):
+        return self.storage.log_event(self.current_exp_id, "INTENT", {"goal": goal})
 
-    def save_data(self, entry_id, device, command, payload):
-        if not self.current_exp_id: return None
-        return self.storage.save_artifact(self.current_exp_id, entry_id, device, command, payload)
+    def log_plan(self, plan):
+        return self.storage.log_event(self.current_exp_id, "PLAN", {"plan": plan})
 
-    def end_session(self, summary=None, status="completed"):
-        if not self.current_exp_id: return
-        self.storage.update_experiment(self.current_exp_id, status=status, summary=summary)
+    def save_observation(self, entry_id, device, command, payload, tags=None):
+        """Link an observation (data) to specific hardware-agnostic context tags."""
+        return self.storage.save_artifact(
+            self.current_exp_id, entry_id, device, command, payload, tags=tags
+        )
 
-    # --- NEW PROTOCOL PROXIES ---
+    def log_reflection(self, summary, index_semantically=True):
+        """
+        Record a scientific reflection. 
+        This is the high-signal text indexed for comprehensive recall.
+        """
+        entry_id = self.storage.log_event(self.current_exp_id, "REFLECTION", {"summary": summary})
+        if index_semantically:
+            self.memory.index_experiment(
+                exp_id=f"{self.current_exp_id}_{entry_id}",
+                text_content=summary,
+                metadata={"experiment_id": self.current_exp_id, "type": "reflection"}
+            )
+        return entry_id
 
-    def save_protocol(self, name, description, plan):
-        return self.storage.save_protocol(name, description, plan)
-
-    def load_protocol(self, name):
-        return self.storage.load_protocol(name)
-
-    def list_protocols(self):
-        return self.storage.list_protocols()
+    def search_memory(self, query, n_results=3):
+        return self.memory.search_semantic(query, n_results=n_results)
