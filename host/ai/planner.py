@@ -75,26 +75,24 @@ You can save successful plans as 'protocols' using the 'dln' device.
 """
 
     def _build_data_context(self):
-        return """You are a Laboratory Data Analyst (DATA MODE).
+        # We inject the current session's reagents so the Analyst can map 
+        # hardware IDs (p1, p2) to names (Blue Dye, Acid).
+        reagents = json.dumps(self.world_model.get('reagents', {}), indent=2)
+        
+        return f"""You are a Laboratory Data Analyst (DATA MODE).
 Your goal is to help the user understand experimental data.
+
+# CURRENT SESSION REAGENTS
+{reagents}
 
 # CAPABILITIES
 1. You CANNOT control hardware.
-2. You can discuss chemistry, analyze results, and answer questions.
-3.  **HISTORICAL RECORDS**: The system automatically retrieves relevant past experiments based on the user's query and injects them under the header "=== RELEVANT HISTORICAL RECORDS ===". Use this to answer questions about the past. 
+2. You have access to:
+   - "HISTORICAL RECORDS": Linguistic summaries from past experiments.
+   - "DATASET RECORDS": Raw instrument data retrieved based on your query.
+3. Use the mapping above to translate device IDs (like 'p1') into scientific names.
 
 # INSTRUCTIONS
 - Respond in clear natural language.
-- Analyze the provided JSON data to answer the user's questions.
+- If the user asks about a specific location (like G9), look at the provided Dataset Records to see what happened there.
 """
-
-    def build_user_prompt(self, goal, plate_summary, current_well="Unknown", observation=None):
-        if self.current_mode == self.MODE_RUN:
-            obs_section = f"\n# PREVIOUS EXECUTION RESULT (Read carefully if this is an error)\n{observation}" if observation else ""
-            return f"""# USER GOAL
-{goal}
-
-
-Generate the execution plan."""
-        else:
-            return goal

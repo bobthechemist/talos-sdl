@@ -3,6 +3,7 @@ import sys
 import os
 import argparse
 import re
+import json
 from pathlib import Path
 
 # Setup project root path
@@ -177,35 +178,49 @@ def main():
                 
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
+# host/ai/chat.py - Inside the REPL Loop for MODE_DATA
+
                 else:
-                    # --- DATA MODE: Automatic Memory Retrieval ---
+                    # --- DATA MODE: Relational Retrieval ---
                     print(f"[*] Querying Digital Lab Notebook records...")
                     
                     injected_context = ""
 
-                    # 1. AUTOMATIC SEMANTIC SEARCH
-                    mem_results = session_manager.search_memory(user_input, n_results=2)
+                    # 1. SEMANTIC SEARCH (Reflections)
+                    mem_results = session_manager.search_memory(user_input, n_results=3)
                     if mem_results:
-                        injected_context += "\n=== RELEVANT HISTORICAL RECORDS ===\n"
+                        injected_context += "\n=== RELEVANT HISTORICAL SUMMARIES ===\n"
                         for res in mem_results:
-                            injected_context += f"Experiment ID: {res['id']}\nNarrative: {res['content']}\n---\n"
+                            injected_context += f"- {res['content']}\n"
 
-                    # 2. DATASET ARTIFACT INJECTION (Regex for ds_ or UUIDs)
-                    found_ids = re.findall(r"([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}|[0-9a-f]{8}|ds_\d{8}_\d{6})", user_input)
-                    if found_ids:
+                    # 2. TAG-BASED SQL SEARCH (The "G9" Logic)
+                    # Extract well coordinates or reagent names from the question
+                    coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", user_input.upper())
+                    
+                    if coords:
                         session = session_manager.storage.Session()
-                        from host.dln.storage_manager import Attachment
-                        for aid in found_ids:
-                            att = session.query(Attachment).filter(
-                                (Attachment.id == aid) | (Attachment.filename.contains(aid))
-                            ).first()
-                            if att and os.path.exists(att.file_path):
-                                with open(att.file_path, 'r') as f:
-                                    injected_context += f"\n=== DATASET {aid} ===\n{f.read()}\n"
+                        from host.dln.storage_manager import Attachment, Experiment
+                        for coord in coords:
+                            # Find any data associated with this well across ALL sessions
+                            attachments = session.query(Attachment).filter(
+                                Attachment.context_tags.contains(coord)
+                            ).all()
+                            
+                            for att in attachments:
+                                # Retrieve the experiment this data belonged to so we get its World Model
+                                exp = session.query(Experiment).filter_by(id=att.experiment_id).first()
+                                mapping = exp.world_model.get('reagents', {}) if exp.world_model else {}
+                                
+                                if os.path.exists(att.file_path):
+                                    with open(att.file_path, 'r') as f:
+                                        data_body = f.read()
+                                    injected_context += f"\n=== DATASET FROM WELL {coord} (Session: {att.experiment_id}) ===\n"
+                                    injected_context += f"Reagent Mapping for this session: {json.dumps(mapping)}\n"
+                                    injected_context += f"Data: {data_body}\n"
                         session.close()
 
-                    # 3. ASSEMBLY
-                    final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}" if injected_context else user_input
+                    # 3. ASSEMBLY & EXECUTION
+                    final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
                     
                     print(f"[*] Analyzing...")
                     response = current_agent.prompt(final_prompt, use_history=True)
