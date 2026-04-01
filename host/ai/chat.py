@@ -178,50 +178,42 @@ def main():
                 
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
-# host/ai/chat.py - Inside the REPL Loop for MODE_DATA
 
-                else:
-                    # --- DATA MODE: Relational Retrieval ---
+
+                # DATA PORTION OF LOOP
+                elif planner.current_mode == Planner.MODE_DATA:
                     print(f"[*] Querying Digital Lab Notebook records...")
-                    
                     injected_context = ""
 
-                    # 1. SEMANTIC SEARCH (Reflections)
+                    # 1. Semantic search for high-level summaries
                     mem_results = session_manager.search_memory(user_input, n_results=3)
                     if mem_results:
-                        injected_context += "\n=== RELEVANT HISTORICAL SUMMARIES ===\n"
+                        injected_context += "\n=== HISTORICAL SUMMARIES ===\n"
                         for res in mem_results:
                             injected_context += f"- {res['content']}\n"
 
-                    # 2. TAG-BASED SQL SEARCH (The "G9" Logic)
-                    # Extract well coordinates or reagent names from the question
+                    # 2. Coordinate scanning (e.g., G9)
                     coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", user_input.upper())
-                    
                     if coords:
-                        session = session_manager.storage.Session()
                         from host.dln.storage_manager import Attachment, Experiment
+                        session = session_manager.storage.Session()
                         for coord in coords:
-                            # Find any data associated with this well across ALL sessions
+                            # Query the JSON column context_tags
                             attachments = session.query(Attachment).filter(
                                 Attachment.context_tags.contains(coord)
                             ).all()
-                            
                             for att in attachments:
-                                # Retrieve the experiment this data belonged to so we get its World Model
                                 exp = session.query(Experiment).filter_by(id=att.experiment_id).first()
-                                mapping = exp.world_model.get('reagents', {}) if exp.world_model else {}
-                                
+                                mapping = exp.world_model.get('reagents', {}) if exp and exp.world_model else {}
                                 if os.path.exists(att.file_path):
                                     with open(att.file_path, 'r') as f:
-                                        data_body = f.read()
-                                    injected_context += f"\n=== DATASET FROM WELL {coord} (Session: {att.experiment_id}) ===\n"
-                                    injected_context += f"Reagent Mapping for this session: {json.dumps(mapping)}\n"
-                                    injected_context += f"Data: {data_body}\n"
+                                        injected_context += f"\n=== DATASET FROM {coord} (Session: {att.experiment_id}) ===\n"
+                                        injected_context += f"Reagent Mapping: {json.dumps(mapping)}\n"
+                                        injected_context += f"Data: {f.read()}\n"
                         session.close()
 
-                    # 3. ASSEMBLY & EXECUTION
+                    # 3. Final Assembly
                     final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
-                    
                     print(f"[*] Analyzing...")
                     response = current_agent.prompt(final_prompt, use_history=True)
                     print(f"\n{C.OK}{response}{C.END}")

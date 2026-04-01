@@ -20,19 +20,15 @@ class Experiment(Base):
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     title = Column(String(255))
     objective = Column(Text)
-    summary = Column(Text) # Reflection summary of the whole session
+    summary = Column(Text)
     status = Column(String(50))
     start_time = Column(DateTime, default=datetime.utcnow)
     end_time = Column(DateTime)
-    world_model = Column(JSON) # Snapshot of lab state at start
+    world_model = Column(JSON)
     entries = relationship("Entry", back_populates="experiment", cascade="all, delete-orphan")
     attachments = relationship("Attachment", back_populates="experiment", cascade="all, delete-orphan")
 
 class Entry(Base):
-    """
-    Generic event ledger. 
-    Types: INTENT (User Goal), PLAN (AI JSON), OBSERVATION (Hardware Response), REFLECTION (AI Summary)
-    """
     __tablename__ = 'entries'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     experiment_id = Column(String(36), ForeignKey('experiments.id'))
@@ -43,10 +39,6 @@ class Entry(Base):
     attachments = relationship("Attachment", back_populates="entry", cascade="all, delete-orphan")
 
 class Attachment(Base):
-    """
-    Hardware-agnostic data storage. 
-    Use context_tags for IDs like 'well', 'electrode', 'vial_id', etc.
-    """
     __tablename__ = 'attachments'
     id = Column(String(36), primary_key=True, default=lambda: str(uuid.uuid4()))
     experiment_id = Column(String(36), ForeignKey('experiments.id'))
@@ -54,7 +46,7 @@ class Attachment(Base):
     filename = Column(String(255))
     file_path = Column(String(512))
     data_type = Column(String(50))
-    context_tags = Column(JSON) # Generic bucket for hardware-specific identifiers
+    context_tags = Column(JSON)
     experiment = relationship("Experiment", back_populates="attachments")
     entry = relationship("Entry", back_populates="attachments")
 
@@ -84,7 +76,6 @@ class StorageManager:
                 session.add(SchemaInfo(version=self.SCHEMA_VERSION))
                 session.commit()
             elif v.version < self.SCHEMA_VERSION:
-                # Basic migration: logic could be expanded here
                 v.version = self.SCHEMA_VERSION
                 session.commit()
         finally:
@@ -101,8 +92,26 @@ class StorageManager:
             return exp_id
         finally: session.close()
 
+    # --- RESTORED METHOD ---
+    def update_experiment(self, exp_id, **kwargs):
+        """Updates experiment metadata, such as status or final summary."""
+        session = self.Session()
+        try:
+            exp = session.query(Experiment).filter_by(id=exp_id).first()
+            if exp:
+                for key, value in kwargs.items():
+                    if hasattr(exp, key):
+                        setattr(exp, key, value)
+                
+                # If marking as done, timestamp the end_time
+                if kwargs.get('status') in ('completed', 'failed', 'aborted'):
+                    exp.end_time = datetime.utcnow()
+                
+                session.commit()
+        finally:
+            session.close()
+
     def log_event(self, exp_id, event_type, content):
-        """Logs a generic transaction event (INTENT, PLAN, OBSERVATION, REFLECTION)."""
         session = self.Session()
         try:
             entry = Entry(experiment_id=exp_id, event_type=event_type, content=content)
@@ -112,13 +121,8 @@ class StorageManager:
         finally: session.close()
 
     def save_artifact(self, exp_id, entry_id, device, command, payload, tags=None):
-        """
-        Saves raw instrument data and registers it with context tags.
-        Replaces the old Registry logic.
-        """
         session = self.Session()
         try:
-            # 1. File management
             timestamp_str = datetime.now().strftime('%Y%m%d_%H%M%S')
             unique_id = str(uuid.uuid4())[:8]
             filename_base = f"{device}_{command}_{timestamp_str}_{unique_id}"
@@ -128,28 +132,21 @@ class StorageManager:
             with open(json_path, 'w') as f:
                 json.dump(payload, f, indent=2)
 
-            # 2. Metadata and Tags
-            metadata = payload.get('metadata', {})
-            # Ensure tags is a dictionary
             context_tags = tags if isinstance(tags, dict) else {}
             context_tags['device'] = device
             context_tags['command'] = command
 
             attachment = Attachment(
-                experiment_id=exp_id, 
-                entry_id=entry_id, 
-                filename=f"{filename_base}.json",
-                file_path=str(json_path), 
-                data_type=metadata.get('data_type', 'unknown'),
+                experiment_id=exp_id, entry_id=entry_id, filename=f"{filename_base}.json",
+                file_path=str(json_path), data_type=payload.get('metadata', {}).get('data_type', 'unknown'),
                 context_tags=context_tags
             )
             session.add(attachment)
 
-            # 3. Best-effort CSV (for flat data)
+            # CSV Best effort
             data_content = payload.get('data', {})
             if isinstance(data_content, dict):
-                is_flat = all(isinstance(v, (int, float, str, bool)) for v in data_content.values())
-                if is_flat:
+                if all(isinstance(v, (int, float, str, bool)) for v in data_content.values()):
                     csv_path = exp_folder / f"{filename_base}.csv"
                     try:
                         with open(csv_path, 'w', newline='') as f:
