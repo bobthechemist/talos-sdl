@@ -10,3 +10,5 @@ mkdocstrings[python]>=0.25.0
 pymdown-extensions
 sqlalchemy
 chromadb
+pydantic
+sentence-transformers
