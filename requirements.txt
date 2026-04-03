@@ -11,4 +11,4 @@ pymdown-extensions
 sqlalchemy
 chromadb
 pydantic
-sentence-transformers
+onnxruntime
