@@ -56,3 +56,4 @@ nav:
       - Firmware: api/firmware.md
       - Host: api/host.md
       - Shared Lib: api/shared_lib.md
+      - DLN: api/dln.md
