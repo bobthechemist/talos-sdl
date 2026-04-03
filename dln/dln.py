@@ -185,7 +185,7 @@ class DigitalLabNotebook:
         self._assert_active_session()
         
         self.log_science(entry_type='summary', data={'text': summary_text})
-        self.update_reflective_log() # Call the public method
+        self.update_reflective_log() # Call the public method for the current session
         
         with self.Session() as session:
             final_hash = verification.generate_session_hash(session, self.current_session_id)
@@ -200,24 +200,76 @@ class DigitalLabNotebook:
         self.current_session_id = None
         self.current_session_status = None
 
-    def update_reflective_log(self):
+    # NEW: Method to get metadata for all sessions
+    def get_all_sessions_metadata(self) -> list[dict]:
         """
-        Populates or updates the vector store with embeddable science logs from the current session.
+        Retrieves metadata for all experiment sessions recorded in the notebook.
+
+        Returns:
+            list[dict]: A list of dictionaries, each representing a session with its ID, title,
+                        start/end times, and status.
+        """
+        with self.Session() as session:
+            sessions = session.query(ExperimentSession).order_by(ExperimentSession.start_time.desc()).all()
+            return [
+                {
+                    "id": s.id,
+                    "title": s.title,
+                    "start_time": s.start_time.isoformat(),
+                    "end_time": s.end_time.isoformat() if s.end_time else None,
+                    "status": s.status
+                } for s in sessions
+            ]
+
+    # NEW: Method to update an experiment session's title
+    def update_session_title(self, session_id: int, new_title: str):
+        """
+        Updates the title of a specific experiment session.
+
+        Args:
+            session_id (int): The ID of the session to update.
+            new_title (str): The new title for the session.
+
+        Raises:
+            ValueError: If the session ID is not found.
+            ExperimentFinalizedError: If the session has already been finalized.
+        """
+        with self.Session() as session:
+            exp_session = session.get(ExperimentSession, session_id)
+            if not exp_session:
+                raise ValueError(f"Session with ID {session_id} not found.")
+            if exp_session.status == 'finalized':
+                raise ExperimentFinalizedError(f"Cannot update title of finalized session {session_id}.")
+            exp_session.title = new_title
+            session.commit()
+            if session_id == self.current_session_id:
+                # Update local status if the current active session's title was changed
+                # (This just ensures internal state consistency, though title itself doesn't affect 'status')
+                pass 
+        self.log_science(entry_type="system", data={"action": "session_title_updated", "session_id": session_id, "new_title": new_title})
+
+
+    # MODIFIED: update_reflective_log to accept an optional session_id
+    def update_reflective_log(self, session_id: int = None):
+        """
+        Populates or updates the vector store with embeddable science logs.
+        If `session_id` is provided, it updates that specific session's log.
+        Otherwise, it updates the currently active session's log.
         This method can be called multiple times during an active session to keep the reflective
         log up-to-date for semantic queries.
         """
-        # Allow this to run for active or finalized sessions.
-        # It will re-index all relevant entries for the current session ID.
-        if self.current_session_id is None:
-            raise ExperimentNotStartedError("No active experiment to update reflective log for.")
+        target_session_id = session_id if session_id is not None else self.current_session_id
+
+        if target_session_id is None:
+            raise ExperimentNotStartedError("No active experiment to update reflective log for, and no session_id provided.")
             
-        collection = self.vector_store.get_or_create_collection(self.current_session_id)
+        collection = self.vector_store.get_or_create_collection(target_session_id)
         
         with self.Session() as session:
-            # Query all relevant logs for the current session to (re)index
+            # Query all relevant logs for the target session to (re)index
             logs_to_embed = session.query(ScienceLog).filter(
-                ScienceLog.session_id == self.current_session_id,
-                ScienceLog.entry_type.in_(['observation', 'reflection', 'summary', 'intent', 'plan']) # Include more types for RAG
+                ScienceLog.session_id == target_session_id,
+                ScienceLog.entry_type.in_(['observation', 'reflection', 'summary', 'intent', 'plan', 'context', 'system']) # Include more types for RAG
             ).all()
 
             for log in logs_to_embed:
@@ -225,9 +277,11 @@ class DigitalLabNotebook:
                 self.vector_store.add_entry( # This now uses upsert
                     collection=collection,
                     document=document_text,
-                    metadata={'entry_type': log.entry_type, 'id': log.id, 'session_id': self.current_session_id},
+                    metadata={'entry_type': log.entry_type, 'id': log.id, 'session_id': target_session_id},
                     doc_id=log.id
                 )
+        self.log_science(entry_type="system", data={"action": "reflective_log_updated", "session_id": target_session_id})
+
 
     def query_relational(self, sql_query: str) -> list:
         """
@@ -288,6 +342,72 @@ class DigitalLabNotebook:
             ).all()
         
         return full_logs
+
+    # NEW: Method to query across all sessions
+    def query_vector_all_sessions(self, query_text: str, n_results: int = 5) -> list[ScienceLog]:
+        """
+        Performs a semantic search across all experiment sessions in the Reflective Log.
+        
+        Args:
+            query_text (str): The natural language text to search for.
+            n_results (int, optional): The maximum number of results to return. Defaults to 5.
+
+        Returns:
+            list[ScienceLog]: A list of the full ScienceLog ORM objects that are most
+                              semantically similar to the query text, ordered by relevance.
+        """
+        all_chroma_results = [] # Store {'id': log_id, 'distance': distance, 'session_id': session_id}
+        
+        with self.Session() as session:
+            # Get all session IDs to iterate through their ChromaDB collections
+            all_sessions_db = session.query(ExperimentSession.id).all()
+            all_session_ids = [s_id[0] for s_id in all_sessions_db]
+        
+        for s_id in all_session_ids:
+            try:
+                collection = self.vector_store.get_or_create_collection(s_id)
+                if collection.count() > 0: # Only query if collection has data
+                    results = self.vector_store.query(collection, query_text, n_results=n_results)
+                    if results and results.get('ids') and results['ids'][0]:
+                        for i in range(len(results['ids'][0])):
+                            all_chroma_results.append({
+                                'id': int(results['ids'][0][i]),
+                                'distance': results['distances'][0][i],
+                                'session_id': s_id # Store session_id for context
+                            })
+            except Exception as e:
+                # Log the error but continue to other collections
+                # In a real app, this should go to a proper logging system
+                print(f"Warning: Could not query ChromaDB collection for session {s_id}: {e}")
+        
+        # Sort all collected results by distance (lower is better, meaning more relevant)
+        all_chroma_results.sort(key=lambda x: x['distance'])
+        
+        # Get the top N unique log IDs, maintaining sort order
+        top_log_ids = []
+        seen_ids = set()
+        for res in all_chroma_results:
+            if len(top_log_ids) >= n_results:
+                break
+            # Ensure we only add unique log IDs from potentially different sessions
+            if res['id'] not in seen_ids:
+                top_log_ids.append(res['id'])
+                seen_ids.add(res['id'])
+        
+        if not top_log_ids:
+            return []
+        
+        with self.Session() as session:
+            # Fetch the full ScienceLog objects for the top IDs
+            full_logs = session.query(ScienceLog).filter(ScienceLog.id.in_(top_log_ids)).all()
+            
+            # Create a dictionary to map log ID to the full ScienceLog object
+            log_map = {log.id: log for log in full_logs}
+            
+            # Reconstruct the list of ScienceLog objects in order of relevance
+            ordered_logs = [log_map[log_id] for log_id in top_log_ids if log_id in log_map]
+            return ordered_logs
+
 
     def save_protocol(self, name: str, content: str) -> tuple[str, int]:
         """
