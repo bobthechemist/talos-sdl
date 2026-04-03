@@ -226,7 +226,8 @@ def main():
 
     finally:
         print(f"\n{C.INFO}Shutting down...")
-        notebook.finalize(summary_text="User exited Cockpit.") # Use new finalize method
+        # Make sure to pass a summary to the finalize method
+        notebook.finalize(summary_text="User exited Cockpit.") 
         manager.stop()
         print(f"{C.OK}Goodbye.{C.END}")
 

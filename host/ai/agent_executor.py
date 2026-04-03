@@ -85,8 +85,11 @@ class AgentExecutor:
                     print(f" {C.ERR}[FAILED]{C.END} (Device not found)")
                     execution_success = False; break
 
+                # Transaction log for raw communication
+                self.notebook.log_transaction(f"SENT: device={device}, command={command}, args={json.dumps(args)}")
                 self.manager.send_message(port, Message.create_message("AGENT", "INSTRUCTION", payload={"func": command, "args": args})) 
                 result = self._wait_for_result(port)
+                self.notebook.log_transaction(f"RECV: device={device}, status={result['status']}, payload={json.dumps(result['payload'])}")
 
                 if result['status'] in ("SUCCESS", "DATA_RESPONSE"):
                     print(f" {C.OK}[OK]{C.END}")
@@ -216,8 +219,9 @@ class AgentExecutor:
             data_summary += f"Dataset {item['id']} ({item['device']}){context_str}: {json.dumps(core_data)}\n"
 
         system_prompt = "You are a Scientific Data Analyst. Interpret results concisely."
+        user_prompt = f"Goal: {user_goal}\nData:\n{data_summary}\nAnalyze these results." 
         analyst = LLMManager.get_agent(context=system_prompt) 
-        return analyst.prompt(user_goal, use_history=False)
+        return analyst.prompt(user_prompt, use_history=False)
 
     def _update_executor_state(self, command, args):
         if command in ('to_well', 'dispense_at', 'to_well_and_dispense'):
