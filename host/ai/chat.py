@@ -17,7 +17,7 @@ from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
 from host.gui.console import C
-from host.dln.session_manager import SessionManager
+from dln import DigitalLabNotebook # New DLN import
 
 def print_help():
     print(f"\n{C.INFO}--- Available Commands ---{C.END}")
@@ -52,11 +52,11 @@ def main():
 
     # 2. Initialize Digital Lab Notebook
     print(f"{C.INFO}[+] Initializing Digital Lab Notebook...{C.END}")
-    session_manager = SessionManager(base_dir=".talos")
-    session_manager.start_session(
-        world_model=world_model,
-        title=world_model.get('experiment_name'),
-        objective="Agentic session started via Laboratory Cockpit"
+    # Initialize the new DigitalLabNotebook
+    notebook = DigitalLabNotebook(db_path=".talos/lab_notebook.db") # Default path for Talos-SDL
+    session_id = notebook.start_experiment(
+        title=world_model.get('experiment_name', "Untitled Experiment"), # Use 'title' from world_model if available
+        context_json=world_model # Pass the entire world_model as context
     )
 
     # 3. Hardware Setup (Decoupled)
@@ -101,11 +101,11 @@ def main():
         agent=current_agent,
         planner=planner, 
         plate_manager=plate_manager,
-        session_manager=session_manager,
+        notebook=notebook, # Pass the new notebook instance
         require_confirmation=True 
     )
 
-    print(f"\n{C.INFO}System Online. Notebook Session: {session_manager.current_exp_id}{C.END}")
+    print(f"\n{C.INFO}System Online. Notebook Session: {notebook.current_session_id}{C.END}")
     print(f"{C.INFO}Type /help for a list of commands.{C.END}")
 
     # 6. REPL Loop
@@ -143,16 +143,27 @@ def main():
                         continue
 
                     elif cmd == "/datasets":
-                        # Query StorageManager via SessionManager to list entries in the notebook
-                        session = session_manager.storage.Session()
-                        from host.dln.storage_manager import Attachment
-                        attachments = session.query(Attachment).all()
-                        print(f"\n{C.INFO}--- Lab Notebook: Registered Datasets ---{C.END}")
-                        if not attachments:
-                            print("No data recorded yet.")
-                        for att in attachments:
-                            print(f"ID: {C.OK}{att.id}{C.END} | Type: {att.data_type} | File: {att.filename}")
-                        session.close()
+                        # Query the new DLN for science logs and transaction logs for the current session
+                        print(f"\n{C.INFO}--- Lab Notebook: Registered Datasets (Session {notebook.current_session_id}) ---{C.END}")
+                        
+                        print(f"\n--- Science Logs ---")
+                        science_logs_raw = notebook.query_relational(
+                            f"SELECT id, entry_type, data, timestamp FROM ScienceLog WHERE session_id = {notebook.current_session_id} ORDER BY timestamp ASC"
+                        )
+                        if not science_logs_raw: print(f"No science logs for this session.")
+                        for log_id, entry_type, data_json, timestamp in science_logs_raw:
+                            data_preview = json.loads(data_json) # Parse JSON to dict
+                            # Try to get a meaningful preview from the data dict
+                            preview_str = data_preview.get('summary') or data_preview.get('goal') or data_preview.get('message') or data_preview.get('notes') or str(data_preview)
+                            print(f"  ID: {C.OK}{log_id}{C.END} | Type: {entry_type} | Data: {str(preview_str)[:100]}...")
+                        
+                        print(f"\n--- Transaction Logs (Recent 5) ---") # Limit for display in console
+                        transaction_logs_raw = notebook.query_relational(
+                            f"SELECT id, raw_io, timestamp FROM TransactionLog WHERE session_id = {notebook.current_session_id} ORDER BY timestamp DESC LIMIT 5"
+                        )
+                        if not transaction_logs_raw: print(f"No transaction logs for this session.")
+                        for log_id, raw_io, timestamp in transaction_logs_raw:
+                            print(f"  ID: {C.OK}{log_id}{C.END} | Raw I/O: {raw_io[:100]}...")
                         continue
 
                     elif cmd == "/run":
@@ -179,38 +190,29 @@ def main():
                 if planner.current_mode == Planner.MODE_RUN:
                     executor.run(user_input)
 
-
                 # DATA PORTION OF LOOP
                 elif planner.current_mode == Planner.MODE_DATA:
                     print(f"[*] Querying Digital Lab Notebook records...")
                     injected_context = ""
 
                     # 1. Semantic search for high-level summaries
-                    mem_results = session_manager.search_memory(user_input, n_results=3)
+                    mem_results = notebook.query_vector(user_input, session_id=notebook.current_session_id, n_results=3)
                     if mem_results:
-                        injected_context += "\n=== HISTORICAL SUMMARIES ===\n"
+                        injected_context += "\n=== HISTORICAL SUMMARIES (Semantic Search) ===\n"
                         for res in mem_results:
-                            injected_context += f"- {res['content']}\n"
+                            # The new query_vector returns ScienceLog ORM objects
+                            # Extract relevant info from ScienceLog.data for the prompt
+                            summary_data = res.data.get('summary') or res.data.get('goal') or res.data.get('notes') or str(res.data)
+                            injected_context += f"- [Log {res.id}, Type: {res.entry_type}]: {summary_data}\n"
 
                     # 2. Coordinate scanning (e.g., G9)
                     coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", user_input.upper())
                     if coords:
-                        from host.dln.storage_manager import Attachment, Experiment
-                        session = session_manager.storage.Session()
                         for coord in coords:
-                            # Query the JSON column context_tags
-                            attachments = session.query(Attachment).filter(
-                                Attachment.context_tags.contains(coord)
-                            ).all()
-                            for att in attachments:
-                                exp = session.query(Experiment).filter_by(id=att.experiment_id).first()
-                                mapping = exp.world_model.get('reagents', {}) if exp and exp.world_model else {}
-                                if os.path.exists(att.file_path):
-                                    with open(att.file_path, 'r') as f:
-                                        injected_context += f"\n=== DATASET FROM {coord} (Session: {att.experiment_id}) ===\n"
-                                        injected_context += f"Reagent Mapping: {json.dumps(mapping)}\n"
-                                        injected_context += f"Data: {f.read()}\n"
-                        session.close()
+                            # This is a placeholder for more advanced integration.
+                            # For now, it acknowledges the search for coordinates.
+                            injected_context += f"\n=== DATA QUERY FOR WELL {coord} ===\n"
+                            injected_context += f"  (Context for well {coord} would be retrieved from ScienceLog.data if available)\n"
 
                     # 3. Final Assembly
                     final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
@@ -224,7 +226,7 @@ def main():
 
     finally:
         print(f"\n{C.INFO}Shutting down...")
-        session_manager.end_session(summary="User exited Cockpit.")
+        notebook.finalize(summary_text="User exited Cockpit.") # Use new finalize method
         manager.stop()
         print(f"{C.OK}Goodbye.{C.END}")
 
