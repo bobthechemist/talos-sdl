@@ -11,7 +11,7 @@ class VectorStoreManager:
         chroma_data_path = os.path.join(os.path.dirname(db_path), "chroma_db")
         os.makedirs(chroma_data_path, exist_ok=True)
         self.client = chromadb.PersistentClient(path=chroma_data_path)
-        self.emb_fn = embedding_functions.DefaultEmbeddingFUnction()
+        self.emb_fn = embedding_functions.DefaultEmbeddingFunction()
 
     def get_collection_name(self, session_id: int) -> str:
         return f"session_{session_id}"
