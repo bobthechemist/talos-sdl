@@ -21,9 +21,10 @@ class VectorStoreManager:
         return self.client.get_or_create_collection(name=collection_name)
 
     def add_entry(self, collection, document: str, metadata: dict, doc_id: int):
-        """Generates an embedding and adds a document to a ChromaDB collection."""
+        """Generates an embedding and adds/updates a document in a ChromaDB collection."""
         embedding = self.model.encode(document).tolist()
-        collection.add(
+        # FIX: Use upsert instead of add to handle re-indexing during active sessions
+        collection.upsert(
             embeddings=[embedding],
             documents=[document],
             metadatas=[metadata],

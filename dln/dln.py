@@ -71,6 +71,7 @@ class DigitalLabNotebook:
             self.current_session_id = new_session.id
             self.current_session_status = new_session.status
 
+            # Automatically log the initial context to ScienceLog
             self.log_science(entry_type="context", data={"context": context_json})
             return self.current_session_id
 
@@ -184,7 +185,7 @@ class DigitalLabNotebook:
         self._assert_active_session()
         
         self.log_science(entry_type='summary', data={'text': summary_text})
-        self._update_reflective_log()
+        self.update_reflective_log() # Call the public method
         
         with self.Session() as session:
             final_hash = verification.generate_session_hash(session, self.current_session_id)
@@ -199,23 +200,32 @@ class DigitalLabNotebook:
         self.current_session_id = None
         self.current_session_status = None
 
-    def _update_reflective_log(self):
-        """(Private) Populates the vector store with embeddable science logs from the current session."""
-        self._assert_active_session()
+    def update_reflective_log(self):
+        """
+        Populates or updates the vector store with embeddable science logs from the current session.
+        This method can be called multiple times during an active session to keep the reflective
+        log up-to-date for semantic queries.
+        """
+        # Allow this to run for active or finalized sessions.
+        # It will re-index all relevant entries for the current session ID.
+        if self.current_session_id is None:
+            raise ExperimentNotStartedError("No active experiment to update reflective log for.")
+            
         collection = self.vector_store.get_or_create_collection(self.current_session_id)
         
         with self.Session() as session:
+            # Query all relevant logs for the current session to (re)index
             logs_to_embed = session.query(ScienceLog).filter(
                 ScienceLog.session_id == self.current_session_id,
-                ScienceLog.entry_type.in_(['observation', 'reflection', 'summary'])
+                ScienceLog.entry_type.in_(['observation', 'reflection', 'summary', 'intent', 'plan']) # Include more types for RAG
             ).all()
 
             for log in logs_to_embed:
                 document_text = json.dumps(log.data)
-                self.vector_store.add_entry(
+                self.vector_store.add_entry( # This now uses upsert
                     collection=collection,
                     document=document_text,
-                    metadata={'entry_type': log.entry_type, 'id': log.id},
+                    metadata={'entry_type': log.entry_type, 'id': log.id, 'session_id': self.current_session_id},
                     doc_id=log.id
                 )
 
@@ -239,10 +249,12 @@ class DigitalLabNotebook:
 
     def query_vector(self, query_text: str, session_id: int, n_results: int = 5) -> list[ScienceLog]:
         """
-        Performs a semantic search on a specific finalized experiment session.
+        Performs a semantic search on a specific experiment session.
 
         This method queries the Reflective Log (vector store) for entries semantically
         similar to the `query_text` and returns the full ScienceLog objects.
+        For active sessions, ensure `update_reflective_log()` has been called recently
+        to include the latest data.
 
         Args:
             query_text (str): The natural language text to search for.
@@ -253,8 +265,14 @@ class DigitalLabNotebook:
             list[ScienceLog]: A list of the full ScienceLog ORM objects that are most
                               semantically similar to the query text.
         """
-        collection_name = self.vector_store.get_collection_name(session_id)
-        collection = self.vector_store.client.get_collection(name=collection_name)
+        # FIX: Ensure collection exists before querying.
+        collection = self.vector_store.get_or_create_collection(session_id)
+        
+        # Check if the collection has any data before querying.
+        # This prevents errors if update_reflective_log hasn't been called for this session.
+        if collection.count() == 0:
+            return []
+
         results = self.vector_store.query(collection, query_text, n_results=n_results)
         
         if not results or not results.get('ids') or not results['ids'][0]:
@@ -263,7 +281,11 @@ class DigitalLabNotebook:
         log_ids = [int(id_str) for id_str in results['ids'][0]]
         
         with self.Session() as session:
-            full_logs = session.query(ScienceLog).filter(ScienceLog.id.in_(log_ids)).all()
+            # Filter by session_id as well to ensure correctness, though vector store is per session.
+            full_logs = session.query(ScienceLog).filter(
+                ScienceLog.id.in_(log_ids),
+                ScienceLog.session_id == session_id
+            ).all()
         
         return full_logs
 

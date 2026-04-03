@@ -195,6 +195,10 @@ def main():
                     print(f"[*] Querying Digital Lab Notebook records...")
                     injected_context = ""
 
+                    # FIX: Update the reflective log for the current session before querying
+                    # This ensures the vector store contains the latest data from the active session
+                    notebook.update_reflective_log()
+
                     # 1. Semantic search for high-level summaries
                     mem_results = notebook.query_vector(user_input, session_id=notebook.current_session_id, n_results=3)
                     if mem_results:
