@@ -31,6 +31,14 @@ def register_common_commands(machine):
         "description": "Retrieves status information.",
         "args": []
     })
+    machine.add_command("enable_continuous", handle_enable_continuous, {
+        "description": "Enable continuous mode for live view.",
+        "args": []
+    })
+    machine.add_command("read_continuous", handle_read_continuous, {
+        "description": "Reads sensor continuously for live view.",
+        "args": ["rate: int"]
+    })
 
 # --- Handler functions are now standalone ---
 def handle_help(machine, payload):
@@ -99,7 +107,7 @@ def handle_set_time(machine, payload):
 def handle_get_info(machine, payload):
     """
     Handles the 'get_info' command. It assembles a standardized status
-    report by accessing core machine attributes and calling the machine's 
+    report by accessing core machine attributes and calling the machine's
     registered status_callback function to get instrument-specific data.
     """
     try:
@@ -111,12 +119,12 @@ def handle_get_info(machine, payload):
                 "current_state": machine.state.name,
                 "data_type": "dict"
             },
-            
+
             # 2. Call the machine's registered callback function to compute
             #    the instrument-specific status dictionary in real-time.
             "data": machine.build_status_info(machine)
         }
-        
+
         # 3. Create the SUCCESS message with the assembled payload.
         response = Message.create_message(
             subsystem_name=machine.name,
@@ -126,4 +134,88 @@ def handle_get_info(machine, payload):
         machine.postman.send(response.serialize())
     except Exception as e:
         send_problem(machine, "Failed to retrieve device info", str(e))
+
+def handle_enable_continuous(machine, payload):
+    """
+    Enables continuous mode for the magnetometer device.
+    Sets a flag that allows the read_continuous command to run without
+    requiring manual enable each time.
+    """
+    try:
+        machine.flags['continuous_mode'] = True
+        machine.flags['sample_counter'] = 0
+        send_success(machine, "Continuous mode enabled")
+    except Exception as e:
+        send_problem(machine, f"Failed to enable continuous mode: {e}")
+
+def handle_read_continuous(machine, payload):
+    """
+    Handles the 'read_continuous' command.
+    Reads sensor and returns data with timestamp and sample number.
+
+    Args:
+        machine: The main device state object
+        payload: The payload dictionary with rate parameter
+
+    Returns:
+        DATA_RESPONSE message with magnetic field data
+    """
+    try:
+        # Get arguments
+        args = payload.get("args", {})
+        rate = args.get("rate", 5)  # Default 5 Hz
+
+        # Check if machine has continuous mode enabled
+        if not machine.flags.get('continuous_mode', False):
+            send_problem(machine, "Continuous mode not enabled. Use enable_continuous first.")
+            return
+
+        # Enable internal counter
+        if 'sample_counter' not in machine.flags:
+            machine.flags['sample_counter'] = 0
+        machine.flags['sample_counter'] += 1
+
+        # Read sensors
+        if hasattr(machine, 'tlv') and hasattr(machine.hmc):
+            # Magnetometer device
+            tlv_raw_x, tlv_raw_y, tlv_raw_z = machine.tlv.magnetic
+            hmc_raw_x, hmc_raw_y, hmc_raw_z = machine.hmc.magnetic
+
+            # Apply offsets if available
+            tlv_corrected = {
+                'x': tlv_raw_x - machine.tlv_offsets.get('x', 0),
+                'y': tlv_raw_y - machine.tlv_offsets.get('y', 0),
+                'z': tlv_raw_z - machine.tlv_offsets.get('z', 0)
+            }
+
+            hmc_corrected = {
+                'x': hmc_raw_x - machine.hmc_offsets.get('x', 0),
+                'y': hmc_raw_y - machine.hmc_offsets.get('y', 0),
+                'z': hmc_raw_z - machine.hmc_offsets.get('z', 0)
+            }
+        else:
+            send_problem(machine, "No magnetometer sensors available")
+            return
+
+        # Create response
+        response = Message.create_message(
+            subsystem_name=machine.name,
+            status="DATA_RESPONSE",
+            payload={
+                "metadata": {
+                    "data_type": "magnetic_field_continuous",
+                    "units": "mixed",
+                    "timestamp": time.time(),
+                    "sample_number": machine.flags['sample_counter']
+                },
+                "data": {
+                    "tlv493d": tlv_corrected,
+                    "hmc5883": hmc_corrected
+                }
+            }
+        )
+        machine.postman.send(response.serialize())
+
+    except Exception as e:
+        send_problem(machine, f"Error in read_continuous: {e}")
 

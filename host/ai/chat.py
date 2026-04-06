@@ -16,6 +16,7 @@ from host.ai.llm_manager import LLMManager
 from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
+from host.ai.live_view_manager import LiveViewManager, parse_field_spec
 from host.gui.console import C
 from host.dln.session_manager import SessionManager
 
@@ -27,6 +28,10 @@ def print_help():
     print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets in this notebook.")
     print(f"  {C.OK}/clear{C.END}         : Clear the AI's short-term context.")
     print(f"  {C.OK}/quit{C.END}          : Exit the application and save session.")
+    print(f"  {C.OK}/liveview list{C.END}       : List available devices.")
+    print(f"  {C.OK}/liveview <dev> list{C.END}: List available fields for a device.")
+    print(f"  {C.OK}/liveview <dev> <fields>{C.END}: Start live monitoring (e.g., '/liveview magnetometer hmc5883.x').")
+    print(f"  {C.OK}/stopview{C.END}          : Stop most recent live view session.")
 
 def main():
     parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
@@ -59,7 +64,7 @@ def main():
         objective="Agentic session started via Laboratory Cockpit"
     )
 
-    # 3. Hardware Setup (Decoupled)
+     # 3. Hardware Setup (Decoupled)
     manager, device_ports = connect_devices()
     
     # 4. Capabilities Discovery (Dynamic)
@@ -79,30 +84,33 @@ def main():
     # Initialize state managers
     plate_manager = PlateManager(max_volume_ul=world_model.get('max_well_volume_ul', 250))
     planner = Planner(world_model, ai_commands, ai_guidance)
-    
+
+     # Initialize live view manager with existing device manager
+    live_view_manager = LiveViewManager(device_manager=manager)
+
     # 5. Agent Initialization
     print(f"{C.INFO}[+] Initializing AI Agents (Dual Contexts)...{C.END}")
-    
+
     # Setup the Controller (Run) Agent
     planner.set_mode(Planner.MODE_RUN)
     run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
-    
+
     # Setup the Analyst (Data) Agent
     planner.set_mode(Planner.MODE_DATA)
     data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
-    
+
     # Default to Run mode
     planner.set_mode(Planner.MODE_RUN)
     current_agent = run_agent
-    
+
     executor = AgentExecutor(
-        manager=manager, 
-        device_ports=device_ports, 
+        manager=manager,
+        device_ports=device_ports,
         agent=current_agent,
-        planner=planner, 
+        planner=planner,
         plate_manager=plate_manager,
         session_manager=session_manager,
-        require_confirmation=True 
+        require_confirmation=True
     )
 
     print(f"\n{C.INFO}System Online. Notebook Session: {session_manager.current_exp_id}{C.END}")
@@ -168,7 +176,121 @@ def main():
                         print(f"{C.INFO}Switched to DATA (Analyst).{C.END}")
                         if remainder: user_input = remainder
                         else: continue
-                    
+
+                    elif cmd == "/liveview":
+                        """
+                        Start a live view of specified device field(s).
+
+                        Usage: /liveview <device_name> <field_spec> [field_spec...]
+                        Usage: /liveview <device_name> list    # List available fields
+                        Usage: /liveview list                  # List available devices
+                        Usage: /liveview                       # List available devices
+
+                        Examples:
+                          /liveview magnetometer hmc5883.x
+                          /liveview magnetometer hmc5883.x hmc5883.y
+                          /liveview magnetometer hmc5883.x, hmc5883.y
+                          /liveview magnetometer list          # List available fields
+                          /liveview list                       # List available devices
+                        """
+                        if not remainder:
+                            # List all devices when no arguments
+                            devices = live_view_manager.list_available_devices()
+                            print(f"\n{C.INFO}--- Available Devices ---{C.END}")
+                            if not devices:
+                                print("No devices connected.")
+                            else:
+                                for name, info in devices.items():
+                                    print(f"  Device: {C.OK}{name}{C.END}")
+                                    print(f"    Port: {info['port']}")
+                                    if info['supported_commands']:
+                                        print(f"    Commands: {', '.join(info['supported_commands'])}")
+                                    print()
+                            continue
+
+                        args = remainder.split()
+
+                        # List available devices
+                        if args[0].lower() == "list":
+                            if len(args) == 1:
+                                # List all devices
+                                devices = live_view_manager.list_available_devices()
+                                print(f"\n{C.INFO}--- Available Devices ---{C.END}")
+                                if not devices:
+                                    print("No devices connected.")
+                                else:
+                                    for name, info in devices.items():
+                                        print(f"  Device: {C.OK}{name}{C.END}")
+                                        print(f"    Port: {info['port']}")
+                                        if info['supported_commands']:
+                                            print(f"    Commands: {', '.join(info['supported_commands'])}")
+                                        print()
+                            else:
+                                # List fields for a specific device
+                                device_name = args[1]
+                                fields = live_view_manager.get_device_fields(device_name)
+                                print(f"\n{C.INFO}--- Available Fields for '{device_name}' ---{C.END}")
+                                if fields is None:
+                                    print(f"Device '{device_name}' not found.")
+                                elif not fields:
+                                    print("No data fields available. Try sending a read command first.")
+                                else:
+                                    for field in fields:
+                                        print(f"  {C.OK}{field}{C.END}")
+                            continue
+
+                        # Check if user wants to list fields for device
+                        if len(args) >= 2 and args[-1].lower() == "list":
+                            device_name = args[0]
+                            fields = live_view_manager.get_device_fields(device_name)
+                            print(f"\n{C.INFO}--- Available Fields for '{device_name}' ---{C.END}")
+                            if fields is None:
+                                print(f"Device '{device_name}' not found.")
+                            elif not fields:
+                                print("No data fields available. Try sending a read command first.")
+                            else:
+                                for field in fields:
+                                    print(f"  {C.OK}{field}{C.END}")
+                            continue
+
+                        # Start a live view session
+                        device_name = args[0]
+                        field_spec = " ".join(args[1:]) if len(args) > 1 else ""
+
+                        if not field_spec:
+                            print(f"{C.ERR}Usage: /liveview <device_name> <field_spec>{C.END}")
+                            print(f"Use '/liveview {device_name} list' to see available fields.{C.END}")
+                            continue
+
+                        # Parse field specifications (comma-separated or space-separated)
+                        field_specs = parse_field_spec(field_spec)
+
+                        if not field_specs:
+                            print(f"{C.ERR}Invalid field specification: {field_spec}{C.END}")
+                            continue
+
+                        session_id, message = live_view_manager.start_session(device_name, field_specs)
+                        if session_id:
+                            print(f"{C.OK}{message}{C.END}")
+                        else:
+                            print(f"{C.ERR}{message}{C.END}")
+                        continue
+
+                    elif cmd == "/stopview":
+                        """
+                        Stop the most recent live view session.
+                        """
+                        if not live_view_manager.sessions:
+                            print(f"{C.WARN}No active live view sessions.{C.END}")
+                            continue
+
+                        session_id = list(live_view_manager.sessions.keys())[-1]
+                        if live_view_manager.stop_session(session_id):
+                            print(f"{C.OK}Stopped {session_id}{C.END}")
+                        else:
+                            print(f"{C.ERR}Failed to stop session.{C.END}")
+                        continue
+
                     else:
                         print(f"{C.ERR}Unknown command: {cmd}{C.END}")
                         continue
@@ -182,6 +304,8 @@ def main():
 
                 # DATA PORTION OF LOOP
                 elif planner.current_mode == Planner.MODE_DATA:
+                    # Live view plots update automatically in background thread
+
                     print(f"[*] Querying Digital Lab Notebook records...")
                     injected_context = ""
 
@@ -224,6 +348,8 @@ def main():
 
     finally:
         print(f"\n{C.INFO}Shutting down...")
+        # Cleanup live view sessions
+        live_view_manager.cleanup_all()
         session_manager.end_session(summary="User exited Cockpit.")
         manager.stop()
         print(f"{C.OK}Goodbye.{C.END}")

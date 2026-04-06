@@ -5,7 +5,7 @@ FIRMWARE_DATABASE = {
         'manufacturer': 'Brockport Original Builds',
         'products': {
             810: 'Fake Device',
-            811: 'Stirplate Manager', 
+            811: 'Stirplate Manager',
             812: 'Sidekick',
             813: 'Colorimeter'
         }
@@ -15,13 +15,13 @@ FIRMWARE_DATABASE = {
         'products': {
             901: "mplam"
         }
+    },
+    0xA1A1: {
+        'manufacturer': 'WildCircuits',
+        'products': {
+            101: 'Magnetometer'
+        }
     }
-    # 909: {
-    #     'manufacturer': 'My Lab',
-    #     'products': {
-    #         909: 'Heater Control Unit',
-    #     }
-    # }
 }
 
 def get_device_name(vid: int, pid: int) -> str:

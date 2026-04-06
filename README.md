@@ -24,10 +24,12 @@ The repository is organized to separate the high-level AI logic from the low-lev
 To get started with Talos-SDL, follow these quick steps. For detailed instructions on setting up your environment, deploying firmware, and building your own instruments, refer to our full [Building Your First Instrument Firmware tutorial](docs/tutorials/building_your_first_firmware.md).
 
 ### 1. Host Setup
-Clone the repository and install the required Python packages:
+Clone the repository and install the required Python packages in a virtual environment:
 ```bash
 git clone https://github.com/yourusername/talos-sdl.git
 cd talos-sdl
+python -m venv .venv
+./.venv/Scripts/activate
 pip install -r requirements.txt
 ```
 
