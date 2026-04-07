@@ -165,7 +165,10 @@ cython_debug/
 temp/
 
 # Local experiment database and files
-.talos/
+.talos/data_storage/
+.talos/funhouse/
+.talos/vector_store
+.talos/lab_notebook.db
 .talos_phase1_test/
 *.bin
 
@@ -180,4 +183,4 @@ all-in-one.md
 .aider*
 CLAUDE.md
 LIVEVIEWPLAN.md
-
+    
