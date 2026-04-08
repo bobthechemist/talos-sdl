@@ -283,6 +283,7 @@ def handle_unlock_motors(machine, payload):
 
         if _check_ready(response):
             machine.flags['working'] = False
+            machine.flags['is_initialized'] = False  # Motors unlocked, so not initialized
             send_success(machine, "Motors unlocked successfully")
             machine.log.info("Motors unlocked successfully")
         else:

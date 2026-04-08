@@ -88,7 +88,7 @@ class Initialize(State):
             if self._check_ready(response):
                 machine.log.info("Robot is ready!")
                 machine.flags['is_ready'] = True
-                machine.flags['is_initialized'] = True
+                # Note: is_initialized is False until the initialize command runs
                 machine.flags['position'] = {"x": 0, "y": 0, "z": 0, "angle": 0}
                 machine.go_to_state('Idle')
                 return

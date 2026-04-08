@@ -82,8 +82,9 @@ def send_telemetry(machine):
         # Get current position data
         position = machine.flags.get('position', {"x": 0, "y": 0, "z": 0, "angle": 0})
         sensor_value = machine.flags.get('sensor_value', 0)
+        is_initialized = machine.flags.get('is_initialized', False)
 
-        machine.log.debug(f"Telemetry: Position={position}, Sensor={sensor_value}")
+        machine.log.debug(f"Telemetry: Position={position}, Sensor={sensor_value}, Initialized={is_initialized}")
 
         telemetry_message = Message.create_message(
             subsystem_name=machine.name,
@@ -94,7 +95,8 @@ def send_telemetry(machine):
                 },
                 "data": {
                     "position": position,
-                    "sensor_value": sensor_value
+                    "sensor_value": sensor_value,
+                    "is_initialized": is_initialized
                 }
             }
         )
