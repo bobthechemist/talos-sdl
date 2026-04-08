@@ -184,24 +184,63 @@ def handle_initialize(machine, payload):
     Handles the 'initialize' command.
     Homes all axes and sets origin.
     """
+    print("[PYBOT-ARM DEBUG] handle_initialize called")
+    print(f"[PYBOT-ARM DEBUG] is_ready flag: {machine.flags.get('is_ready', False)}")
+
     # Check if robot is ready
     if not machine.flags.get('is_ready', False):
+        print("[PYBOT-ARM DEBUG] Robot not ready, sending problem")
         send_problem(machine, "Robot not ready. Please initialize first.")
         return
 
     # Set working flag
     machine.flags['working'] = True
+    print("[PYBOT-ARM DEBUG] Sending I command to robot")
 
     try:
         # Send I command to initialize/homing
         machine.uart.write(b'I \n')
+        time.sleep(0.1)  # Give robot time to process
 
         # Wait for response (homing may take longer)
+        print("[PYBOT-ARM DEBUG] Waiting for robot response...")
         response = _read_response(machine, timeout=20.0)
 
-        machine.log.info(f"Initialize response: {response}")
+        # Debug print - convert to string first to avoid f-string issues
+        print("[PYBOT-ARM DEBUG] Raw response:", response)
+        print("[PYBOT-ARM DEBUG] Response type:", type(response))
+        print("[PYBOT-ARM DEBUG] Response length:", len(response))
 
+        # Convert response to string for checking
+        if response:
+            try:
+                response_str = response.decode('utf-8')
+            except:
+                # Fallback for CircuitPython which may not support errors argument
+                response_str = str(response)
+        else:
+            response_str = ""
+        print("[PYBOT-ARM DEBUG] Response as string:", response_str)
+
+        # Check for success - robot may respond with different success indicators
+        # Common patterns: '>', 'Init:1', 'OK', or 'Done'
+        success_found = False
         if b'Init:1' in response:
+            print("[PYBOT-ARM DEBUG] Found Init:1 - classic success indicator")
+            success_found = True
+        elif response and response.rstrip().endswith(b'>'):
+            print("[PYBOT-ARM DEBUG] Response ends with > - success indicator")
+            success_found = True
+        elif 'Init:1' in response_str:
+            print("[PYBOT-ARM DEBUG] Found Init:1 in string response")
+            success_found = True
+        elif 'OK' in response_str or 'Done' in response_str:
+            print("[PYBOT-ARM DEBUG] Found OK/Done - success indicator")
+            success_found = True
+        else:
+            print("[PYBOT-ARM DEBUG] No success indicator found")
+
+        if success_found:
             machine.flags['is_initialized'] = True
             machine.flags['is_ready'] = True
             machine.flags['position'] = {"x": 0, "y": 0, "z": 0, "angle": 0}
@@ -210,13 +249,15 @@ def handle_initialize(machine, payload):
             machine.log.info("Initialization completed successfully")
         else:
             machine.flags['working'] = False
-            send_problem(machine, f"Initialization failed: expected Init:1 in response, got: {response}")
-            machine.log.error(f"Initialization failed: no Init:1 response. Full response: {response}")
+            send_problem(machine, "Initialization failed: unexpected response. Expected Init:1 or '>', got: " + response_str)
+            machine.log.error("Initialization failed. Full response: " + response_str)
 
     except Exception as e:
+        error_msg = str(e)
+        print("[PYBOT-ARM DEBUG] Exception during initialize:", error_msg)
         machine.flags['working'] = False
-        send_problem(machine, f"Initialization failed: {e}")
-        machine.log.error(f"Initialization failed: {e}")
+        send_problem(machine, "Initialization failed: " + error_msg)
+        machine.log.error("Initialization failed: " + error_msg)
 
 
 @try_wrapper
@@ -305,7 +346,8 @@ def handle_move_to_xyz(machine, payload):
         step_A4 = int(-A4 * m4_steps_per_degree)
 
         # Format and send command using MA (absolute move)
-        cmd = f"MA {_hex4d(step_A1)} {_hex4d(step_A2)} {_hex4d(step_Z)} {_hex4d(step_A4)}\n"
+        # Match format from PyBotArm_SCARA_v1p2.py: MA + 4x 5-char params + newline
+        cmd = "MA" + _hex4d(step_A1) + _hex4d(step_A2) + _hex4d(step_Z) + _hex4d(step_A4) + "\n"
         machine.log.debug(f"Sending move command: {cmd.strip()}")
 
         machine.uart.write(cmd.encode())

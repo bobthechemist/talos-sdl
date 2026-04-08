@@ -181,7 +181,8 @@ class Moving(State):
             step_A4 = int(-A4 * m4_steps_per_degree)
 
             # Format and send command using MA (absolute move)
-            cmd = f"MA {handlers._hex4d(step_A1)} {handlers._hex4d(step_A2)} {handlers._hex4d(step_Z)} {handlers._hex4d(step_A4)}\n"
+            # Match format from PyBotArm_SCARA_v1p2.py: MA + 4x 5-char params + newline
+            cmd = "MA" + handlers._hex4d(step_A1) + handlers._hex4d(step_A2) + handlers._hex4d(step_Z) + handlers._hex4d(step_A4) + "\n"
             machine.log.debug(f"Sending command: {cmd.strip()}")
 
             machine.uart.write(cmd.encode())
