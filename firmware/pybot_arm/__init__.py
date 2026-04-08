@@ -61,7 +61,7 @@ SUBSYSTEM_CONFIG = {
         "- Orientation wrist (M4) for gripper rotation\n"
         "\n"
         "Available commands:\n"
-        "- 'read_sensor': Read analog sensor value from A0\n"
+        "- 'read_sensor': Read analog sensor value from A0 and get the current X,Y,Z,A position\n"
         "- 'initialize': Home all axes and set origin\n"
         "- 'unlock_motors': Disable motor drivers (free rotation)\n"
         "- 'move_to_xyz': Move to absolute XYZ position with wrist angle\n"

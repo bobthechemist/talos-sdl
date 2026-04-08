@@ -217,11 +217,27 @@ class Moving(State):
 
         # Check if move was successful
         if response and response.rstrip().endswith(b'>'):
-            machine.log.info("Move completed successfully")
+            machine.log.info(f"Move completed successfully to: X={x}, Y={y}, Z={z}, Angle={angle}")
             # Update position
             machine.flags['position'] = {"x": x, "y": y, "z": z, "angle": angle}
             machine.flags['working'] = False
-            send_success(machine, "Move completed successfully")
+
+            # Send DATA_RESPONSE with position
+            response_msg = Message.create_message(
+                subsystem_name=machine.name,
+                status="DATA_RESPONSE",
+                payload={
+                    "metadata": {
+                        "data_type": "move_position"
+                    },
+                    "data": {
+                        "position": machine.flags['position'],
+                        "message": "Move completed successfully"
+                    }
+                }
+            )
+            machine.postman.send(response_msg.serialize())
+
             self.task_complete = True
         else:
             machine.flags['error_message'] = "Move failed: no successful response"
@@ -273,9 +289,12 @@ class ReadingSensor(State):
             if sensor_value is not None:
                 machine.flags['sensor_value'] = sensor_value
                 machine.flags['working'] = False
-                machine.log.info(f"Sensor value read: {sensor_value}")
 
-                # Send DATA_RESPONSE with sensor value
+                # Get current position
+                position = machine.flags.get('position', {"x": 0, "y": 0, "z": 0, "angle": 0})
+                machine.log.info(f"Sensor value read: {sensor_value} at position: {position}")
+
+                # Send DATA_RESPONSE with sensor value and position
                 response = Message.create_message(
                     subsystem_name=machine.name,
                     status="DATA_RESPONSE",
@@ -284,7 +303,8 @@ class ReadingSensor(State):
                             "data_type": "sensor_reading"
                         },
                         "data": {
-                            "sensor_value": sensor_value
+                            "sensor_value": sensor_value,
+                            "position": position
                         }
                     }
                 )

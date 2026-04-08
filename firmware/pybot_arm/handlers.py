@@ -152,7 +152,10 @@ def handle_read_sensor(machine, payload):
             machine.flags['sensor_value'] = sensor_value
             machine.flags['working'] = False
 
-            # Send DATA_RESPONSE with sensor value
+            # Get current position
+            position = machine.flags.get('position', {"x": 0, "y": 0, "z": 0, "angle": 0})
+
+            # Send DATA_RESPONSE with sensor value and position
             response = Message.create_message(
                 subsystem_name=machine.name,
                 status="DATA_RESPONSE",
@@ -161,12 +164,13 @@ def handle_read_sensor(machine, payload):
                         "data_type": "sensor_reading"
                     },
                     "data": {
-                        "sensor_value": sensor_value
+                        "sensor_value": sensor_value,
+                        "position": position
                     }
                 }
             )
             machine.postman.send(response.serialize())
-            machine.log.info(f"Sensor value read: {sensor_value}")
+            machine.log.info(f"Sensor value read: {sensor_value} at position: {position}")
         else:
             machine.flags['working'] = False
             send_problem(machine, "Sensor read failed: no valid response")
@@ -359,8 +363,23 @@ def handle_move_to_xyz(machine, payload):
         if _check_ready(response):
             machine.flags['position'] = {"x": x, "y": y, "z": z, "angle": angle}
             machine.flags['working'] = False
-            send_success(machine, "Move completed successfully")
             machine.log.info(f"Move completed to: X={x}, Y={y}, Z={z}, Angle={angle}")
+
+            # Send DATA_RESPONSE with position
+            response_msg = Message.create_message(
+                subsystem_name=machine.name,
+                status="DATA_RESPONSE",
+                payload={
+                    "metadata": {
+                        "data_type": "move_position"
+                    },
+                    "data": {
+                        "position": machine.flags['position'],
+                        "message": "Move completed successfully"
+                    }
+                }
+            )
+            machine.postman.send(response_msg.serialize())
         else:
             machine.flags['working'] = False
             send_problem(machine, "Move failed: no successful response")
