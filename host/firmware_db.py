@@ -19,7 +19,8 @@ FIRMWARE_DATABASE = {
     0xA1A1: {
         'manufacturer': 'WildCircuits',
         'products': {
-            101: 'Magnetometer'
+            101: 'Magnetometer',
+            102: 'PyBot Arm'
         }
     }
 }
