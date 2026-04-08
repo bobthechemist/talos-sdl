@@ -197,7 +197,9 @@ def handle_initialize(machine, payload):
         machine.uart.write(b'I \n')
 
         # Wait for response (homing may take longer)
-        response = _read_response(machine, timeout=15.0)
+        response = _read_response(machine, timeout=20.0)
+
+        machine.log.info(f"Initialize response: {response}")
 
         if b'Init:1' in response:
             machine.flags['is_initialized'] = True
@@ -208,8 +210,8 @@ def handle_initialize(machine, payload):
             machine.log.info("Initialization completed successfully")
         else:
             machine.flags['working'] = False
-            send_problem(machine, "Initialization failed")
-            machine.log.error("Initialization failed: no Init:1 response")
+            send_problem(machine, f"Initialization failed: expected Init:1 in response, got: {response}")
+            machine.log.error(f"Initialization failed: no Init:1 response. Full response: {response}")
 
     except Exception as e:
         machine.flags['working'] = False

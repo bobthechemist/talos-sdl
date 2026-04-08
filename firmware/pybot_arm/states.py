@@ -3,6 +3,7 @@
 import time
 from shared_lib.statemachine import State
 from shared_lib.messages import Message, send_success, send_problem
+from firmware.common.common_states import listen_for_instructions
 
 # Import handlers module for utility functions
 from . import handlers
@@ -18,9 +19,10 @@ class Initialize(State):
 
     Entry Actions:
     - Instantiate UART bus on board.GP0 (TX) and board.GP1 (RX) at 115200 baud
-    - Wait 2 seconds for robot to reset and initialize
     - Send newline characters to get robot's attention
-    - Poll for '>' response to confirm robot is ready
+
+    Update Actions: Poll for '>' response to confirm robot is ready
+    - Processes incoming commands while waiting for robot readiness
 
     On Success: Transition to Idle
     On Failure: Set error_message and transition to Error
@@ -43,44 +45,60 @@ class Initialize(State):
                                       rx=machine.config['pins']['uart_rx'],
                                       baudrate=115200)
 
-            # Wait 2 seconds for robot to reset and initialize
-            time.sleep(2)
-
-            # Send newline characters to get robot's attention
-            machine.uart.write(b'\n')
-            time.sleep(0.5)
-            machine.uart.write(b'\n')
-            time.sleep(1)
-
-            # Poll for ready status (look for '>' response)
-            max_attempts = 10
-            for attempt in range(max_attempts):
-                machine.uart.write(b'\n')
-                time.sleep(0.2)
-
-                # Read response and check for '>' indicator
-                response = self._read_response(machine)
-                if self._check_ready(response):
-                    machine.log.info("Robot is ready!")
-                    machine.flags['is_ready'] = True
-                    machine.flags['is_initialized'] = True
-                    machine.flags['position'] = {"x": 0, "y": 0, "z": 0, "angle": 0}
-                    machine.go_to_state('Idle')
-                    return
-
-                time.sleep(0.1)
-
-            # If we get here, robot was not ready after max attempts
-            machine.flags['error_message'] = "Robot not ready after initialization"
-            machine.log.error(machine.flags['error_message'])
-            machine.go_to_state('Error')
+            # Initialize polling counters - actual polling happens in update()
+            machine.flags['_init_poll_count'] = 0
+            machine.flags['_init_start_time'] = time.monotonic()
+            machine.flags['_init_sent_first_pings'] = False
 
         except Exception as e:
             machine.flags['error_message'] = f"UART init error: {e}"
             machine.log.critical(machine.flags['error_message'])
             machine.go_to_state('Error')
 
-    def _read_response(self, machine, timeout=2.0):
+    def update(self, machine):
+        super().update(machine)
+
+        # Check for timeout (max 10 seconds)
+        start_time = machine.flags.get('_init_start_time', time.monotonic())
+        if time.monotonic() - start_time > 10.0:
+            machine.flags['error_message'] = "Robot not ready after 10 seconds"
+            machine.log.error(machine.flags['error_message'])
+            machine.go_to_state('Error')
+            return
+
+        # Send initial pings on first update
+        if not machine.flags.get('_init_sent_first_pings', False):
+            machine.uart.write(b'\n')
+            time.sleep(0.05)
+            machine.uart.write(b'\n')
+            machine.flags['_init_sent_first_pings'] = True
+
+        # First, check for incoming commands (like 'help') before polling
+        # This allows the host to query capabilities during initialization
+        listen_for_instructions(machine)
+
+        # Poll for ready status (look for '>' response)
+        poll_count = machine.flags.get('_init_poll_count', 0)
+        if poll_count < 10:
+            machine.uart.write(b'\n')
+            time.sleep(0.1)
+
+            # Read response and check for '>' indicator
+            response = self._read_response(machine)
+            if self._check_ready(response):
+                machine.log.info("Robot is ready!")
+                machine.flags['is_ready'] = True
+                machine.flags['is_initialized'] = True
+                machine.flags['position'] = {"x": 0, "y": 0, "z": 0, "angle": 0}
+                machine.go_to_state('Idle')
+                return
+
+            machine.flags['_init_poll_count'] = poll_count + 1
+        else:
+            # Small delay to avoid busy-waiting
+            time.sleep(0.01)
+
+    def _read_response(self, machine, timeout=0.5):
         """Read response from robot with timeout."""
         if not hasattr(machine, 'uart') or machine.uart is None:
             return b""
@@ -108,9 +126,6 @@ class Initialize(State):
         if stripped:
             return stripped[-1:] == b'>'
         return False
-
-    def update(self, machine):
-        super().update(machine)
 
 # ============================================================================
 # MOVING STATE
