@@ -70,7 +70,7 @@ class Device:
         if status == 'DATA_RESPONSE':
             metadata = payload.get('metadata', {})
             data_content = payload.get('data', {})
-            
+
             # --- Check for 'get_info' response (independent 'if') ---
             if 'firmware_name' in metadata:
                 self.firmware_name = metadata.get('firmware_name', 'N/A')
@@ -78,12 +78,12 @@ class Device:
                 self.current_state = metadata.get('current_state', 'N/A')
                 self.status_info = data_content
                 log.info(f"[{self.port}] State updated from get_info: {self.firmware_name} v{self.version}, State: {self.current_state}")
-            
+
             # --- Check for 'help' response (independent 'if') ---
             if (isinstance(data_content, dict) and data_content and
                 isinstance(next(iter(data_content.values()), None), dict) and
                 'description' in next(iter(data_content.values()), {})):
-                
+
                 self.supported_commands = data_content
                 log.info(f"[{self.port}] Updated supported commands list ({len(self.supported_commands)} commands found).")
 

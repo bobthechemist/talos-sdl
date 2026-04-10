@@ -188,22 +188,33 @@ def get_instructions(manager: DeviceManager, device_ports: dict, timeout: int = 
     print(f"\n{C.INFO}[+] Retrieving capabilities from {len(device_ports)} device(s)...{C.END}")
     help_payload = {"func": "help", "args": {}}
     help_message = Message.create_message("AI_HOST", "INSTRUCTION", payload=help_payload)
-    
+
     for device, port in device_ports.items():
         manager.send_message(port, help_message)
 
     all_responses = {}
     start_time = time.time()
-    
+
     # Wait until all devices respond or we hit the timeout
     while len(all_responses) < len(device_ports) and time.time() - start_time < timeout:
         try:
             msg_type, port, msg_data = manager.incoming_message_queue.get_nowait()
+            #print(f"[DEBUG] get_instructions consuming: msg_type={msg_type}, port={port}, status={msg_data.status}")
+
             if msg_type == 'RECV' and msg_data.status == "DATA_RESPONSE":
                 # Match the port back to the device slug
                 for name, p in device_ports.items():
                     if p == port and name not in all_responses:
+                        #print(f"[DEBUG]   Received response for {name} on {port}")
+                        #print(f"[DEBUG]     Status: {msg_data.status}")
+                        #print(f"[DEBUG]     Payload keys: {list(msg_data.payload.keys())}")
+                        #if 'data' in msg_data.payload:
+                        #    print(f"[DEBUG]     Data content: {msg_data.payload.get('data')}")
                         all_responses[name] = msg_data.payload
+
+                        # Also update the device object!
+                        if port in manager.devices:
+                            manager.devices[port].update_from_message(msg_data)
                         print(f"{C.OK}     Received capabilities and metadata from {name}.{C.END}")
                         break
         except queue.Empty:
