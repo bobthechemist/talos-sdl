@@ -171,7 +171,8 @@ machine.add_command("move_to_xyz", handlers.handle_move_to_xyz, {
         {"name": "x", "type": "float", "description": "Target X coordinate (mm)"},
         {"name": "y", "type": "float", "description": "Target Y coordinate (mm)"},
         {"name": "z", "type": "float", "description": "Target Z coordinate (mm)"},
-        {"name": "angle", "type": "float", "description": "Wrist angle (degrees)", "default": 0}
+        {"name": "angle", "type": "float", "description": "Wrist angle (degrees)", "default": 0},
+        {"name": "delay", "type": "float", "description": "Settling delay after movement (seconds)", "default": 1.0}
     ],
     "ai_enabled": True,
     "effects": ["robot moves to specified XYZ position with wrist angle"],

@@ -318,6 +318,7 @@ def handle_move_to_xyz(machine, payload):
     y = args.get('y', 0)
     z = args.get('z', 0)
     angle = args.get('angle', 0)
+    delay = args.get('delay', 1.0)
 
     # Validate coordinates are within workspace (basic check)
     # PyBot Arm SCARA workspace approximately 200mm radius
@@ -364,6 +365,11 @@ def handle_move_to_xyz(machine, payload):
             machine.flags['position'] = {"x": x, "y": y, "z": z, "angle": angle}
             machine.flags['working'] = False
             machine.log.info(f"Move completed to: X={x}, Y={y}, Z={z}, Angle={angle}")
+
+            # Allow the arm to settle
+            if delay > 0:
+                machine.log.info(f"Waiting {delay}s for arm to settle...")
+                time.sleep(delay)
 
             # Send DATA_RESPONSE with position
             response_msg = Message.create_message(
