@@ -58,11 +58,21 @@ class GeminiAgent(BaseAgent):
                         "total_tokens": usage.total_token_count or 0
                     }
 
-                if not response.candidates or not response.candidates[0].content.parts:
-                    print("[GeminiAgent Warning]: No response text returned by model.")
+                # --- HARDENED CHECK FOR VALID RESPONSE ---
+                if not response.candidates:
+                    print("[GeminiAgent Warning]: No candidates found in model response.")
                     return None
-
-                response_text = response.candidates[0].content.parts[0].text
+                
+                first_candidate = response.candidates[0]
+                if not hasattr(first_candidate, 'content') or not first_candidate.content:
+                    print("[GeminiAgent Warning]: First candidate has no content attribute or content is None.")
+                    return None
+                
+                if not hasattr(first_candidate.content, 'parts') or not first_candidate.content.parts:
+                    print("[GeminiAgent Warning]: First candidate content has no parts or parts is empty.")
+                    return None
+                
+                response_text = first_candidate.content.parts[0].text
 
                 if use_history:
                     self.history.append(types.Content(role="user", parts=[types.Part(text=user_prompt)]))

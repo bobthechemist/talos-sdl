@@ -5,15 +5,16 @@ import queue
 from host.gui.console import C
 from shared_lib.messages import Message
 from host.ai.llm_manager import LLMManager
+from dln import DigitalLabNotebook # New DLN import
 
 class AgentExecutor:
-    def __init__(self, manager, device_ports, agent, planner, plate_manager, session_manager, require_confirmation=True):
+    def __init__(self, manager, device_ports, agent, planner, plate_manager, notebook: DigitalLabNotebook, require_confirmation=True):
         self.manager = manager
         self.device_ports = device_ports
         self.agent = agent
         self.planner = planner
-        self.plate_manager = plate_manager
-        self.session_manager = session_manager 
+        self.plate_manager = plate_manager # This stays
+        self.notebook = notebook # New reference to the DigitalLabNotebook instance
         self.total_tokens = 0
         self.require_confirmation = require_confirmation
         self.last_failed_plan = None 
@@ -31,7 +32,8 @@ class AgentExecutor:
     def run(self, goal, max_turns=3):
         observation = None
         self.last_failed_plan = None
-        intent_id = self.session_manager.log_intent(goal)
+        # Log intent via new DLN - entry_type can be 'intent'
+        intent_id = self.notebook.log_science(entry_type="intent", data={"goal": goal}) 
         
         for i in range(max_turns):
             self.active_run_tags = {} 
@@ -47,7 +49,8 @@ class AgentExecutor:
 
             if ai_data.get("status") == "COMPLETE":
                 print(f"\n{C.OK}[Agent] {ai_data.get('message')}{C.END}")
-                self.session_manager.log_reflection(ai_data.get('message'))
+                # Log reflection via new DLN - entry_type can be 'reflection'
+                self.notebook.log_science(entry_type="reflection", data={"summary": ai_data.get('message')}) 
                 return True
 
             plan = ai_data.get("plan", [])
@@ -61,7 +64,8 @@ class AgentExecutor:
                     continue 
 
             # Log the FINAL approved plan to the Ledger for audit purposes
-            self.session_manager.log_plan(plan)
+            # Log plan via new DLN - entry_type can be 'plan'
+            self.notebook.log_science(entry_type="plan", data={"plan": plan})
 
             # --- EXECUTION ---
             execution_success = True
@@ -81,20 +85,25 @@ class AgentExecutor:
                     print(f" {C.ERR}[FAILED]{C.END} (Device not found)")
                     execution_success = False; break
 
+                # Transaction log for raw communication
+                self.notebook.log_transaction(f"SENT: device={device}, command={command}, args={json.dumps(args)}")
                 self.manager.send_message(port, Message.create_message("AGENT", "INSTRUCTION", payload={"func": command, "args": args})) 
                 result = self._wait_for_result(port)
+                self.notebook.log_transaction(f"RECV: device={device}, status={result['status']}, payload={json.dumps(result['payload'])}")
 
                 if result['status'] in ("SUCCESS", "DATA_RESPONSE"):
                     print(f" {C.OK}[OK]{C.END}")
                     if result['status'] == "DATA_RESPONSE":
-                        artifact_id = self.session_manager.save_observation(
-                            intent_id, device, command, result['payload'], tags=self.active_run_tags.copy()
+                        # Log observation data directly into ScienceLog, including metadata/tags
+                        observation_data = {
+                            "device": device, "command": command, "args": args,
+                            "payload": result['payload'], "context_tags": self.active_run_tags.copy() # Store tags inside data payload
+                        }
+                        observation_id = self.notebook.log_science(
+                            entry_type="observation", data=observation_data
                         )
-                        print(f"     {C.OK}[Notebook] Saved Observation with tags: {self.active_run_tags}{C.END}")
-                        collected_data.append({
-                            "id": artifact_id, "device": device, "command": command, 
-                            "args": args, "payload": result['payload'], "context": self.active_run_tags.copy()
-                        })
+                        print(f"     {C.OK}[Notebook] Logged Observation with ID: {observation_id} and tags: {self.active_run_tags}{C.END}")
+                        collected_data.append({"id": observation_id, "device": device, "command": command, "args": args, "payload": result['payload'], "context": self.active_run_tags.copy()}) # Keep for aggregated analysis
                     self._update_executor_state(command, args)
                 else:
                     print(f" {C.ERR}[PROBLEM]{C.END}")
@@ -103,7 +112,8 @@ class AgentExecutor:
             if execution_success:
                 if collected_data:
                     analysis_text = self._perform_aggregated_analysis(goal, collected_data)
-                    self.session_manager.log_reflection(analysis_text)
+                    # Log reflection via new DLN
+                    self.notebook.log_science(entry_type="reflection", data={"summary": analysis_text})
                 return True 
             else:
                 observation = f"EXECUTION FAILED at step {step_idx+1}"
@@ -209,7 +219,7 @@ class AgentExecutor:
             data_summary += f"Dataset {item['id']} ({item['device']}){context_str}: {json.dumps(core_data)}\n"
 
         system_prompt = "You are a Scientific Data Analyst. Interpret results concisely."
-        user_prompt = f"Goal: {user_goal}\nData:\n{data_summary}\nAnalyze these results."
+        user_prompt = f"Goal: {user_goal}\nData:\n{data_summary}\nAnalyze these results." 
         analyst = LLMManager.get_agent(context=system_prompt) 
         return analyst.prompt(user_prompt, use_history=False)
 

@@ -17,18 +17,28 @@ from host.ai.planner import Planner
 from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
 from host.gui.console import C
-from host.dln.session_manager import SessionManager
+from dln import DigitalLabNotebook, ExperimentFinalizedError # New DLN imports, including new exception
+
+
+# Global variable to track the active session for data queries
+active_data_query_session_id = None # Will be initialized in main()
 
 def print_help():
     print(f"\n{C.INFO}--- Available Commands ---{C.END}")
     print(f"  {C.OK}/run [goal]{C.END}    : Switch to Controller Mode (or execute a goal).")
-    print(f"  {C.OK}/data [query]{C.END}  : Switch to Analyst Mode (or ask a question).")
+    print(f"  {C.OK}/data [query]{C.END}  : Switch to Analyst Mode (or ask a question about the active data session).")
+    print(f"  {C.OK}/data all [query]{C.END} : Ask a question about all past experiments.")
+    print(f"  {C.OK}/session{C.END}       : Show current data query session and list all available sessions.")
+    print(f"  {C.OK}/session set <id>{C.END}: Switch the active data query session to <id>.")
+    print(f"  {C.OK}/session rename <new_title>{C.END}: Rename the current NOTEBOOK session.")
+    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets in this notebook (detailed).")
     print(f"  {C.OK}/confirm [on|off]{C.END}: Toggle human confirmation before hardware execution.")
-    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets in this notebook.")
     print(f"  {C.OK}/clear{C.END}         : Clear the AI's short-term context.")
     print(f"  {C.OK}/quit{C.END}          : Exit the application and save session.")
 
 def main():
+    global active_data_query_session_id # Declare global to modify it
+
     parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
     parser.add_argument("--provider", type=str, help="AI Provider (gemini, ollama, openai).")
     parser.add_argument("--model", type=str, help="Specific model name.")
@@ -52,12 +62,12 @@ def main():
 
     # 2. Initialize Digital Lab Notebook
     print(f"{C.INFO}[+] Initializing Digital Lab Notebook...{C.END}")
-    session_manager = SessionManager(base_dir=".talos")
-    session_manager.start_session(
-        world_model=world_model,
-        title=world_model.get('experiment_name'),
-        objective="Agentic session started via Laboratory Cockpit"
+    notebook = DigitalLabNotebook(db_path=".talos/lab_notebook.db")
+    session_id = notebook.start_experiment(
+        title=world_model.get('experiment_name', "Untitled Experiment"),
+        context_json=world_model
     )
+    active_data_query_session_id = session_id # Initialize with the current notebook session ID
 
     # 3. Hardware Setup (Decoupled)
     manager, device_ports = connect_devices()
@@ -69,12 +79,10 @@ def main():
     
     if full_caps:
         for dev, payload in full_caps.items():
-            # Filter for commands the AI is allowed to use
             ai_commands[dev] = {k: v for k, v in payload.get('data', {}).items() if v.get('ai_enabled', False)}
-            # Capture instrument-specific guidance for the prompt
             ai_guidance[dev] = payload.get('metadata', {}).get('ai_guidance', "")
     else:
-        print(f"{C.WARN}No instrument capabilities discovered. AI will operate with restricted tools.{C.END}")
+        print(f"{C.WARN}No instrument capabilities discovered. AI will run in simulation mode.{C.END}")
 
     # Initialize state managers
     plate_manager = PlateManager(max_volume_ul=world_model.get('max_well_volume_ul', 250))
@@ -83,11 +91,9 @@ def main():
     # 5. Agent Initialization
     print(f"{C.INFO}[+] Initializing AI Agents (Dual Contexts)...{C.END}")
     
-    # Setup the Controller (Run) Agent
     planner.set_mode(Planner.MODE_RUN)
     run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
-    # Setup the Analyst (Data) Agent
     planner.set_mode(Planner.MODE_DATA)
     data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
     
@@ -101,11 +107,11 @@ def main():
         agent=current_agent,
         planner=planner, 
         plate_manager=plate_manager,
-        session_manager=session_manager,
+        notebook=notebook,
         require_confirmation=True 
     )
 
-    print(f"\n{C.INFO}System Online. Notebook Session: {session_manager.current_exp_id}{C.END}")
+    print(f"\n{C.INFO}System Online. Current Notebook Session: {notebook.current_session_id}, Active Data Query Session: {active_data_query_session_id}{C.END}")
     print(f"{C.INFO}Type /help for a list of commands.{C.END}")
 
     # 6. REPL Loop
@@ -116,14 +122,30 @@ def main():
                 prompt_color = C.WARN if mode_str == "RUN" else C.OK
                 safety_char = "🔒" if executor.require_confirmation else "⚡"
                 
-                user_input = input(f"\n{prompt_color}[{mode_str} {safety_char}] > {C.END}").strip()
+                # Dynamic prompt to show current notebook session and active data query session
+                current_notebook_info = f"S:{notebook.current_session_id}"
+                active_data_info = f"DATA-S:{active_data_query_session_id}" if planner.current_mode == Planner.MODE_DATA else ""
+                
+                prompt_prefix = f"[{mode_str} {current_notebook_info}"
+                if active_data_info:
+                    prompt_prefix += f" {active_data_info}"
+                prompt_prefix += f" {safety_char}] > "
+
+                user_input = input(f"\n{prompt_color}{prompt_prefix}{C.END}").strip()
                 if not user_input: continue
                 
+                # Assume not a data query from a slash command initially
+                query_all_sessions = False # Reset for each loop iteration
+                # Store the actual query text from user_input, potentially modified by slash commands
+                actual_query_text = user_input 
+
                 # --- Slash Commands ---
                 if user_input.startswith("/"):
-                    parts = user_input.split()
+                    # Use maxsplit=2 to separate command, subcommand, and the rest of the arguments
+                    parts = user_input.split(maxsplit=2)
                     cmd = parts[0].lower()
-                    remainder = " ".join(parts[1:])
+                    subcommand = parts[1].lower() if len(parts) > 1 else None
+                    remainder = parts[2] if len(parts) > 2 else ""
                     
                     if cmd in ("/quit", "/exit"): break
                     
@@ -143,80 +165,134 @@ def main():
                         continue
 
                     elif cmd == "/datasets":
-                        # Query StorageManager via SessionManager to list entries in the notebook
-                        session = session_manager.storage.Session()
-                        from host.dln.storage_manager import Attachment
-                        attachments = session.query(Attachment).all()
-                        print(f"\n{C.INFO}--- Lab Notebook: Registered Datasets ---{C.END}")
-                        if not attachments:
-                            print("No data recorded yet.")
-                        for att in attachments:
-                            print(f"ID: {C.OK}{att.id}{C.END} | Type: {att.data_type} | File: {att.filename}")
-                        session.close()
+                        print(f"\n{C.INFO}--- Lab Notebook: All Experiment Sessions ---{C.END}")
+                        all_sessions = notebook.get_all_sessions_metadata()
+                        if not all_sessions:
+                            print("No sessions found in the Digital Lab Notebook.")
+                        else:
+                            for session_meta in all_sessions:
+                                current_marker = " (CURRENT NOTEBOOK SESSION)" if session_meta['id'] == notebook.current_session_id else ""
+                                active_data_marker = " (ACTIVE DATA QUERY SESSION)" if session_meta['id'] == active_data_query_session_id else ""
+                                print(f"  ID: {C.OK}{session_meta['id']}{C.END} | Title: {session_meta['title']} | Status: {session_meta['status']} | Start: {session_meta['start_time']}{current_marker}{active_data_marker}")
                         continue
+
+                    elif cmd == "/session":
+                        if subcommand == "set":
+                            try:
+                                target_id = int(remainder)
+                                all_session_ids = [s['id'] for s in notebook.get_all_sessions_metadata()]
+                                if target_id in all_session_ids:
+                                    active_data_query_session_id = target_id
+                                    data_agent.clear_history() # Clear data agent's history as its context has changed
+                                    print(f"{C.INFO}Active data query session switched to ID: {target_id}. Data agent context cleared.{C.END}")
+                                else:
+                                    print(f"{C.ERR}Session ID {target_id} not found.{C.END}")
+                            except ValueError:
+                                print(f"{C.ERR}Invalid session ID. Please provide an integer.{C.END}")
+                        elif subcommand == "rename":
+                            if not remainder:
+                                print(f"{C.ERR}Please provide a new title for the current notebook session.{C.END}")
+                            else:
+                                try:
+                                    # This command renames the *current* notebook session, not necessarily the active_data_query_session_id
+                                    notebook.update_session_title(notebook.current_session_id, remainder)
+                                    print(f"{C.INFO}Current notebook session (ID: {notebook.current_session_id}) renamed to '{remainder}'.{C.END}")
+                                except ExperimentFinalizedError as e:
+                                    print(f"{C.ERR}{e}{C.END}")
+                                except ValueError as e:
+                                    print(f"{C.ERR}{e}{C.END}")
+                        else: # Just /session (no subcommand)
+                            print(f"{C.INFO}Current Notebook Session ID: {notebook.current_session_id}{C.END}")
+                            print(f"{C.INFO}Active Data Query Session ID: {active_data_query_session_id}{C.END}")
+                            print(f"\n{C.INFO}--- All Available Sessions ---{C.END}")
+                            all_sessions = notebook.get_all_sessions_metadata()
+                            if not all_sessions:
+                                print("No sessions found.")
+                            else:
+                                for session_meta in all_sessions:
+                                    current_marker = " (CURRENT NOTEBOOK)" if session_meta['id'] == notebook.current_session_id else ""
+                                    active_data_marker = " (ACTIVE DATA QUERY)" if session_meta['id'] == active_data_query_session_id else ""
+                                    print(f"  ID: {C.OK}{session_meta['id']}{C.END} | Title: {session_meta['title']} | Status: {session_meta['status']}{current_marker}{active_data_marker}")
+                        continue # Always continue loop after /session commands
 
                     elif cmd == "/run":
                         planner.set_mode(Planner.MODE_RUN)
                         current_agent = run_agent
                         print(f"{C.INFO}Switched to RUN (Controller).{C.END}")
-                        if remainder: user_input = remainder
-                        else: continue
-                    
+                        if remainder:
+                            actual_query_text = remainder # Treat remainder as the goal for execution
+                            # FALL THROUGH to general processing logic
+                        else:
+                            continue # Just switched mode, no immediate goal, continue loop
+
                     elif cmd == "/data":
                         planner.set_mode(Planner.MODE_DATA)
                         current_agent = data_agent
                         print(f"{C.INFO}Switched to DATA (Analyst).{C.END}")
-                        if remainder: user_input = remainder
-                        else: continue
-                    
-                    else:
+                        
+                        if subcommand == "all":
+                            query_all_sessions = True
+                            if remainder:
+                                actual_query_text = remainder # Query is after "/data all"
+                                # FALL THROUGH to general processing logic
+                            else:
+                                continue # Just "/data all", no query, continue loop
+                        elif subcommand: # e.g., /data what happened
+                            actual_query_text = f"{subcommand} {remainder}".strip() # Query is after "/data"
+                            # FALL THROUGH to general processing logic
+                        else: # Just "/data", no query provided
+                            continue # Just switched mode, no immediate query, continue loop
+
+                    else: # Unknown slash command
                         print(f"{C.ERR}Unknown command: {cmd}{C.END}")
-                        continue
+                        continue # Continue loop after unknown slash command
 
-                # --- Execution Logic ---
-                executor.agent = current_agent
+                # --- Main Processing Logic for user input (either from non-slash input or a /run /data command with a goal/query) ---
+                executor.agent = current_agent # Ensure executor uses the correct agent
                 
-                if planner.current_mode == Planner.MODE_RUN:
-                    executor.run(user_input)
+                # Only process if actual_query_text is not empty
+                if actual_query_text:
+                    if planner.current_mode == Planner.MODE_RUN:
+                        executor.run(actual_query_text)
 
+                    elif planner.current_mode == Planner.MODE_DATA:
+                        # This block now handles both direct queries and queries from /data commands
+                        print(f"[*] Querying Digital Lab Notebook records...")
+                        injected_context = ""
 
-                # DATA PORTION OF LOOP
-                elif planner.current_mode == Planner.MODE_DATA:
-                    print(f"[*] Querying Digital Lab Notebook records...")
-                    injected_context = ""
+                        # Ensure the reflective log for the *current notebook session* is up-to-date
+                        # This covers the case where the current session is also the active data query session.
+                        notebook.update_reflective_log(notebook.current_session_id)
+                        
+                        # 1. Semantic search for high-level summaries
+                        if query_all_sessions: # This flag is set by /data all
+                            mem_results = notebook.query_vector_all_sessions(actual_query_text, n_results=5)
+                            injected_context += "\n=== HISTORICAL SUMMARIES (Semantic Search - ALL SESSIONS) ===\n"
+                        else:
+                            # Use active_data_query_session_id for the query
+                            mem_results = notebook.query_vector(actual_query_text, session_id=active_data_query_session_id, n_results=3)
+                            injected_context += f"\n=== HISTORICAL SUMMARIES (Semantic Search - Session {active_data_query_session_id}) ===\n"
 
-                    # 1. Semantic search for high-level summaries
-                    mem_results = session_manager.search_memory(user_input, n_results=3)
-                    if mem_results:
-                        injected_context += "\n=== HISTORICAL SUMMARIES ===\n"
-                        for res in mem_results:
-                            injected_context += f"- {res['content']}\n"
+                        if not mem_results:
+                            injected_context += "No relevant historical summaries found.\n"
+                        else:
+                            for res in mem_results:
+                                # Extract relevant info from ScienceLog.data for the prompt
+                                summary_data = res.data.get('summary') or res.data.get('goal') or res.data.get('notes') or str(res.data)
+                                injected_context += f"- [Session {res.session_id}, Log {res.id}, Type: {res.entry_type}]: {summary_data[:150]}...\n"
 
-                    # 2. Coordinate scanning (e.g., G9)
-                    coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", user_input.upper())
-                    if coords:
-                        from host.dln.storage_manager import Attachment, Experiment
-                        session = session_manager.storage.Session()
-                        for coord in coords:
-                            # Query the JSON column context_tags
-                            attachments = session.query(Attachment).filter(
-                                Attachment.context_tags.contains(coord)
-                            ).all()
-                            for att in attachments:
-                                exp = session.query(Experiment).filter_by(id=att.experiment_id).first()
-                                mapping = exp.world_model.get('reagents', {}) if exp and exp.world_model else {}
-                                if os.path.exists(att.file_path):
-                                    with open(att.file_path, 'r') as f:
-                                        injected_context += f"\n=== DATASET FROM {coord} (Session: {att.experiment_id}) ===\n"
-                                        injected_context += f"Reagent Mapping: {json.dumps(mapping)}\n"
-                                        injected_context += f"Data: {f.read()}\n"
-                        session.close()
+                        # 2. Coordinate scanning (e.g., G9) - This part remains a placeholder for deeper integration
+                        coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", actual_query_text.upper())
+                        if coords:
+                            injected_context += f"\n=== COORDINATE SCANNING (Wells found in query: {', '.join(coords)}) ===\n"
+                            injected_context += f"  (Context for these wells would be retrieved from ScienceLog.data if available in the active data session)\n"
 
-                    # 3. Final Assembly
-                    final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
-                    print(f"[*] Analyzing...")
-                    response = current_agent.prompt(final_prompt, use_history=True)
-                    print(f"\n{C.OK}{response}{C.END}")
+                        final_prompt = f"{injected_context}\n\nUSER QUESTION: {actual_query_text}"
+                        print(f"[*] Analyzing...")
+                        response = current_agent.prompt(final_prompt, use_history=True)
+                        print(f"\n{C.OK}{response}{C.END}")
+                        
+                # End of current input processing. Loop will continue for next prompt.
 
             except KeyboardInterrupt:
                 print(f"\n{C.WARN}Interrupted.{C.END}")
@@ -224,7 +300,35 @@ def main():
 
     finally:
         print(f"\n{C.INFO}Shutting down...")
-        session_manager.end_session(summary="User exited Cockpit.")
+        # Ensure the final_summary is not empty or None for finalize
+        summary_text = "User exited Cockpit."
+        if notebook.current_session_id is not None:
+            # Attempt to get a summary from the LLM based on session's science logs
+            try:
+                # Update reflective log one last time for the current session
+                notebook.update_reflective_log(notebook.current_session_id)
+                # Query the current session's reflective log for a summary
+                session_summary_logs = notebook.query_vector(
+                    "summarize this experiment session", 
+                    session_id=notebook.current_session_id, 
+                    n_results=1
+                )
+                if session_summary_logs:
+                    # Look for an existing 'summary' entry or pick the most relevant one
+                    found_summary = None
+                    for log_entry in session_summary_logs:
+                        if log_entry.entry_type == 'summary' and log_entry.data.get('text'):
+                            found_summary = log_entry.data['text']
+                            break
+                    if not found_summary and session_summary_logs[0].data:
+                        found_summary = session_summary_logs[0].data.get('summary') or session_summary_logs[0].data.get('reflection') or session_summary_logs[0].data.get('text') or str(session_summary_logs[0].data)
+                    if found_summary:
+                        summary_text = f"AI-generated summary: {found_summary[:200]}..." # Limit for brevity
+            except Exception as e:
+                print(f"{C.WARN}Could not auto-generate final summary: {e}{C.END}")
+                # Fallback to default if AI summary fails
+        
+        notebook.finalize(summary_text=summary_text) 
         manager.stop()
         print(f"{C.OK}Goodbye.{C.END}")
 
