@@ -103,15 +103,15 @@ class RunCog(BaseCog):
                         print(f"{C.INFO}Editing Step {idx+1}: {step['device']} -> {step['command']}{C.END}")
                         print(f"Current Args: {json.dumps(step.get('args', {}))}")
                         
-                        new_args_raw = input("Enter new args (JSON, e.g., {\"brightness\": 0.5}) or 'c' to cancel: ").strip()
-                        if new_args_raw.lower() == 'c': continue
+                        user_val = input("Enter updates (JSON or key=val). E.g., 'brightness=0.5 color=[0,255,0]': ").strip()
+                        if user_val.lower() == 'c': continue
                         
-                        new_args = json.loads(new_args_raw)
-                        if isinstance(new_args, dict):
-                            plan[idx]['args'] = new_args
-                            print(f"{C.OK}Step updated.{C.END}")
-                    except (ValueError, IndexError, json.JSONDecodeError):
-                        print(f"{C.ERR}Invalid index or JSON format for 'edit'.{C.END}")
+                        new_args = self._parse_input_to_dict(user_val)
+                        # Perform the Smart Update (Merge)
+                        step['args'].update(new_args)
+                        print(f"{C.OK}Step updated: {step['args']}{C.END}")
+                    except (ValueError, IndexError, Exception) as e:
+                        print(f"{C.ERR}Error updating step: {e}{C.END}")
 
                 elif cmd == 'add':
                     try:
@@ -130,3 +130,28 @@ class RunCog(BaseCog):
 
             except (EOFError, KeyboardInterrupt):
                 return None
+            
+    def _parse_input_to_dict(self, input_str: str) -> dict:
+        """Parses 'key=val key2=val2' or standard JSON into a dictionary."""
+        # 1. Try raw JSON
+        if input_str.startswith("{"):
+            return json.loads(input_str)
+        
+        # 2. Try key=value pairs
+        result = {}
+        pairs = input_str.split()
+        for pair in pairs:
+            if "=" not in pair: continue
+            k, v = pair.split("=", 1)
+            
+            # Smart type inference
+            try:
+                # Attempt to parse as JSON (handles lists [1,2], bools, numbers)
+                # We wrap in brackets to make simple types like '0.5' valid JSON
+                val = json.loads(v)
+            except json.JSONDecodeError:
+                # Fallback to string if it's not valid JSON
+                val = v
+            
+            result[k] = val
+        return result
