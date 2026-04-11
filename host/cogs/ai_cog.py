@@ -47,10 +47,13 @@ class AICog(BaseCog):
             return
         
         new_mode = args[0].lower()
-        if new_mode != self.app.current_mode:
-            self.app.current_mode = new_mode
-            self._reload_agent() # Reload agent to get the correct system prompt
-            mode_str = "RUN (Controller)" if self.app.current_mode == "run" else "DATA (Analyst)"
+        
+        self.app.current_mode = new_mode
+        self._reload_agent()
+        
+        mode_str = "RUN (Controller)" if self.app.current_mode == "run" else "DATA (Analyst)"
+        
+        if self.app.is_running:
             print(f"{C.INFO}Switched to {mode_str} mode.{C.END}")
 
     def handle_confirm(self, *args):

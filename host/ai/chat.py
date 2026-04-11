@@ -35,7 +35,7 @@ class ChatApp:
         self.ai_commands, self.ai_guidance = get_instructions(self.device_manager, self.device_ports)
 
         # 2. State Management
-        self.is_running = True
+        self.is_running = False
         self.current_mode = "run"
         self.require_confirmation = True
         self.ai_provider = provider
@@ -53,7 +53,12 @@ class ChatApp:
 
     def run(self):
         """The main Read-Eval-Print-Loop (REPL) for user interaction."""
-        # Initial agent load
+
+        self.is_running = True
+        
+        # Initial agent load by calling the mode handler
+        print(f"{C.INFO}Initializing AI agent for default '{self.current_mode}' mode...{C.END}")
+
         self.commands["/mode"](self.current_mode)
         
         print(f"\n{C.INFO}System Online. Notebook Session: {self.session_id}.")
