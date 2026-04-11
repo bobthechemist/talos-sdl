@@ -18,11 +18,10 @@ from host.gui.console import C
 
 class ChatApp:
     """The main Command and Control Center for the Talos-SDL Host."""
-    def __init__(self, world_path: str, provider: str, model: str):
+    # --- MODIFIED: __init__ now takes the pre-loaded world_model ---
+    def __init__(self, world_model: dict, provider: str, model: str):
         # 1. Core Services
-        self.world_model = load_world_from_file(world_path)
-        if not self.world_model:
-            raise RuntimeError("Failed to load world model. Cannot continue.")
+        self.world_model = world_model
         
         self.dln = DigitalLabNotebook(db_path=".talos/lab_notebook.db")
         self.session_id = self.dln.start_experiment(
@@ -53,12 +52,9 @@ class ChatApp:
 
     def run(self):
         """The main Read-Eval-Print-Loop (REPL) for user interaction."""
-
         self.is_running = True
         
-        # Initial agent load by calling the mode handler
         print(f"{C.INFO}Initializing AI agent for default '{self.current_mode}' mode...{C.END}")
-
         self.commands["/mode"](self.current_mode)
         
         print(f"\n{C.INFO}System Online. Notebook Session: {self.session_id}.")
@@ -93,18 +89,15 @@ class ChatApp:
         if command.startswith("/"):
             handler = self.commands.get(command)
         else:
-            # It's not a slash command, so use the default for the current mode
             default_command = "/run" if self.current_mode == "run" else "/data"
             handler = self.commands.get(default_command)
-            args = user_input.split() # Pass the full input as args
+            args = user_input.split()
 
         if handler:
             try:
                 handler(*args)
             except Exception as e:
                 print(f"{C.ERR}Error executing command '{command}': {e}{C.END}")
-                # For debugging, you might want a traceback:
-                # import traceback; traceback.print_exc()
         else:
             print(f"{C.ERR}Unknown command: {command}{C.END}")
 
@@ -118,8 +111,9 @@ class ChatApp:
 def main():
     parser = argparse.ArgumentParser(description="Talos-SDL Agentic Laboratory Cockpit")
     parser.add_argument("--world", default="world_model.json", help="Path to the world model configuration file.")
-    parser.add_argument("--provider", default=os.getenv("AI_PROVIDER", "gemini"), help="AI Provider (gemini, ollama, openai).")
-    parser.add_argument("--model", default=os.getenv("AI_MODEL", "gemini-1.5-flash-latest"), help="Specific model name.")
+    # --- MODIFIED: These args now default to None to allow world_model to take precedence ---
+    parser.add_argument("--provider", default=None, help="AI Provider (overrides world_model.json).")
+    parser.add_argument("--model", default=None, help="Specific model name (overrides world_model.json).")
     args = parser.parse_args()
 
     print(f"\n{C.OK}==========================================")
@@ -127,8 +121,24 @@ def main():
     print(f"=========================================={C.END}")
 
     try:
-        app = ChatApp(world_path=args.world, provider=args.provider, model=args.model)
+        # --- MODIFIED: Centralized configuration logic ---
+        world_model = load_world_from_file(args.world)
+        if not world_model:
+            raise FileNotFoundError(f"World model not found at '{args.world}'")
+
+        # Configuration Priority: CLI > world_model.json > environment variable
+        ai_config = world_model.get("ai_config", {})
+        
+        final_provider = args.provider or ai_config.get("provider") or os.getenv("AI_PROVIDER", "gemini")
+        final_model = args.model or ai_config.get("model") or os.getenv("AI_MODEL", "gemini-1.5-flash-latest")
+
+        print(f"{C.INFO}AI Config: Provider='{final_provider}', Model='{final_model}'{C.END}")
+        
+        # Pass the final resolved config to the app
+        app = ChatApp(world_model=world_model, provider=final_provider, model=final_model)
         app.run()
+        # --- END MODIFICATION ---
+
     except (RuntimeError, FileNotFoundError) as e:
         print(f"\n{C.ERR}A critical error occurred on startup: {e}{C.END}")
         sys.exit(1)

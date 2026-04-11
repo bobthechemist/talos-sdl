@@ -1,4 +1,8 @@
 {
+  "ai_config": {
+    "provider": "gemini",
+    "model": "gemini-2.5-flash-latest"
+  },
   "experiment_name": "General Chemistry Experiment",
   "required_cogs": [
     "core_cog",
