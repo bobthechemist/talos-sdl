@@ -358,6 +358,14 @@ class LiveViewSession:
         # Determine the read command for this device
         self.read_command = self._get_read_command_for_device(device_name)
 
+        # Initialize session state
+        self.active = False
+        self.stop_event = threading.Event()
+        self.lock = threading.Lock()
+        self.data_buffer = []
+        self.sample_numbers = []
+        self.max_samples = 20
+
     def _get_read_command_for_device(self, device_name):
         """
         Get the appropriate read command for a device.
