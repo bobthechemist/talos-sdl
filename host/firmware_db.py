@@ -15,13 +15,14 @@ FIRMWARE_DATABASE = {
         'products': {
             901: "mplam"
         }
+    },
+    0xA1A1: {
+        'manufacturer': 'WildCircuits',
+        'products': {
+            101: 'Magnetometer',
+            102: 'PyBot Arm'
+        }
     }
-    # 909: {
-    #     'manufacturer': 'My Lab',
-    #     'products': {
-    #         909: 'Heater Control Unit',
-    #     }
-    # }
 }
 
 def get_device_name(vid: int, pid: int) -> str:
