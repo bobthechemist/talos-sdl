@@ -8,7 +8,8 @@
     "core_cog",
     "ai_cog",
     "run_cog",
-    "data_cog"
+    "data_cog",
+    "liveview_cog"
   ],
   "contextual_cogs": {
     "sidekick": "sidekick_tools_cog"
