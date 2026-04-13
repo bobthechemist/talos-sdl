@@ -2,231 +2,150 @@
 import sys
 import os
 import argparse
-import re
-import json
 from pathlib import Path
 
 # Setup project root path
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 sys.path.append(str(PROJECT_ROOT))
 
+# Core Talos Imports
 from host.core.device_manager import DeviceManager
-from host.lab.sidekick_plate_manager import PlateManager
+from dln import DigitalLabNotebook, ExperimentFinalizedError
 from host.ai.llm_manager import LLMManager
-from host.ai.planner import Planner
-from host.ai.agent_executor import AgentExecutor
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
+from host.cogs.cog_manager import CogManager
 from host.gui.console import C
-from host.dln.session_manager import SessionManager
 
-def print_help():
-    print(f"\n{C.INFO}--- Available Commands ---{C.END}")
-    print(f"  {C.OK}/run [goal]{C.END}    : Switch to Controller Mode (or execute a goal).")
-    print(f"  {C.OK}/data [query]{C.END}  : Switch to Analyst Mode (or ask a question).")
-    print(f"  {C.OK}/confirm [on|off]{C.END}: Toggle human confirmation before hardware execution.")
-    print(f"  {C.OK}/datasets{C.END}      : List all recorded datasets in this notebook.")
-    print(f"  {C.OK}/clear{C.END}         : Clear the AI's short-term context.")
-    print(f"  {C.OK}/quit{C.END}          : Exit the application and save session.")
+class ChatApp:
+    """The main Command and Control Center for the Talos-SDL Host."""
+    # --- MODIFIED: __init__ now takes the pre-loaded world_model ---
+    def __init__(self, world_model: dict, provider: str, model: str):
+        # 1. Core Services
+        self.world_model = world_model
+        
+        self.dln = DigitalLabNotebook(db_path=".talos/lab_notebook.db")
+        self.session_id = self.dln.start_experiment(
+            title=self.world_model.get('experiment_name', "Untitled"),
+            context_json=self.world_model
+        )
+        self.active_data_session_id = self.session_id
+
+        self.device_manager, self.device_ports = connect_devices()
+        self.ai_commands, self.ai_guidance = get_instructions(self.device_manager, self.device_ports)
+
+        # 2. State Management
+        self.is_running = False
+        self.current_mode = "run"
+        self.require_confirmation = True
+        self.ai_provider = provider
+        self.ai_model = model
+        self.ai_agent = None # Will be loaded by a cog
+        
+        # 3. Cog and Command Management
+        self.commands = {}
+        self.cog_manager = CogManager(self)
+        self.cog_manager.load_cogs()
+
+    def register_command(self, name, handler):
+        """Callback for CogManager to register commands."""
+        self.commands[name] = handler
+
+    def run(self):
+        """The main Read-Eval-Print-Loop (REPL) for user interaction."""
+        self.is_running = True
+        
+        print(f"{C.INFO}Initializing AI agent for default '{self.current_mode}' mode...{C.END}")
+        self.commands["/mode"](self.current_mode)
+        
+        print(f"\n{C.INFO}System Online. Notebook Session: {self.session_id}.")
+        print(f"Type /help for commands.{C.END}")
+
+        try:
+            while self.is_running:
+                self._show_prompt()
+                try:
+                    user_input = input().strip()
+                    if not user_input: continue
+                    self._dispatch_command(user_input)
+                except (KeyboardInterrupt, EOFError):
+                    print(f"\n{C.WARN}Interrupted. Type /quit to exit.{C.END}")
+        finally:
+            self._shutdown()
+
+    def _show_prompt(self):
+        mode_str = "RUN" if self.current_mode == "run" else "DATA"
+        prompt_color = C.WARN if mode_str == "RUN" else C.OK
+        safety_char = "🔒" if self.require_confirmation else "⚡"
+        
+        prompt = f"\n{prompt_color}[{mode_str} S:{self.session_id} {safety_char}] > {C.END}"
+        print(prompt, end="")
+
+    def _dispatch_command(self, user_input: str):
+        parts = user_input.split()
+        command = parts[0].lower()
+        args = parts[1:]
+
+        handler = None
+        if command.startswith("/"):
+            handler = self.commands.get(command)
+        else:
+            default_command = "/run" if self.current_mode == "run" else "/data"
+            handler = self.commands.get(default_command)
+            args = user_input.split()
+
+        if handler:
+            try:
+                handler(*args)
+            except Exception as e:
+                print(f"{C.ERR}Error executing command '{command}': {e}{C.END}")
+        else:
+            print(f"{C.ERR}Unknown command: {command}{C.END}")
+
+    def _shutdown(self):
+        print(f"\n{C.INFO}Shutting down...{C.END}")
+        if self.dln.current_session_id is not None:
+            self.dln.finalize(summary_text="User exited Cockpit.")
+        self.device_manager.stop()
+        print(f"{C.OK}Goodbye.{C.END}")
 
 def main():
-    parser = argparse.ArgumentParser(description="ALIF Agentic Laboratory Cockpit")
-    parser.add_argument("--provider", type=str, help="AI Provider (gemini, ollama, openai).")
-    parser.add_argument("--model", type=str, help="Specific model name.")
+    parser = argparse.ArgumentParser(description="Talos-SDL Agentic Laboratory Cockpit")
+    parser.add_argument("--world", default="world_model.json", help="Path to the world model configuration file.")
+    # --- MODIFIED: These args now default to None to allow world_model to take precedence ---
+    parser.add_argument("--provider", default=None, help="AI Provider (overrides world_model.json).")
+    parser.add_argument("--model", default=None, help="Specific model name (overrides world_model.json).")
     args = parser.parse_args()
 
     print(f"\n{C.OK}==========================================")
-    print("      ALIF AGENTIC LABORATORY COCKPIT      ")
+    print("      Talos-SDL Agentic Laboratory Cockpit      ")
     print(f"=========================================={C.END}")
-    
-    # 1. World Model Setup
-    world_path = "job_world.json"
-    if os.path.exists(world_path):
-        world_model = load_world_from_file(world_path)
-    else:
-        print(f"{C.WARN}No world model found. Defaulting to generic setup.{C.END}")
-        world_model = {
-            "reagents": {"p1": "reagent 1", "p2": "reagent 2", "p3": "reagent 3", "p4": "reagent 4"},
-            "max_well_volume_ul": 250.0, 
-            "experiment_name": "General Experiment"
-        }
 
-    # 2. Initialize Digital Lab Notebook
-    print(f"{C.INFO}[+] Initializing Digital Lab Notebook...{C.END}")
-    session_manager = SessionManager(base_dir=".talos")
-    session_manager.start_session(
-        world_model=world_model,
-        title=world_model.get('experiment_name'),
-        objective="Agentic session started via Laboratory Cockpit"
-    )
-
-    # 3. Hardware Setup (Decoupled)
-    manager, device_ports = connect_devices()
-    
-    # 4. Capabilities Discovery (Dynamic)
-    full_caps = get_instructions(manager, device_ports)
-    ai_commands = {}
-    ai_guidance = {}
-    
-    if full_caps:
-        for dev, payload in full_caps.items():
-            # Filter for commands the AI is allowed to use
-            ai_commands[dev] = {k: v for k, v in payload.get('data', {}).items() if v.get('ai_enabled', False)}
-            # Capture instrument-specific guidance for the prompt
-            ai_guidance[dev] = payload.get('metadata', {}).get('ai_guidance', "")
-    else:
-        print(f"{C.WARN}No instrument capabilities discovered. AI will operate with restricted tools.{C.END}")
-
-    # Initialize state managers
-    plate_manager = PlateManager(max_volume_ul=world_model.get('max_well_volume_ul', 250))
-    planner = Planner(world_model, ai_commands, ai_guidance)
-    
-    # 5. Agent Initialization
-    print(f"{C.INFO}[+] Initializing AI Agents (Dual Contexts)...{C.END}")
-    
-    # Setup the Controller (Run) Agent
-    planner.set_mode(Planner.MODE_RUN)
-    run_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
-    
-    # Setup the Analyst (Data) Agent
-    planner.set_mode(Planner.MODE_DATA)
-    data_agent = LLMManager.get_agent(provider=args.provider, model=args.model, context=planner.build_system_context())
-    
-    # Default to Run mode
-    planner.set_mode(Planner.MODE_RUN)
-    current_agent = run_agent
-    
-    executor = AgentExecutor(
-        manager=manager, 
-        device_ports=device_ports, 
-        agent=current_agent,
-        planner=planner, 
-        plate_manager=plate_manager,
-        session_manager=session_manager,
-        require_confirmation=True 
-    )
-
-    print(f"\n{C.INFO}System Online. Notebook Session: {session_manager.current_exp_id}{C.END}")
-    print(f"{C.INFO}Type /help for a list of commands.{C.END}")
-
-    # 6. REPL Loop
     try:
-        while True:
-            try:
-                mode_str = "RUN" if planner.current_mode == Planner.MODE_RUN else "DATA"
-                prompt_color = C.WARN if mode_str == "RUN" else C.OK
-                safety_char = "🔒" if executor.require_confirmation else "⚡"
-                
-                user_input = input(f"\n{prompt_color}[{mode_str} {safety_char}] > {C.END}").strip()
-                if not user_input: continue
-                
-                # --- Slash Commands ---
-                if user_input.startswith("/"):
-                    parts = user_input.split()
-                    cmd = parts[0].lower()
-                    remainder = " ".join(parts[1:])
-                    
-                    if cmd in ("/quit", "/exit"): break
-                    
-                    elif cmd == "/help":
-                        print_help()
-                        continue
+        # --- MODIFIED: Centralized configuration logic ---
+        world_model = load_world_from_file(args.world)
+        if not world_model:
+            raise FileNotFoundError(f"World model not found at '{args.world}'")
 
-                    elif cmd == "/clear":
-                        current_agent.clear_history()
-                        print(f"{C.INFO}Context cleared for {mode_str}.{C.END}")
-                        continue
+        # Configuration Priority: CLI > world_model.json > environment variable
+        ai_config = world_model.get("ai_config", {})
+        
+        final_provider = args.provider or ai_config.get("provider") or os.getenv("AI_PROVIDER", "gemini")
+        final_model = args.model or ai_config.get("model") or os.getenv("AI_MODEL", "gemini-1.5-flash-latest")
 
-                    elif cmd == "/confirm":
-                        executor.require_confirmation = not ("off" in remainder.lower())
-                        status = "OFF ⚡" if not executor.require_confirmation else "ON 🔒"
-                        print(f"{C.INFO}Safety Gate: {status}{C.END}")
-                        continue
+        print(f"{C.INFO}AI Config: Provider='{final_provider}', Model='{final_model}'{C.END}")
+        
+        # Pass the final resolved config to the app
+        app = ChatApp(world_model=world_model, provider=final_provider, model=final_model)
+        app.run()
+        # --- END MODIFICATION ---
 
-                    elif cmd == "/datasets":
-                        # Query StorageManager via SessionManager to list entries in the notebook
-                        session = session_manager.storage.Session()
-                        from host.dln.storage_manager import Attachment
-                        attachments = session.query(Attachment).all()
-                        print(f"\n{C.INFO}--- Lab Notebook: Registered Datasets ---{C.END}")
-                        if not attachments:
-                            print("No data recorded yet.")
-                        for att in attachments:
-                            print(f"ID: {C.OK}{att.id}{C.END} | Type: {att.data_type} | File: {att.filename}")
-                        session.close()
-                        continue
-
-                    elif cmd == "/run":
-                        planner.set_mode(Planner.MODE_RUN)
-                        current_agent = run_agent
-                        print(f"{C.INFO}Switched to RUN (Controller).{C.END}")
-                        if remainder: user_input = remainder
-                        else: continue
-                    
-                    elif cmd == "/data":
-                        planner.set_mode(Planner.MODE_DATA)
-                        current_agent = data_agent
-                        print(f"{C.INFO}Switched to DATA (Analyst).{C.END}")
-                        if remainder: user_input = remainder
-                        else: continue
-                    
-                    else:
-                        print(f"{C.ERR}Unknown command: {cmd}{C.END}")
-                        continue
-
-                # --- Execution Logic ---
-                executor.agent = current_agent
-                
-                if planner.current_mode == Planner.MODE_RUN:
-                    executor.run(user_input)
-
-
-                # DATA PORTION OF LOOP
-                elif planner.current_mode == Planner.MODE_DATA:
-                    print(f"[*] Querying Digital Lab Notebook records...")
-                    injected_context = ""
-
-                    # 1. Semantic search for high-level summaries
-                    mem_results = session_manager.search_memory(user_input, n_results=3)
-                    if mem_results:
-                        injected_context += "\n=== HISTORICAL SUMMARIES ===\n"
-                        for res in mem_results:
-                            injected_context += f"- {res['content']}\n"
-
-                    # 2. Coordinate scanning (e.g., G9)
-                    coords = re.findall(r"\b([A-H](?:1[0-2]|[1-9]))\b", user_input.upper())
-                    if coords:
-                        from host.dln.storage_manager import Attachment, Experiment
-                        session = session_manager.storage.Session()
-                        for coord in coords:
-                            # Query the JSON column context_tags
-                            attachments = session.query(Attachment).filter(
-                                Attachment.context_tags.contains(coord)
-                            ).all()
-                            for att in attachments:
-                                exp = session.query(Experiment).filter_by(id=att.experiment_id).first()
-                                mapping = exp.world_model.get('reagents', {}) if exp and exp.world_model else {}
-                                if os.path.exists(att.file_path):
-                                    with open(att.file_path, 'r') as f:
-                                        injected_context += f"\n=== DATASET FROM {coord} (Session: {att.experiment_id}) ===\n"
-                                        injected_context += f"Reagent Mapping: {json.dumps(mapping)}\n"
-                                        injected_context += f"Data: {f.read()}\n"
-                        session.close()
-
-                    # 3. Final Assembly
-                    final_prompt = f"{injected_context}\n\nUSER QUESTION: {user_input}"
-                    print(f"[*] Analyzing...")
-                    response = current_agent.prompt(final_prompt, use_history=True)
-                    print(f"\n{C.OK}{response}{C.END}")
-
-            except KeyboardInterrupt:
-                print(f"\n{C.WARN}Interrupted.{C.END}")
-                continue
-
-    finally:
-        print(f"\n{C.INFO}Shutting down...")
-        session_manager.end_session(summary="User exited Cockpit.")
-        manager.stop()
-        print(f"{C.OK}Goodbye.{C.END}")
+    except (RuntimeError, FileNotFoundError) as e:
+        print(f"\n{C.ERR}A critical error occurred on startup: {e}{C.END}")
+        sys.exit(1)
+    except Exception as e:
+        print(f"\n{C.ERR}An unexpected error occurred: {e}{C.END}")
+        import traceback; traceback.print_exc()
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
