@@ -34,12 +34,13 @@ class RunCog(BaseCog):
         ai_data = self._parse_ai_response(response)
         if not ai_data or "plan" not in ai_data: return
         
-        # Initialize the Envelope
+        proposal = ai_data.get("plan", [])
+        
         envelope = {
             "intent": goal,
-            "ai_proposal": ai_data.get("plan", []),
+            "ai_proposal": list(proposal), # list() creates a shallow copy of the plan
             "human_edits": [],
-            "final_plan": ai_data.get("plan", [])
+            "final_plan": list(proposal)   # This is the one we will edit
         }
 
         if self.app.require_confirmation:
@@ -64,56 +65,84 @@ class RunCog(BaseCog):
         return json.loads(json_str.strip())
 
     def _review_and_edit_plan(self, envelope):
-            """Displays the plan and allows interactive editing with rationales."""
-            plan = envelope["final_plan"]
-            
-            while True:
-                print(f"\n{C.WARN}--- PLAN REVIEW (CTRL-C to abort) ---{C.END}")
+        """Displays the plan for human-in-the-loop review and editing."""
+        plan = envelope["final_plan"]
+        while True:
+            print(f"\n{C.WARN}--- PLAN REVIEW (CTRL-C to abort) ---{C.END}")
+            if not plan:
+                print(f"  {C.ERR}(Plan is empty){C.END}")
+            else:
                 for idx, step in enumerate(plan):
                     dev = step.get('device', '?').upper()
                     cmd = step.get('command', '?')
                     args = json.dumps(step.get('args', {}))
                     print(f"  {C.INFO}{idx+1}.{C.END} {dev}: {cmd} {args}")
 
-                print(f"\n{C.INFO}Actions: 'run', 'del <#> <rationale>', 'edit <#> <key=val> <rationale>', 'add <dev> <cmd> <args> <rationale>'{C.END}")
-                
-                user_input = input("Action > ").strip()
-                if not user_input: continue
-                
-                parts = user_input.split(maxsplit=3)
-                cmd = parts[0].lower()
+            print(f"\n{C.INFO}Actions: 'run', 'del <#> <rationale>', 'edit <#> <key=val> <rationale>', 'add <dev> <cmd> <args> <rationale>'{C.END}")
+            
+            user_input = input("Action > ").strip()
+            if not user_input: continue
+            
+            parts = user_input.split(maxsplit=1)
+            cmd = parts[0].lower()
+            rest = parts[1] if len(parts) > 1 else ""
 
-                if cmd in ('run', 'y', 'yes'): return envelope
-                if cmd in ('reject', 'n', 'no'): return None
+            if cmd in ('run', 'y', 'yes'): 
+                return envelope
+            if cmd in ('reject', 'n', 'no'): 
+                return None
 
-                try:
-                    if cmd == 'del' and len(parts) >= 2:
-                        idx = int(parts[1]) - 1
-                        rationale = parts[2] if len(parts) > 2 else "No rationale provided"
-                        removed = plan.pop(idx)
-                        envelope["human_edits"].append({"action": "del", "step": idx+1, "cmd": removed['command'], "rationale": rationale})
-                        print(f"{C.WARN}Removed step {idx+1}.{C.END}")
+            try:
+                if cmd == 'del':
+                    sub_parts = rest.split(maxsplit=1)
+                    idx = int(sub_parts[0]) - 1
+                    rationale = sub_parts[1] if len(sub_parts) > 1 else "No rationale provided"
+                    
+                    removed = plan.pop(idx)
+                    envelope["human_edits"].append({
+                        "action": "del", 
+                        "step": idx + 1, 
+                        "cmd": removed['command'], 
+                        "rationale": rationale
+                    })
+                    print(f"{C.WARN}Removed step {idx+1}.{C.END}")
 
-                    elif cmd == 'edit' and len(parts) >= 3:
-                        idx = int(parts[1]) - 1
-                        # parts[2] is the key=val, parts[3] is the rationale
-                        rationale = parts[3] if len(parts) > 3 else "No rationale provided"
-                        new_args = self._parse_input_to_dict(parts[2])
-                        plan[idx]['args'].update(new_args)
-                        envelope["human_edits"].append({"action": "edit", "step": idx+1, "rationale": rationale})
-                        print(f"{C.OK}Step {idx+1} updated.{C.END}")
+                elif cmd == 'edit':
+                    sub_parts = rest.split(maxsplit=2)
+                    idx = int(sub_parts[0]) - 1
+                    args_str = sub_parts[1]
+                    rationale = sub_parts[2] if len(sub_parts) > 2 else "No rationale provided"
+                    
+                    new_args = self._parse_input_to_dict(args_str)
+                    plan[idx]['args'].update(new_args)
+                    envelope["human_edits"].append({
+                        "action": "edit", 
+                        "step": idx + 1, 
+                        "rationale": rationale
+                    })
+                    print(f"{C.OK}Step {idx+1} updated.{C.END}")
 
-                    elif cmd == 'add' and len(parts) >= 4:
-                        dev, func, args_raw = parts[1], parts[2], parts[3]
-                        rationale = "Manual addition"
-                        new_step = {"device": dev, "command": func, "args": self._parse_input_to_dict(args_raw)}
-                        plan.append(new_step)
-                        envelope["human_edits"].append({"action": "add", "step": len(plan), "rationale": rationale})
-                        print(f"{C.OK}Step added.{C.END}")
-                    else:
-                        print(f"{C.ERR}Invalid syntax. Ensure you provide a rationale for edits/deletes.{C.END}")
-                except Exception as e:
-                    print(f"{C.ERR}Error processing edit: {e}{C.END}")
+                elif cmd == 'add':
+                    sub_parts = rest.split(maxsplit=3)
+                    dev, func, args_raw = sub_parts[0], sub_parts[1], sub_parts[2]
+                    rationale = sub_parts[3] if len(sub_parts) > 3 else "Manual addition"
+                    
+                    new_step = {
+                        "device": dev, 
+                        "command": func, 
+                        "args": self._parse_input_to_dict(args_raw)
+                    }
+                    plan.append(new_step)
+                    envelope["human_edits"].append({
+                        "action": "add", 
+                        "step": len(plan), 
+                        "rationale": rationale
+                    })
+                    print(f"{C.OK}Step added.{C.END}")
+                else:
+                    print(f"{C.ERR}Unknown command '{cmd}'.{C.END}")
+            except Exception as e:
+                print(f"{C.ERR}Error processing edit: {e}{C.END}")
 
     def _parse_input_to_dict(self, input_str: str) -> dict:
         """Parses 'key=val key2=val2' or standard JSON into a dictionary."""
