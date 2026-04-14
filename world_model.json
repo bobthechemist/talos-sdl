@@ -1,7 +1,7 @@
 {
   "ai_config": {
-    "provider": "gemini",
-    "model": "gemini-2.5-flash-lite"
+    "provider": "ollama",
+    "model": "qwen3.5:9b"
   },
   "experiment_name": "General Chemistry Experiment",
   "required_cogs": [

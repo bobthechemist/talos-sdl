@@ -56,26 +56,29 @@ class DataCog(BaseCog):
         return {"wells": list(set(wells))} # Return unique wells
 
     def _synthesize_context(self, context_logs, fact_logs_raw):
-        """Combines semantic and relational results into a rich context string."""
-        context = "--- CONTEXT: SEMANTICALLY SIMILAR LOGS ---\n"
-        if not context_logs:
-            context += "No relevant high-level summaries found.\n"
-        else:
+            """Combines semantic context and factual observations for the LLM."""
+            context = "--- CONTEXT: EXPERIMENT HISTORY (LOGS) ---\n"
+            
             for log in context_logs:
-                summary = str(log.data)[:250]
-                context += f"[Log ID: {log.id}, Type: {log.entry_type}]: {summary}...\n"
+                # Check if this log is an envelope (Plan type)
+                if log.entry_type == 'plan':
+                    intent = log.data.get('intent', 'N/A')
+                    edits = log.data.get('human_edits', [])
+                    edit_summary = "; ".join([f"Step {e['action']} at {e['step']}: {e['rationale']}" for e in edits])
+                    context += f"[Plan] Intent: '{intent}'. Human Modifications: {edit_summary}\n"
+                else:
+                    context += f"[{log.entry_type.upper()}]: {str(log.data)[:200]}...\n"
 
-        context += "\n--- CONTEXT: RAW DATA LOGS (FACTUAL) ---\n"
-        if not fact_logs_raw:
-            context += "No specific raw data logs matching query entities were found.\n"
-        else:
-            # The raw SQL query returns tuples, we need to map them to dicts
-            # Assuming columns: id, session_id, timestamp, entry_type, data, ...
-            for row in fact_logs_raw:
-                log_data = json.loads(row[4]) # 'data' is the 5th column
-                context += f"[Log ID: {row[0]}, Type: {row[3]}]:\n{json.dumps(log_data, indent=2)}\n"
-        
-        return context
+            context += "\n--- CONTEXT: RAW DATA LOGS (FACTUAL) ---\n"
+            if not fact_logs_raw:
+                context += "No specific raw observation data found for these wells.\n"
+            else:
+                for row in fact_logs_raw:
+                    # row[4] is the 'data' field from the science log
+                    log_data = json.loads(row[4]) 
+                    context += f"[Observation]: {json.dumps(log_data, indent=2)}\n"
+            
+            return context
 
     def handle_session(self, *args):
         """Manages the active data query session (e.g., /session set 2)."""
