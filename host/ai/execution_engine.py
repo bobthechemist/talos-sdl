@@ -15,15 +15,9 @@ class ExecutionEngine:
         self.device_ports = device_ports
         self.dln = dln
 
-    def execute_plan(self, plan: list):
-        """
-        Executes a list of command steps sequentially.
-
-        Args:
-            plan (list): A list of command dictionaries, each with 'device',
-                         'command', and 'args'.
-        """
-        print(f"\n{C.INFO}Executing Plan...{C.END}")
+    def execute_plan(self, plan: list, plan_id: int = None):
+        """Executes a list of command steps sequentially, linked to a plan_id."""
+        print(f"\n{C.INFO}Executing Plan (ID: {plan_id})...{C.END}")
         for step_idx, step in enumerate(plan):
             device = step.get("device", "").lower()
             command = step.get("command")
@@ -33,27 +27,24 @@ class ExecutionEngine:
 
             port = self.device_ports.get(device)
             if not port:
-                print(f" {C.ERR}[FAILED]{C.END} (Device '{device}' not found or connected)")
+                print(f" {C.ERR}[FAILED]{C.END}")
                 break
 
-            # Send the command and log the transaction
             msg = Message.create_message("HOST_ENGINE", "INSTRUCTION", payload={"func": command, "args": args})
             self.dln.log_transaction(f"SENT: {msg.serialize()}")
             self.manager.send_message(port, msg)
             
-            # Wait for the result
             result = self._wait_for_result(port)
             self.dln.log_transaction(f"RECV: {json.dumps(result)}")
 
             if result['status'] in ("SUCCESS", "DATA_RESPONSE"):
                 print(f" {C.OK}[OK]{C.END}")
                 if result['status'] == "DATA_RESPONSE":
-                    self._handle_data_response(device, command, args, result['payload'])
+                    # Pass the plan_id and current step_idx to context
+                    self._handle_data_response(device, command, args, result['payload'], plan_id, step_idx)
             else:
-                print(f" {C.ERR}[PROBLEM]{C.END}\n     {result.get('payload')}")
-                break # Stop execution on failure
-        else: # This 'else' belongs to the 'for' loop, executes if the loop completed without break
-            print(f"{C.OK}Plan finished successfully.{C.END}")
+                print(f" {C.ERR}[PROBLEM]{C.END}")
+                break 
 
     def _wait_for_result(self, port, timeout=60):
         """Waits for a terminal response (SUCCESS, PROBLEM, DATA_RESPONSE) for a command."""
@@ -68,13 +59,11 @@ class ExecutionEngine:
                 continue
         return {"status": "ERROR", "payload": "Device timeout."}
 
-    def _handle_data_response(self, device, command, args, payload):
-        """Logs instrument data to the DLN."""
-        # Simple check for large data (could be more sophisticated)
-        is_blob = len(json.dumps(payload)) > 4096 # e.g., > 4KB is a blob
+    def _handle_data_response(self, device, command, args, payload, plan_id, step_idx):
+        """Logs instrument data to the DLN linked to the plan ID."""
+        is_blob = len(json.dumps(payload)) > 4096 
         
         if is_blob:
-            # Handle as a blob
             timestamp = time.strftime("%Y%m%d-%H%M%S")
             filename = f"{device}_{command}_{timestamp}.json"
             blob_path = self.dln.store_blob(json.dumps(payload, indent=2).encode('utf-8'), filename)
@@ -82,20 +71,21 @@ class ExecutionEngine:
                 "type": "blob_reference",
                 "content_type": "application/json",
                 "path": blob_path,
-                "description": f"Large data response from {device}.{command}"
+                "description": f"Data response from {device}.{command}",
+                "plan_metadata": {"plan_id": plan_id, "step_index": step_idx}
             }
         else:
-            # Handle as atomic data
             log_data = {
                 "device": device,
                 "command": command,
                 "args": args,
                 "payload": payload,
-                "context_tags": self._extract_context_tags(args)
+                "context_tags": self._extract_context_tags(args),
+                "plan_metadata": {"plan_id": plan_id, "step_index": step_idx}
             }
         
         obs_id = self.dln.log_science(entry_type="observation", data=log_data)
-        print(f" {C.OK}[Notebook] Logged Observation (ID: {obs_id}){C.END}")
+        print(f" {C.OK}[Notebook] Logged Observation (ID: {obs_id}, PlanID: {plan_id}){C.END}")
 
     def _extract_context_tags(self, args: dict) -> dict:
         """Finds common identifiers in args to tag data for easier relational queries."""

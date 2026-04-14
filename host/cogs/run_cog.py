@@ -16,8 +16,8 @@ class RunCog(BaseCog):
     def get_commands(self):
         return {"/run": self.handle_run}
 
-# host/cogs/run_cog.py
     def handle_run(self, *args):
+        """Executes a user's goal by planning and running hardware commands."""
         goal = " ".join(args)
         if not goal:
             print(f"{C.ERR}Usage: /run <your goal here>{C.END}")
@@ -38,9 +38,9 @@ class RunCog(BaseCog):
         
         envelope = {
             "intent": goal,
-            "ai_proposal": list(proposal), # list() creates a shallow copy of the plan
+            "ai_proposal": list(proposal), 
             "human_edits": [],
-            "final_plan": list(proposal)   # This is the one we will edit
+            "final_plan": list(proposal)
         }
 
         if self.app.require_confirmation:
@@ -49,9 +49,11 @@ class RunCog(BaseCog):
                 print(f"{C.ERR}Plan rejected by user.{C.END}")
                 return
         
-        # Atomic log: record the envelope and execute
-        self.dln.log_science(entry_type="plan", data=envelope)
-        self.execution_engine.execute_plan(envelope["final_plan"])
+        # Log the plan and capture the returned ID
+        plan_id = self.dln.log_science(entry_type="plan", data=envelope)
+        
+        # Pass the plan_id to the execution engine
+        self.execution_engine.execute_plan(envelope["final_plan"], plan_id=plan_id)
 
 
 

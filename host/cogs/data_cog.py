@@ -56,29 +56,27 @@ class DataCog(BaseCog):
         return {"wells": list(set(wells))} # Return unique wells
 
     def _synthesize_context(self, context_logs, fact_logs_raw):
-            """Combines semantic context and factual observations for the LLM."""
-            context = "--- CONTEXT: EXPERIMENT HISTORY (LOGS) ---\n"
-            
-            for log in context_logs:
-                # Check if this log is an envelope (Plan type)
-                if log.entry_type == 'plan':
-                    intent = log.data.get('intent', 'N/A')
-                    edits = log.data.get('human_edits', [])
-                    edit_summary = "; ".join([f"Step {e['action']} at {e['step']}: {e['rationale']}" for e in edits])
-                    context += f"[Plan] Intent: '{intent}'. Human Modifications: {edit_summary}\n"
-                else:
-                    context += f"[{log.entry_type.upper()}]: {str(log.data)[:200]}...\n"
-
-            context += "\n--- CONTEXT: RAW DATA LOGS (FACTUAL) ---\n"
-            if not fact_logs_raw:
-                context += "No specific raw observation data found for these wells.\n"
+        """Combines semantic context and factual observations for the LLM."""
+        context = "--- CONTEXT: EXPERIMENT HISTORY ---\n"
+        
+        for log in context_logs:
+            if log.entry_type == 'plan':
+                intent = log.data.get('intent', 'N/A')
+                edits = log.data.get('human_edits', [])
+                edit_summary = "; ".join([f"Step {e.get('step')}: {e.get('rationale')}" for e in edits])
+                context += f"[Plan ID: {log.id}] Intent: '{intent}'. Edits: {edit_summary}\n"
             else:
-                for row in fact_logs_raw:
-                    # row[4] is the 'data' field from the science log
-                    log_data = json.loads(row[4]) 
-                    context += f"[Observation]: {json.dumps(log_data, indent=2)}\n"
+                context += f"[{log.entry_type.upper()}]: {str(log.data)[:150]}...\n"
+
+        context += "\n--- CONTEXT: RAW DATA LOGS (FACTUAL) ---\n"
+        for row in fact_logs_raw:
+            log_data = json.loads(row[4]) 
+            meta = log_data.get('plan_metadata', {})
+            pid = meta.get('plan_id', 'N/A')
+            step = meta.get('step_index', 'N/A')
+            context += f"[Observation] PlanID: {pid}, Step: {step}, Data: {json.dumps(log_data.get('payload', log_data))}\n"
             
-            return context
+        return context
 
     def handle_session(self, *args):
         """Manages the active data query session (e.g., /session set 2)."""
