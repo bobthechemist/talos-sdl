@@ -94,7 +94,7 @@ class LiveViewCog(BaseCog):
             print(f"{C.ERR}Failed to stop session.{C.END}")
 
     def _list_devices(self):
-        """List all available devices with their ports and supported commands."""
+        """List all available devices with their ports, supported commands, and detected read command."""
         devices = self.live_view_manager.list_available_devices()
         print(f"\n{C.INFO}--- Available Devices ---{C.END}")
         if not devices:
@@ -103,8 +103,10 @@ class LiveViewCog(BaseCog):
             for name, info in devices.items():
                 print(f"  Device: {C.OK}{name}{C.END}")
                 print(f"    Port: {info['port']}")
+                if info.get('read_command'):
+                    print(f"    Read Command: {C.WARN}{info['read_command']}{C.END}")
                 if info['supported_commands']:
-                    print(f"    Commands: {', '.join(info['supported_commands'])}")
+                    print(f"    Supported Commands: {', '.join(info['supported_commands'])}")
                 print()
 
     def _list_fields(self, device_name):

@@ -330,12 +330,18 @@ class MatplotlibPlotManager:
 class LiveViewSession:
     """Manages a single live view session"""
 
-    # Device-specific read commands
-    DEVICE_READ_COMMANDS = {
-        'pybot-arm': 'read_sensor',
-        'pybot_arm': 'read_sensor',
-        'magnetometer': 'read_now',
-    }
+    # Priority-ordered list of common read command names
+    # The system will try these in order to find a matching command
+    # that the device supports. This makes it work with ANY new sensor.
+    COMMON_READ_COMMANDS = [
+        'read_sensor',    # PyBot Arm style
+        'read_now',       # Magnetometer style
+        'get_reading',    # Generic sensor style
+        'sample',         # Data logger style
+        'measure',        # Measurement device style
+        'get_data',       # Generic data retrieval
+        'read',           # Simple read command
+    ]
 
     def __init__(self, device_name, port, field_specs, manager, plot_manager):
         """
@@ -355,9 +361,6 @@ class LiveViewSession:
         self.plot_manager = plot_manager
         self.session_id = f"session_{uuid.uuid4().hex[:8]}"
 
-        # Determine the read command for this device
-        self.read_command = self._get_read_command_for_device(device_name)
-
         # Initialize session state
         self.active = False
         self.stop_event = threading.Event()
@@ -366,32 +369,139 @@ class LiveViewSession:
         self.sample_numbers = []
         self.max_samples = 20
 
-    def _get_read_command_for_device(self, device_name):
+        # Read command will be determined in start() after querying device
+        self.read_command = None
+
+    def _discover_read_command(self, timeout=2.0):
         """
-        Get the appropriate read command for a device.
+        Discover the appropriate read command for this device by querying its supported commands.
+
+        Sends a 'help' command to get the list of supported commands, then selects
+        the best read command from what the device actually supports.
+
+        Args:
+            timeout: Seconds to wait for response
+
+        Returns:
+            Command name string, or None if discovery failed
+        """
+        # First, try to get the device's supported commands from the local cache
+        device = None
+        if hasattr(self.manager, 'devices') and self.port in self.manager.devices:
+            device = self.manager.devices[self.port]
+
+        if device and hasattr(device, 'supported_commands') and device.supported_commands:
+            # Device has reported its supported commands - use this information
+            supported = list(device.supported_commands.keys())
+            return self._select_best_read_command(supported)
+
+        # Device hasn't reported commands yet - query it with 'help' command
+        help_msg = Message.create_message(
+            subsystem_name=self.device_name,
+            status="INSTRUCTION",
+            payload={"func": "help", "args": {}}
+        )
+        self.manager.send_message(self.port, help_msg)
+
+        # Wait for DATA_RESPONSE with supported commands
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            try:
+                msg_type, msg_port, msg_data = self.manager.incoming_message_queue.get(timeout=0.1)
+                if msg_port == self.port and msg_data.status == "DATA_RESPONSE":
+                    payload = msg_data.payload
+                    data = payload.get('data', {})
+                    # Check if this is a help response (contains command descriptions)
+                    if isinstance(data, dict) and data:
+                        first_value = next(iter(data.values()), None)
+                        if isinstance(first_value, dict) and 'description' in first_value:
+                            # This is a help response with supported commands
+                            supported = list(data.keys())
+                            return self._select_best_read_command(supported)
+            except queue.Empty:
+                continue
+
+        # Failed to discover - return None to indicate fallback needed
+        return None
+
+    def _select_best_read_command(self, supported_commands):
+        """
+        Select the best read command from a list of supported commands.
+
+        Args:
+            supported_commands: List of command names the device supports
+
+        Returns:
+            Best matching command name
+        """
+        # Try common read commands in priority order
+        for read_cmd in self.COMMON_READ_COMMANDS:
+            if read_cmd in supported_commands:
+                return read_cmd
+
+        # If no common command found, look for read-like commands
+        for cmd in supported_commands:
+            cmd_lower = cmd.lower()
+            if any(keyword in cmd_lower for keyword in ['read', 'get', 'sample', 'measure', 'fetch']):
+                return cmd
+
+        # Fall back to first supported command
+        return supported_commands[0] if supported_commands else None
+
+    def _get_read_command_for_device(self, device_name, port):
+        """
+        Get the appropriate read command for a device by querying its supported commands.
+
+        This method dynamically discovers the device's capabilities and selects
+        an appropriate read command. It works with ANY new sensor device without
+        requiring code changes.
 
         Args:
             device_name: Name of the device
+            port: Serial port of the device (to look up device object)
 
         Returns:
             Command name string (e.g., 'read_sensor', 'read_now')
         """
-        # Check exact match first
-        if device_name.lower() in self.DEVICE_READ_COMMANDS:
-            return self.DEVICE_READ_COMMANDS[device_name.lower()]
+        # Try to get the device object to check its supported commands
+        device = None
+        if hasattr(self.manager, 'devices') and port in self.manager.devices:
+            device = self.manager.devices[port]
 
-        # Check partial match
-        for dev_name, cmd in self.DEVICE_READ_COMMANDS.items():
-            if dev_name in device_name.lower() or device_name.lower() in dev_name:
-                return cmd
+        if device and hasattr(device, 'supported_commands') and device.supported_commands:
+            # Device has reported its supported commands - use this information
+            supported = list(device.supported_commands.keys())
 
-        # Default to read_now for unknown devices
-        return 'read_now'
+            # Try common read commands in priority order
+            for read_cmd in self.COMMON_READ_COMMANDS:
+                if read_cmd in supported:
+                    return read_cmd
+
+            # If no common command found, use the first available command
+            # that looks like a read/get operation
+            for cmd in supported:
+                cmd_lower = cmd.lower()
+                if any(keyword in cmd_lower for keyword in ['read', 'get', 'sample', 'measure', 'fetch']):
+                    return cmd
+
+            # Fall back to first supported command
+            return supported[0]
+
+        # Device hasn't reported commands yet - return None to trigger discovery
+        return None
 
     def start(self):
         """Start the live view session"""
         self.active = True
         self.stop_event.clear()
+
+        # Discover the appropriate read command for this device
+        self.read_command = self._discover_read_command()
+
+        if not self.read_command:
+            # Discovery failed - try a reasonable default based on device name
+            print(f"{C.WARN}Could not discover read command for {self.device_name}, using default 'read_sensor'{C.END}")
+            self.read_command = 'read_sensor'
 
         # Initialize plot manager with session
         self.plot_manager.current_sessions[self.session_id] = {
@@ -418,8 +528,26 @@ class LiveViewSession:
 
     def _sample_thread(self):
         """Background thread for sampling at 5 Hz"""
+        poll_count = 0
+        success_count = 0
+
         while not self.stop_event.is_set():
             try:
+                # First, check for any available TELEMETRY messages (non-blocking)
+                # This allows devices that send frequent telemetry to be sampled at their rate
+                try:
+                    msg_type, msg_port, msg_data = self.manager.incoming_message_queue.get_nowait()
+                    if msg_port == self.port and msg_data.status in ("DATA_RESPONSE", "TELEMETRY"):
+                        payload = msg_data.payload
+                        self._process_data(payload)
+                        success_count += 1
+                        # Continue to next iteration to maintain 5Hz sampling rhythm
+                        time.sleep(0.2)
+                        continue
+                except queue.Empty:
+                    # No telemetry available, proceed with polling
+                    pass
+
                 # Send device-specific read command to get current sensor reading
                 read_msg = Message.create_message(
                     subsystem_name=self.device_name,
@@ -427,26 +555,42 @@ class LiveViewSession:
                     payload={"func": self.read_command, "args": {}}
                 )
                 self.manager.send_message(self.port, read_msg)
+                poll_count += 1
 
                 # Wait for DATA_RESPONSE or TELEMETRY
                 # This is handled by DeviceManager's incoming_message_queue
                 # We need to wait for the specific message for this port
                 start_time = time.time()
                 timeout = 0.5  # 0.5 second timeout
+                received = False
 
                 while time.time() - start_time < timeout:
                     try:
                         msg_type, msg_port, msg_data = self.manager.incoming_message_queue.get(timeout=0.05)
 
-                        if msg_port == self.port and msg_data.status in ("DATA_RESPONSE", "TELEMETRY"):
-                            # Process the data
-                            payload = msg_data.payload
-                            self._process_data(payload)
-                            break
+                        if msg_port == self.port:
+                            if msg_data.status in ("DATA_RESPONSE", "TELEMETRY"):
+                                # Process the data
+                                payload = msg_data.payload
+                                self._process_data(payload)
+                                success_count += 1
+                                received = True
+                                break
+                            elif msg_data.status == "PROBLEM":
+                                # Device reported a problem (e.g., not ready, sensor error)
+                                if poll_count <= 3:  # Only report first few times
+                                    print(f"{C.WARN}Device {self.device_name} reported: {msg_data.payload}{C.END}")
+                                received = True
+                                break
 
                     except queue.Empty:
                         # Timeout waiting for response
                         break
+
+                # Track polling health - if we're not getting responses, inform user
+                if poll_count > 10 and success_count == 0 and not received:
+                    print(f"{C.WARN}Warning: {self.device_name} not responding to '{self.read_command}' commands. "
+                          f"Ensure the device is initialized and ready.{C.END}")
 
             except Exception as e:
                 print(f"{C.ERR}Sampling error: {e}{C.END}")
@@ -649,9 +793,12 @@ class LiveViewManager:
         devices = {}
         for port, device in self.manager.devices.items():
             display_name = self._get_display_name(device)
+            # Get the read command that will be used for this device
+            read_command = self._get_read_command_for_device(display_name, port)
             devices[display_name] = {
                 'port': port,
-                'supported_commands': list(device.supported_commands.keys()) if device.supported_commands else []
+                'supported_commands': list(device.supported_commands.keys()) if device.supported_commands else [],
+                'read_command': read_command
             }
         return devices
 
@@ -687,9 +834,18 @@ class LiveViewManager:
         if not port:
             return None
 
+        # Dynamically discover the read command for this device
+        read_command = self._get_read_command_for_device(device_name, port)
+
+        # If no command discovered, try to query the device's supported commands first
+        if not read_command:
+            read_command = self._discover_read_command_for_port(port)
+
+        if not read_command:
+            print(f"{C.WARN}Could not determine read command for {device_name}{C.END}")
+            return None
+
         # Request a sample to see what fields are available
-        # Send a device-specific read command and check the response structure
-        read_command = LiveViewSession.DEVICE_READ_COMMANDS.get(device_name.lower(), 'read_now')
         read_msg = Message.create_message(
             subsystem_name=device_name,
             status="INSTRUCTION",
@@ -709,6 +865,127 @@ class LiveViewManager:
                 continue
 
         return None
+
+    def _discover_read_command_for_port(self, port, timeout=2.0):
+        """
+        Discover the read command for a device by querying its supported commands.
+
+        Args:
+            port: Serial port of the device
+            timeout: Seconds to wait for response
+
+        Returns:
+            Command name string, or None if discovery failed
+        """
+        # First check cached supported commands
+        device = None
+        if hasattr(self.manager, 'devices') and port in self.manager.devices:
+            device = self.manager.devices[port]
+
+        if device and hasattr(device, 'supported_commands') and device.supported_commands:
+            supported = list(device.supported_commands.keys())
+            return self._select_best_read_command(supported)
+
+        # Query device with 'help' command
+        # We need a subsystem name - try to get it from the device
+        subsystem = device.firmware_name if device and device.firmware_name != "?" else "device"
+        help_msg = Message.create_message(
+            subsystem_name=subsystem,
+            status="INSTRUCTION",
+            payload={"func": "help", "args": {}}
+        )
+        self.manager.send_message(port, help_msg)
+
+        # Wait for DATA_RESPONSE with supported commands
+        start_time = time.time()
+        while time.time() - start_time < timeout:
+            try:
+                msg_type, msg_port, msg_data = self.manager.incoming_message_queue.get(timeout=0.1)
+                if msg_port == port and msg_data.status == "DATA_RESPONSE":
+                    payload = msg_data.payload
+                    data = payload.get('data', {})
+                    if isinstance(data, dict) and data:
+                        first_value = next(iter(data.values()), None)
+                        if isinstance(first_value, dict) and 'description' in first_value:
+                            supported = list(data.keys())
+                            return self._select_best_read_command(supported)
+            except queue.Empty:
+                continue
+
+        return None
+
+    def _select_best_read_command(self, supported_commands):
+        """
+        Select the best read command from a list of supported commands.
+
+        Args:
+            supported_commands: List of command names the device supports
+
+        Returns:
+            Best matching command name
+        """
+        COMMON_READ_COMMANDS = [
+            'read_sensor', 'read_now', 'get_reading', 'sample',
+            'measure', 'get_data', 'read'
+        ]
+
+        # Try common read commands in priority order
+        for read_cmd in COMMON_READ_COMMANDS:
+            if read_cmd in supported_commands:
+                return read_cmd
+
+        # If no common command found, look for read-like commands
+        for cmd in supported_commands:
+            cmd_lower = cmd.lower()
+            if any(keyword in cmd_lower for keyword in ['read', 'get', 'sample', 'measure', 'fetch']):
+                return cmd
+
+        # Fall back to first supported command
+        return supported_commands[0] if supported_commands else None
+
+    def _get_read_command_for_device(self, device_name, port):
+        """
+        Get the appropriate read command for a device by querying its supported commands.
+
+        Dynamically discovers the device's capabilities - no hardcoding required.
+        Works with any new sensor device added to the system.
+
+        Args:
+            device_name: Name of the device
+            port: Serial port of the device
+
+        Returns:
+            Command name string
+        """
+        COMMON_READ_COMMANDS = [
+            'read_sensor', 'read_now', 'get_reading', 'sample',
+            'measure', 'get_data', 'read'
+        ]
+
+        # Try to get the device object to check its supported commands
+        device = None
+        if hasattr(self.manager, 'devices') and port in self.manager.devices:
+            device = self.manager.devices[port]
+
+        if device and hasattr(device, 'supported_commands') and device.supported_commands:
+            supported = list(device.supported_commands.keys())
+
+            # Try common read commands in priority order
+            for read_cmd in COMMON_READ_COMMANDS:
+                if read_cmd in supported:
+                    return read_cmd
+
+            # If no common command found, look for read-like commands
+            for cmd in supported:
+                cmd_lower = cmd.lower()
+                if any(keyword in cmd_lower for keyword in ['read', 'get', 'sample', 'measure', 'fetch']):
+                    return cmd
+
+            # Fall back to first supported command
+            return supported[0]
+
+        # Default to read_sensor if device info not available
+        return COMMON_READ_COMMANDS[0]
 
     def _extract_field_paths(self, data, prefix=''):
         """
