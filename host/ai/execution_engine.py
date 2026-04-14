@@ -40,11 +40,13 @@ class ExecutionEngine:
             if result['status'] in ("SUCCESS", "DATA_RESPONSE"):
                 print(f" {C.OK}[OK]{C.END}")
                 if result['status'] == "DATA_RESPONSE":
-                    # Pass the plan_id and current step_idx to context
+                    # Pass the plan_id and current step_idx
                     self._handle_data_response(device, command, args, result['payload'], plan_id, step_idx)
             else:
                 print(f" {C.ERR}[PROBLEM]{C.END}")
                 break 
+        else:
+            print(f"{C.OK}Plan finished successfully.{C.END}")
 
     def _wait_for_result(self, port, timeout=60):
         """Waits for a terminal response (SUCCESS, PROBLEM, DATA_RESPONSE) for a command."""
@@ -60,7 +62,7 @@ class ExecutionEngine:
         return {"status": "ERROR", "payload": "Device timeout."}
 
     def _handle_data_response(self, device, command, args, payload, plan_id, step_idx):
-        """Logs instrument data to the DLN linked to the plan ID."""
+        """Logs instrument data with plan linkage."""
         is_blob = len(json.dumps(payload)) > 4096 
         
         if is_blob:
@@ -69,9 +71,7 @@ class ExecutionEngine:
             blob_path = self.dln.store_blob(json.dumps(payload, indent=2).encode('utf-8'), filename)
             log_data = {
                 "type": "blob_reference",
-                "content_type": "application/json",
                 "path": blob_path,
-                "description": f"Data response from {device}.{command}",
                 "plan_metadata": {"plan_id": plan_id, "step_index": step_idx}
             }
         else:
@@ -80,7 +80,6 @@ class ExecutionEngine:
                 "command": command,
                 "args": args,
                 "payload": payload,
-                "context_tags": self._extract_context_tags(args),
                 "plan_metadata": {"plan_id": plan_id, "step_index": step_idx}
             }
         

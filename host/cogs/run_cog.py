@@ -31,30 +31,28 @@ class RunCog(BaseCog):
         response = self.app.ai_agent.prompt(prompt, use_history=True)
         if not response: return
 
-        ai_data = self._parse_ai_response(response)
-        if not ai_data or "plan" not in ai_data: return
+        try:
+            ai_data = self._parse_ai_response(response)
+            if not ai_data or "plan" not in ai_data: return
+        except json.JSONDecodeError: return
         
         proposal = ai_data.get("plan", [])
-        
         envelope = {
             "intent": goal,
-            "ai_proposal": list(proposal), 
+            "ai_proposal": list(proposal),
             "human_edits": [],
             "final_plan": list(proposal)
         }
 
         if self.app.require_confirmation:
             envelope = self._review_and_edit_plan(envelope)
-            if envelope is None:
-                print(f"{C.ERR}Plan rejected by user.{C.END}")
-                return
+            if envelope is None: return
         
-        # Log the plan and capture the returned ID
+        # Log the envelope and capture the returned DLN ID
         plan_id = self.dln.log_science(entry_type="plan", data=envelope)
         
         # Pass the plan_id to the execution engine
         self.execution_engine.execute_plan(envelope["final_plan"], plan_id=plan_id)
-
 
 
     def _parse_ai_response(self, response):
