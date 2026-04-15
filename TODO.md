@@ -11,3 +11,9 @@
 - Create a virtual experiment/meta-analysis style experiment
 
 I'm leaning towards the listed session_id. I do not know how much needs to be changed (what references session_id presently)
+
+## UX tweaks
+
+- In run mode, we don't need to see the text of "Goal received" since we just typed it
+- In action/planning mode, the reminder that run accepts a y is needed.
+- Update world_model.json so that there is a template that gets stored for reference but the actual json file is .gitignored
