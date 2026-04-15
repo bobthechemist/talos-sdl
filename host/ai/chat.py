@@ -11,6 +11,7 @@ sys.path.append(str(PROJECT_ROOT))
 # Core Talos Imports
 from host.core.device_manager import DeviceManager
 from dln import DigitalLabNotebook, ExperimentFinalizedError
+from host.ai.prompt_factory import PromptFactory
 from host.ai.llm_manager import LLMManager
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
 from host.cogs.cog_manager import CogManager
@@ -39,7 +40,19 @@ class ChatApp:
         self.require_confirmation = True
         self.ai_provider = provider
         self.ai_model = model
-        self.ai_agent = None # Will be loaded by a cog
+
+        # Initialize both agents upfront
+        self.prompt_factory = PromptFactory(self.world_model, self.ai_commands, self.ai_guidance)
+        self.run_agent = LLMManager.get_agent(
+            provider=self.ai_provider, model=self.ai_model, 
+            context=self.prompt_factory.get_system_prompt("run")
+        )
+        self.data_agent = LLMManager.get_agent(
+            provider=self.ai_provider, model=self.ai_model, 
+            context=self.prompt_factory.get_system_prompt("data")
+        )
+        self.ai_agent = self.run_agent # Default to run_agent        
+
         
         # 3. Cog and Command Management
         self.commands = {}
@@ -84,6 +97,12 @@ class ChatApp:
         parts = user_input.split()
         command = parts[0].lower()
         args = parts[1:]
+
+        # Ensure proper model used to handle command
+        if command == "/data" or (self.current_mode == "data" and not command.startswith("/")):
+            self.ai_agent = self.data_agent
+        elif command == "/run" or (self.current_mode == "run" and not command.startswith("/")):
+            self.ai_agent = self.run_agent
 
         handler = None
         if command.startswith("/"):
