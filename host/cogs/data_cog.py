@@ -92,6 +92,7 @@ class DataCog(BaseCog):
                 # A more robust check would query the DB
                 self.app.active_data_session_id = target_id
                 self.app.ai_agent.clear_history()
+                self.dln.log_science(entry_type="context", data={"focus_session": target_id})
                 print(f"{C.OK}Active data query session switched to ID: {target_id}.{C.END}")
             except (ValueError, IndexError):
                 print(f"{C.ERR}Usage: /session set <id>{C.END}")
