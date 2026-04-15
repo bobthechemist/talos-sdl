@@ -47,6 +47,7 @@ class DataCog(BaseCog):
             
             print("[*] Analyzing...")
             response = self.app.ai_agent.prompt(final_prompt, use_history=True)
+            self.dln.log_science(entry_type="analysis", data={"query": query, "response": response})
             print(f"\n{C.OK}{response}{C.END}")
 
     def _extract_entities(self, query: str) -> dict:
