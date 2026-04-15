@@ -133,6 +133,7 @@ def main():
     # --- MODIFIED: These args now default to None to allow world_model to take precedence ---
     parser.add_argument("--provider", default=None, help="AI Provider (overrides world_model.json).")
     parser.add_argument("--model", default=None, help="Specific model name (overrides world_model.json).")
+    parser.add_argument("--experiment", help="Override the experiment name from the world model.")
     args = parser.parse_args()
 
     print(f"\n{C.OK}==========================================")
@@ -153,6 +154,10 @@ def main():
 
         print(f"{C.INFO}AI Config: Provider='{final_provider}', Model='{final_model}'{C.END}")
         
+        # Experiment name is found either on command line or world model. CLI takes precedence.
+        world_model["experiment_name"] = args.experiment or world_model.get("experiment_name", "Untitled Experiment")
+        print(f"{C.INFO}Experiment Name: '{world_model['experiment_name']}'{C.END}")
+
         # Pass the final resolved config to the app
         app = ChatApp(world_model=world_model, provider=final_provider, model=final_model)
         app.run()

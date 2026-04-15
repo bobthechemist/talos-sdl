@@ -43,9 +43,11 @@ class ExecutionEngine:
                     # Pass the plan_id and current step_idx
                     self._handle_data_response(device, command, args, result['payload'], plan_id, step_idx)
             else:
+                self.dln.log_science(entry_type="system", data={"message": "Plan did not complete successfully.", "plan_id": plan_id, "step_index": step_idx, "error": result['payload']})
                 print(f" {C.ERR}[PROBLEM]{C.END}")
                 break 
         else:
+            self.dln.log_science(entry_type="system", data={"message": "Plan executed successfully.", "plan_id": plan_id})
             print(f"{C.OK}Plan finished successfully.{C.END}")
 
     def _wait_for_result(self, port, timeout=60):
