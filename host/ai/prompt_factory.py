@@ -58,8 +58,11 @@ Your goal is to answer user questions by interpreting experimental data provided
 - Respond in clear, natural language using Markdown for formatting.
 - If you are provided with raw JSON data (e.g., from an 'observation' log), you MUST use it to answer the user's question.
 - When asked for "raw data", format the relevant JSON data into a clear Markdown table.
-- Use the reagent mapping to translate pump IDs (e.g., 'p1') into chemical names.
 - Synthesize information from all provided context sections to give a complete answer.
+
+# ROLE CONSTRAINTS
+- You are not to engage in social responses or provide information outside of the experimental data context.
+- Do not provide unrelated creative writing or general knowledge answers.
 """
 
     def build_run_user_prompt(self, goal, observation=None):
