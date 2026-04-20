@@ -2,130 +2,134 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260206/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260217/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/acl-260219/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/calibration-260206/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/chem1-260220-report/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/chem1-260220/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/colorimeter_dev_log/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/dev_log/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/docs-260303/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/_private/journal/stirplate-260305/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/api/communicate/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/api/dln/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/api/firmware/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/api/host/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/api/shared_lib/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/concepts/architecture_overview/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/concepts/core_philosophy_features/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/communication_protocol/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/firmware_design_protocol/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/host_design_protocol/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/messaging_protocol/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/colorimeter_spec/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/sidekick_spec/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/spec_template/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/design_protocols/design_examples/stirplate_spec/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/coding_style_guide/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
+    </url>
+    <url>
+         <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/cog_design_guide/</loc>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/socratic_design_method/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/developer_guides/ai_agent_prompt_templates/firmware_generation_template/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/tutorials/building_your_first_firmware/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/tutorials/firmware_design_sop/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
     <url>
          <loc>https://bobthechemist.github.io/talos-sdl/tutorials/user_guide/</loc>
-         <lastmod>2026-04-10</lastmod>
+         <lastmod>2026-04-20</lastmod>
     </url>
 </urlset>
