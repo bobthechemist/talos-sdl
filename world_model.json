@@ -10,7 +10,8 @@
     "run_cog",
     "data_cog",
     "liveview_cog",
-    "export_cog"
+    "export_cog",
+    "heatgraph_cog"
   ],
   "contextual_cogs": {
     "sidekick": "sidekick_tools_cog"
