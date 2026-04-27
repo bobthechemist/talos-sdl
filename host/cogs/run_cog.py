@@ -29,29 +29,31 @@ class RunCog(BaseCog):
         prompt = self.prompt_factory.build_run_user_prompt(goal)
         print("[*] Thinking...")
         response = self.app.ai_agent.prompt(prompt, use_history=True)
-        if not response:
-            print(f"{C.ERR}AI did not return a response.{C.END}")
-            return
+        if not response: return
 
         try:
             ai_data = self._parse_ai_response(response)
-            if not ai_data or "plan" not in ai_data:
-                print(f"{C.ERR}AI response was not a valid plan.{C.END}\nResponse: {response}")
-                return
-        except json.JSONDecodeError:
-            print(f"{C.ERR}Failed to parse AI response as JSON.{C.END}\nResponse: {response}")
-            return
+            if not ai_data or "plan" not in ai_data: return
+        except json.JSONDecodeError: return
         
-        plan = ai_data.get("plan", [])
+        proposal = ai_data.get("plan", [])
+        envelope = {
+            "intent": goal,
+            "ai_proposal": list(proposal),
+            "human_edits": [],
+            "final_plan": list(proposal)
+        }
 
         if self.app.require_confirmation:
-            plan = self._review_and_edit_plan(plan)
-            if plan is None:
-                print(f"{C.ERR}Plan rejected by user.{C.END}")
-                return
+            envelope = self._review_and_edit_plan(envelope)
+            if envelope is None: return
         
-        self.dln.log_science(entry_type="plan", data={"plan": plan})
-        self.execution_engine.execute_plan(plan)
+        # Log the envelope and capture the returned DLN ID
+        plan_id = self.dln.log_science(entry_type="plan", data=envelope)
+        
+        # Pass the plan_id to the execution engine
+        self.execution_engine.execute_plan(envelope["final_plan"], plan_id=plan_id)
+
 
     def _parse_ai_response(self, response):
         """Extracts a JSON object from the AI's response text."""
@@ -62,8 +64,9 @@ class RunCog(BaseCog):
             json_str = response.split("```")[1].split("```")[0]
         return json.loads(json_str.strip())
 
-    def _review_and_edit_plan(self, plan):
+    def _review_and_edit_plan(self, envelope):
         """Displays the plan for human-in-the-loop review and editing."""
+        plan = envelope["final_plan"]
         while True:
             print(f"\n{C.WARN}--- PLAN REVIEW (CTRL-C to abort) ---{C.END}")
             if not plan:
@@ -75,62 +78,72 @@ class RunCog(BaseCog):
                     args = json.dumps(step.get('args', {}))
                     print(f"  {C.INFO}{idx+1}.{C.END} {dev}: {cmd} {args}")
 
-            print(f"\n{C.INFO}Actions: 'run' (or y), 'reject' (or n), 'edit <#>', 'del <#>', 'add'{C.END}")
+            print(f"\n{C.INFO}Actions: 'run', 'del <#> <rationale>', 'edit <#> <key=val> <rationale>', 'add <dev> <cmd> <args> <rationale>'{C.END}")
+            
+            user_input = input("Action > ").strip()
+            if not user_input: continue
+            
+            parts = user_input.split(maxsplit=1)
+            cmd = parts[0].lower()
+            rest = parts[1] if len(parts) > 1 else ""
+
+            if cmd in ('run', 'y', 'yes'): 
+                return envelope
+            if cmd in ('reject', 'n', 'no'): 
+                return None
+
             try:
-                user_input = input("Action > ").strip().lower()
-                if not user_input: continue
+                if cmd == 'del':
+                    sub_parts = rest.split(maxsplit=1)
+                    idx = int(sub_parts[0]) - 1
+                    rationale = sub_parts[1] if len(sub_parts) > 1 else "No rationale provided"
+                    
+                    removed = plan.pop(idx)
+                    envelope["human_edits"].append({
+                        "action": "del", 
+                        "step": idx + 1, 
+                        "cmd": removed['command'], 
+                        "rationale": rationale
+                    })
+                    print(f"{C.WARN}Removed step {idx+1}.{C.END}")
 
-                if user_input in ('run', 'y', 'yes'):
-                    return plan
-                if user_input in ('reject', 'no', 'n'):
-                    return None
-                
-                parts = user_input.split()
-                cmd = parts[0]
-
-                if cmd == 'del' and len(parts) > 1:
-                    try:
-                        idx = int(parts[1]) - 1
-                        removed = plan.pop(idx)
-                        print(f"{C.WARN}Removed step {idx+1}: {removed['command']}{C.END}")
-                    except (ValueError, IndexError):
-                        print(f"{C.ERR}Invalid index for 'del'.{C.END}")
-
-                elif cmd == 'edit' and len(parts) > 1:
-                    try:
-                        idx = int(parts[1]) - 1
-                        step = plan[idx]
-                        print(f"{C.INFO}Editing Step {idx+1}: {step['device']} -> {step['command']}{C.END}")
-                        print(f"Current Args: {json.dumps(step.get('args', {}))}")
-                        
-                        user_val = input("Enter updates (JSON or key=val). E.g., 'brightness=0.5 color=[0,255,0]': ").strip()
-                        if user_val.lower() == 'c': continue
-                        
-                        new_args = self._parse_input_to_dict(user_val)
-                        # Perform the Smart Update (Merge)
-                        step['args'].update(new_args)
-                        print(f"{C.OK}Step updated: {step['args']}{C.END}")
-                    except (ValueError, IndexError, Exception) as e:
-                        print(f"{C.ERR}Error updating step: {e}{C.END}")
+                elif cmd == 'edit':
+                    sub_parts = rest.split(maxsplit=2)
+                    idx = int(sub_parts[0]) - 1
+                    args_str = sub_parts[1]
+                    rationale = sub_parts[2] if len(sub_parts) > 2 else "No rationale provided"
+                    
+                    new_args = self._parse_input_to_dict(args_str)
+                    plan[idx]['args'].update(new_args)
+                    envelope["human_edits"].append({
+                        "action": "edit", 
+                        "step": idx + 1, 
+                        "rationale": rationale
+                    })
+                    print(f"{C.OK}Step {idx+1} updated.{C.END}")
 
                 elif cmd == 'add':
-                    try:
-                        print(f"{C.INFO}Adding new step...{C.END}")
-                        dev = input("Device: ").strip().lower()
-                        func = input("Command: ").strip().lower()
-                        args_raw = input("Args (JSON): ").strip()
-                        args = json.loads(args_raw) if args_raw else {}
-                        plan.append({"device": dev, "command": func, "args": args})
-                        print(f"{C.OK}Step added.{C.END}")
-                    except json.JSONDecodeError:
-                        print(f"{C.ERR}Invalid JSON format for 'add'.{C.END}")
-                
+                    sub_parts = rest.split(maxsplit=3)
+                    dev, func, args_raw = sub_parts[0], sub_parts[1], sub_parts[2]
+                    rationale = sub_parts[3] if len(sub_parts) > 3 else "Manual addition"
+                    
+                    new_step = {
+                        "device": dev, 
+                        "command": func, 
+                        "args": self._parse_input_to_dict(args_raw)
+                    }
+                    plan.append(new_step)
+                    envelope["human_edits"].append({
+                        "action": "add", 
+                        "step": len(plan), 
+                        "rationale": rationale
+                    })
+                    print(f"{C.OK}Step added.{C.END}")
                 else:
-                    print(f"{C.ERR}Unknown command '{user_input}'. Please use one of the actions listed.{C.END}")
+                    print(f"{C.ERR}Unknown command '{cmd}'.{C.END}")
+            except Exception as e:
+                print(f"{C.ERR}Error processing edit: {e}{C.END}")
 
-            except (EOFError, KeyboardInterrupt):
-                return None
-            
     def _parse_input_to_dict(self, input_str: str) -> dict:
         """Parses 'key=val key2=val2' or standard JSON into a dictionary."""
         # 1. Try raw JSON

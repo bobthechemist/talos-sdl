@@ -16,38 +16,39 @@ class DataCog(BaseCog):
         }
 
     def handle_data(self, *args):
-        """Answers questions about experimental data using a multi-step RAG strategy."""
-        query = " ".join(args)
-        if not query:
-            print(f"{C.ERR}Usage: /data <your question here>{C.END}")
-            return
+            """Fetches the chronological transcript of the session."""
+            query = " ".join(args)
             
-        print("[*] Querying Digital Lab Notebook records...")
-        
-        # --- The New RAG Strategy ---
-        # 1. Entity Extraction (simplified with regex for now)
-        entities = self._extract_entities(query)
-        print(f"  -> Identified entities: {entities}")
+            print("[*] Querying Digital Lab Notebook (Transcript)...")
+            
+            # Fetch ALL logs for this session to reconstruct the transcript
+            sql = f"SELECT id, entry_type, data FROM ScienceLog WHERE session_id = {self.app.active_data_session_id} ORDER BY timestamp ASC"
+            logs = self.dln.query_relational(sql)
 
-        # 2. Semantic Search (for high-level context)
-        context_logs = self.dln.query_vector(query, session_id=self.app.active_data_session_id, n_results=5)
+            # Synthesize context chronologically
+            injected_context = "--- CHRONOLOGICAL EXPERIMENT TRANSCRIPT ---\n"
+            # Truncation: only process the last 15 logs to keep within 32k context
+            for log in logs[-15:]:
+                log_id, entry_type, data_str = log
+                data = json.loads(data_str)
+                
+                if entry_type == 'plan':
+                    intent = data.get('intent', 'N/A')
+                    edits = data.get('human_edits', [])
+                    edit_summary = "; ".join([f"Step {e.get('step')}: {e.get('rationale')}" for e in edits])
+                    injected_context += f"Plan ID {log_id}: '{intent}'. Edits: {edit_summary}\n"
+                elif entry_type == 'observation':
+                    meta = data.get('plan_metadata', {})
+                    injected_context += f"Observation (PlanID: {meta.get('plan_id')}, Step: {meta.get('step_index')}): {json.dumps(data.get('payload'))}\n"
+                else:
+                    injected_context += f"{entry_type.upper()}: {json.dumps(data)}\n"
 
-        # 3. Relational Search (for raw, factual data based on entities)
-        fact_logs = []
-        if entities.get('wells'):
-            for well in entities['wells']:
-                # This is a simplified query; a real one might be more complex
-                sql = f"SELECT * FROM ScienceLog WHERE session_id = {self.app.active_data_session_id} AND json_extract(data, '$.context_tags.well') = '{well}' AND entry_type = 'observation' ORDER BY timestamp DESC LIMIT 5"
-                results = self.dln.query_relational(sql)
-                fact_logs.extend(results)
-
-        # 4. Synthesize and Prompt
-        injected_context = self._synthesize_context(context_logs, fact_logs)
-        final_prompt = f"{injected_context}\n\nUSER QUESTION: {query}"
-        
-        print("[*] Analyzing...")
-        response = self.app.ai_agent.prompt(final_prompt, use_history=True)
-        print(f"\n{C.OK}{response}{C.END}")
+            final_prompt = f"{injected_context}\n\nUSER QUESTION: {query}"
+            
+            print("[*] Analyzing...")
+            response = self.app.ai_agent.prompt(final_prompt, use_history=True)
+            self.dln.log_science(entry_type="analysis", data={"query": query, "response": response})
+            print(f"\n{C.OK}{response}{C.END}")
 
     def _extract_entities(self, query: str) -> dict:
         """Extracts key experimental entities from a query. (Simple version)"""
@@ -56,25 +57,26 @@ class DataCog(BaseCog):
         return {"wells": list(set(wells))} # Return unique wells
 
     def _synthesize_context(self, context_logs, fact_logs_raw):
-        """Combines semantic and relational results into a rich context string."""
-        context = "--- CONTEXT: SEMANTICALLY SIMILAR LOGS ---\n"
-        if not context_logs:
-            context += "No relevant high-level summaries found.\n"
-        else:
-            for log in context_logs:
-                summary = str(log.data)[:250]
-                context += f"[Log ID: {log.id}, Type: {log.entry_type}]: {summary}...\n"
+        """Combines semantic context and factual observations for the LLM."""
+        context = "--- CONTEXT: EXPERIMENT HISTORY ---\n"
+        
+        for log in context_logs:
+            if log.entry_type == 'plan':
+                intent = log.data.get('intent', 'N/A')
+                edits = log.data.get('human_edits', [])
+                edit_summary = "; ".join([f"Step {e.get('step')}: {e.get('rationale')}" for e in edits])
+                context += f"[Plan ID: {log.id}] Intent: '{intent}'. Edits: {edit_summary}\n"
+            else:
+                context += f"[{log.entry_type.upper()}]: {str(log.data)[:150]}...\n"
 
         context += "\n--- CONTEXT: RAW DATA LOGS (FACTUAL) ---\n"
-        if not fact_logs_raw:
-            context += "No specific raw data logs matching query entities were found.\n"
-        else:
-            # The raw SQL query returns tuples, we need to map them to dicts
-            # Assuming columns: id, session_id, timestamp, entry_type, data, ...
-            for row in fact_logs_raw:
-                log_data = json.loads(row[4]) # 'data' is the 5th column
-                context += f"[Log ID: {row[0]}, Type: {row[3]}]:\n{json.dumps(log_data, indent=2)}\n"
-        
+        for row in fact_logs_raw:
+            log_data = json.loads(row[4]) 
+            meta = log_data.get('plan_metadata', {})
+            pid = meta.get('plan_id', 'N/A')
+            step = meta.get('step_index', 'N/A')
+            context += f"[Observation] PlanID: {pid}, Step: {step}, Data: {json.dumps(log_data.get('payload', log_data))}\n"
+            
         return context
 
     def handle_session(self, *args):
@@ -90,6 +92,7 @@ class DataCog(BaseCog):
                 # A more robust check would query the DB
                 self.app.active_data_session_id = target_id
                 self.app.ai_agent.clear_history()
+                self.dln.log_science(entry_type="context", data={"focus_session": target_id})
                 print(f"{C.OK}Active data query session switched to ID: {target_id}.{C.END}")
             except (ValueError, IndexError):
                 print(f"{C.ERR}Usage: /session set <id>{C.END}")

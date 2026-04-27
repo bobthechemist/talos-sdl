@@ -11,6 +11,7 @@ sys.path.append(str(PROJECT_ROOT))
 # Core Talos Imports
 from host.core.device_manager import DeviceManager
 from dln import DigitalLabNotebook, ExperimentFinalizedError
+from host.ai.prompt_factory import PromptFactory
 from host.ai.llm_manager import LLMManager
 from host.ai.ai_utils import connect_devices, get_instructions, load_world_from_file
 from host.cogs.cog_manager import CogManager
@@ -39,7 +40,19 @@ class ChatApp:
         self.require_confirmation = True
         self.ai_provider = provider
         self.ai_model = model
-        self.ai_agent = None # Will be loaded by a cog
+
+        # Initialize both agents upfront
+        self.prompt_factory = PromptFactory(self.world_model, self.ai_commands, self.ai_guidance)
+        self.run_agent = LLMManager.get_agent(
+            provider=self.ai_provider, model=self.ai_model, 
+            context=self.prompt_factory.get_system_prompt("run")
+        )
+        self.data_agent = LLMManager.get_agent(
+            provider=self.ai_provider, model=self.ai_model, 
+            context=self.prompt_factory.get_system_prompt("data")
+        )
+        self.ai_agent = self.run_agent # Default to run_agent        
+
         
         # 3. Cog and Command Management
         self.commands = {}
@@ -85,6 +98,12 @@ class ChatApp:
         command = parts[0].lower()
         args = parts[1:]
 
+        # Ensure proper model used to handle command
+        if command == "/data" or (self.current_mode == "data" and not command.startswith("/")):
+            self.ai_agent = self.data_agent
+        elif command == "/run" or (self.current_mode == "run" and not command.startswith("/")):
+            self.ai_agent = self.run_agent
+
         handler = None
         if command.startswith("/"):
             handler = self.commands.get(command)
@@ -114,6 +133,7 @@ def main():
     # --- MODIFIED: These args now default to None to allow world_model to take precedence ---
     parser.add_argument("--provider", default=None, help="AI Provider (overrides world_model.json).")
     parser.add_argument("--model", default=None, help="Specific model name (overrides world_model.json).")
+    parser.add_argument("--experiment", help="Override the experiment name from the world model.")
     args = parser.parse_args()
 
     print(f"\n{C.OK}==========================================")
@@ -134,6 +154,10 @@ def main():
 
         print(f"{C.INFO}AI Config: Provider='{final_provider}', Model='{final_model}'{C.END}")
         
+        # Experiment name is found either on command line or world model. CLI takes precedence.
+        world_model["experiment_name"] = args.experiment or world_model.get("experiment_name", "Untitled Experiment")
+        print(f"{C.INFO}Experiment Name: '{world_model['experiment_name']}'{C.END}")
+
         # Pass the final resolved config to the app
         app = ChatApp(world_model=world_model, provider=final_provider, model=final_model)
         app.run()

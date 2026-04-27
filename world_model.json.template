@@ -1,0 +1,26 @@
+{
+  "ai_config": {
+    "provider": "gemini",
+    "model": "gemini-1.5-flash-latest"
+  },
+  "experiment_name": "My Experiment Title",
+  "required_cogs": [
+    "core_cog",
+    "ai_cog",
+    "run_cog",
+    "data_cog",
+    "notebook_cog"
+  ],
+  "contextual_cogs": {
+    "sidekick": "sidekick_tools_cog"
+  },
+  "reagents": {
+    "p1": "Water",
+    "p2": "Reagent A",
+    "p3": "Reagent B",
+    "p4": "Indicator"
+  },
+  "max_well_volume_ul": 250.0,
+  "standard_dispense_ul": 10.0,
+  "waste_location": "A12"
+}

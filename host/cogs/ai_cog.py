@@ -2,7 +2,6 @@
 from host.cogs.base_cog import BaseCog
 from host.gui.console import C
 from host.ai.llm_manager import LLMManager
-from host.ai.prompt_factory import PromptFactory
 
 class AICog(BaseCog):
     """Provides aider-like control over the LLM's settings and modes."""
@@ -47,12 +46,15 @@ class AICog(BaseCog):
             return
         
         new_mode = args[0].lower()
-        
         self.app.current_mode = new_mode
-        self._reload_agent()
         
+        # Simply point to the pre-initialized agent
+        if new_mode == "run":
+            self.app.ai_agent = self.app.run_agent
+        else:
+            self.app.ai_agent = self.app.data_agent
+            
         mode_str = "RUN (Controller)" if self.app.current_mode == "run" else "DATA (Analyst)"
-        
         if self.app.is_running:
             print(f"{C.INFO}Switched to {mode_str} mode.{C.END}")
 
@@ -66,13 +68,3 @@ class AICog(BaseCog):
         status = "ON 🔒" if self.app.require_confirmation else "OFF ⚡"
         print(f"{C.INFO}Safety Gate: {status}{C.END}")
 
-    def _reload_agent(self):
-        """Helper to reinstantiate the AI agent with current settings."""
-        print(f"{C.INFO}Reloading AI agent for {self.app.current_mode} mode...{C.END}")
-        prompt_factory = PromptFactory(self.app.world_model, self.app.ai_commands, self.app.ai_guidance)
-        context = prompt_factory.get_system_prompt(self.app.current_mode)
-        self.app.ai_agent = LLMManager.get_agent(
-            provider=self.app.ai_provider,
-            model=self.app.ai_model,
-            context=context
-        )
