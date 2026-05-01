@@ -23,7 +23,12 @@ class HeatgraphCog(BaseCog):
 
     def _extract_position(self, payload):
         """Extract x, y, z, angle from a payload if present."""
+        # Check top-level first, then nested under "data" key
         pos = payload.get("position")
+        if pos is None:
+            data = payload.get("data")
+            if isinstance(data, dict):
+                pos = data.get("position")
         if isinstance(pos, dict):
             return {
                 "x": pos.get("x"),
@@ -35,6 +40,10 @@ class HeatgraphCog(BaseCog):
 
     def _resolve_nested_value(self, payload, dotpath):
         """Get a nested value from a payload dict using dot notation (case-insensitive)."""
+        # Unwrap "data" key if present (pybot/magnetometer convention)
+        data = payload.get("data")
+        if isinstance(data, dict):
+            payload = data
         parts = dotpath.split(".")
         current = payload
         for part in parts:
@@ -59,6 +68,10 @@ class HeatgraphCog(BaseCog):
         that look like measurement axes (e.g., hmc5883.x, tlv493d.y).
         Returns list of axis strings.
         """
+        # Unwrap "data" key if present (pybot/magnetometer convention)
+        data = payload.get("data")
+        if isinstance(data, dict):
+            payload = data
         axes = []
         self._flatten_sensor(payload, "", axes, exclude_prefix="position")
         return axes
