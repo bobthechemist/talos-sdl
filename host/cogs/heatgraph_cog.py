@@ -287,14 +287,13 @@ class HeatgraphCog(BaseCog):
             return self._generate_text_report(correlated, sensor_groups)
 
     def _generate_gui_heatmaps(self, correlated_data, sensor_groups):
-        """Generate and display matplotlib windows for each Z height and sensor axis."""
+        """Generate and display a tiled matplotlib figure with all heatmaps."""
         import matplotlib
         matplotlib.use("TkAgg")
         import matplotlib.pyplot as plt
-        from collections import defaultdict
 
-        num_plots = 0
-
+        # Collect valid sensor-axis pairs
+        pairs = []
         for sensor_name in sorted(sensor_groups.keys()):
             axes = sensor_groups[sensor_name]
             for axis in axes:
@@ -302,41 +301,56 @@ class HeatgraphCog(BaseCog):
                 if len(data_points) < 3:
                     print(f"{C.WARN}Skipping {axis}: insufficient data ({len(data_points)} points){C.END}")
                     continue
+                pairs.append((sensor_name, axis, data_points))
 
-                # Group by Z height
-                z_groups = defaultdict(list)
-                for dp in data_points:
-                    z_key = round(dp["z_height"], 2)
-                    z_groups[z_key].append(dp)
-
-                for z_height in sorted(z_groups.keys()):
-                    points = z_groups[z_height]
-                    x_vals = [p["x"] for p in points]
-                    y_vals = [p["y"] for p in points]
-                    values = [p["value"] for p in points]
-
-                    fig, ax = plt.subplots(figsize=(8, 6))
-
-                    if len(points) >= 6:
-                        contour = ax.tricontourf(x_vals, y_vals, values, levels=20, cmap="viridis")
-                        fig.colorbar(contour, ax=ax, label=f"{axis} Value")
-                        ax.scatter(x_vals, y_vals, c="white", s=10, alpha=0.5)
-                    else:
-                        sc = ax.scatter(x_vals, y_vals, c=values, cmap="viridis", s=60, edgecolors="k")
-                        fig.colorbar(sc, ax=ax, label=f"{axis} Value")
-
-                    ax.set_title(f"{sensor_name} - {axis} at Z={z_height}")
-                    ax.set_xlabel("X (mm)")
-                    ax.set_ylabel("Y (mm)")
-                    ax.grid(True, alpha=0.3)
-                    plt.tight_layout()
-                    plt.show()
-                    num_plots += 1
-
-        if num_plots == 0:
+        if not pairs:
             print(f"{C.ERR}No valid heatmaps could be generated.{C.END}")
+            return
+
+        # Compute grid dimensions
+        n = len(pairs)
+        ncols = max(1, int(n ** 0.5))
+        nrows = (n + ncols - 1) // ncols
+
+        fig, axes = plt.subplots(nrows, ncols, figsize=(4.5 * ncols, 4 * nrows))
+
+        # Ensure axes is always a 2D list for uniform indexing
+        if nrows == 1 and ncols == 1:
+            axes = [[axes]]
         else:
-            print(f"{C.OK}Generated {num_plots} heatmap(s).{C.END}")
+            axes = axes.reshape(nrows, ncols)
+
+        for idx, (sensor_name, axis, data_points) in enumerate(pairs):
+            row, col = divmod(idx, ncols)
+            ax = axes[row][col]
+
+            x_vals = [p["x"] for p in data_points]
+            y_vals = [p["y"] for p in data_points]
+            values = [p["value"] for p in data_points]
+
+            if len(data_points) >= 6:
+                contour = ax.tricontourf(x_vals, y_vals, values, levels=20, cmap="viridis")
+                fig.colorbar(contour, ax=ax, fraction=0.046, pad=0.04, label=f"{axis} Value")
+                ax.scatter(x_vals, y_vals, c="white", s=10, alpha=0.5)
+            else:
+                sc = ax.scatter(x_vals, y_vals, c=values, cmap="viridis", s=60, edgecolors="k")
+                fig.colorbar(sc, ax=ax, fraction=0.046, pad=0.04, label=f"{axis} Value")
+
+            ax.set_title(f"{sensor_name} - {axis}")
+            ax.set_xlabel("X (mm)")
+            ax.set_ylabel("Y (mm)")
+            ax.grid(True, alpha=0.3)
+
+        # Hide unused subplots
+        for idx in range(len(pairs), nrows * ncols):
+            row, col = divmod(idx, ncols)
+            axes[row][col].set_visible(False)
+
+        fig.suptitle("Sensor Heatmaps", fontsize="large")
+        plt.tight_layout()
+        plt.show()
+
+        print(f"{C.OK}Generated tiled heatmap figure ({nrows}x{ncols}).{C.END}")
 
     def _generate_text_report(self, correlated_data, sensor_groups):
         """Generate a text description of heatmaps for AI consumption."""
