@@ -14,7 +14,7 @@ class ExecutionEngine:
         self.manager = manager
         self.device_ports = device_ports
         self.dln = dln
-        self.host_tools = host_tools or {}
+        self.host_tools = host_tools if host_tools is not None else {}
         self.current_plan = []
         self.current_step_idx = 0
 
