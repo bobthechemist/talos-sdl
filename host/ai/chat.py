@@ -48,6 +48,8 @@ class ChatApp:
         
         self.ai_commands = {}
         self.ai_guidance = {}
+
+
         for device_key, port in self.device_ports.items():
             payload = raw_capabilities.get(port, {})
             # Filter strictly for AI-enabled commands
@@ -56,14 +58,27 @@ class ChatApp:
             }
             self.ai_guidance[device_key] = payload.get('metadata', {}).get('ai_guidance', "")
 
-        # 2. State Management
+        # 2. State Management & Host Tools Namespace
         self.is_running = False
         self.current_mode = "run"
         self.require_confirmation = True
         self.ai_provider = provider
         self.ai_model = model
 
-        # Initialize both agents upfront
+        self.host_tools = {}
+        if "host" not in self.ai_commands:
+            self.ai_commands["host"] = {}
+        self.ai_guidance["host"] = (
+            "Software-side host utilities. Use these commands to manipulate the "
+            "execution timeline, optimize parameters, or process local data."
+        )
+
+        # 3. Cog and Command Management (MUST happen before Agent Init)
+        self.commands = {}
+        self.cog_manager = CogManager(self)
+        self.cog_manager.load_cogs()
+
+        # 4. Agent Initialization (Now sees all loaded cogs/tools)
         self.prompt_factory = PromptFactory(self.world_model, self.ai_commands, self.ai_guidance)
         self.run_agent = LLMManager.get_agent(
             provider=self.ai_provider, model=self.ai_model, 
@@ -73,7 +88,7 @@ class ChatApp:
             provider=self.ai_provider, model=self.ai_model, 
             context=self.prompt_factory.get_system_prompt("data")
         )
-        self.ai_agent = self.run_agent # Default to run_agent        
+        self.ai_agent = self.run_agent # Default to run_agent      
 
         self.host_tools = {}
         if "host" not in self.ai_commands:
