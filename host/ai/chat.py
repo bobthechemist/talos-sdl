@@ -75,9 +75,13 @@ class ChatApp:
         )
         self.ai_agent = self.run_agent # Default to run_agent        
 
-        self.host_tools = {
-           
-        }
+        self.host_tools = {}
+        if "host" not in self.ai_commands:
+            self.ai_commands["host"] = {}
+        self.ai_guidance["host"] = (
+            "Software-side host utilities. Use these commands to manipulate the "
+            "execution timeline, optimize parameters, or process local data."
+        )
 
         # 3. Cog and Command Management
         self.commands = {}

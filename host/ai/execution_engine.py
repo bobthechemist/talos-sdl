@@ -41,8 +41,13 @@ class ExecutionEngine:
                 if command in self.host_tools:
                     try:
                         # Invoke the host callback
-                        self.host_tools[command](args, plan_id, self.current_step_idx, self, self.dln)
+                        result = self.host_tools[command](args, plan_id, self.current_step_idx, self, self.dln)
                         print(f" {C.OK}[OK]{C.END}")
+                        
+                        # Pythonic routing: If it returns a dict, log it as a DATA_RESPONSE
+                        if isinstance(result, dict):
+                            self._handle_data_response(device, command, args, result, plan_id, self.current_step_idx)
+                            
                     except Exception as e:
                         error_msg = f"Host tool '{command}' failed: {str(e)}"
                         self.dln.log_science(entry_type="system", data={"message": "Plan did not complete successfully.", "plan_id": plan_id, "step_index": self.current_step_idx, "error": error_msg})

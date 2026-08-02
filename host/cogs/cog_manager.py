@@ -41,6 +41,7 @@ class CogManager:
     def _load_cog(self, cog_name: str):
         """Dynamically imports and instantiates a single Cog class."""
         try:
+            # Future-proofing: We can easily add a check here for `custom_cogs` later
             module_name = f"host.cogs.{cog_name}"
             cog_module = importlib.import_module(module_name)
 
@@ -50,19 +51,26 @@ class CogManager:
                     cog_instance = obj(self.app)
                     self.loaded_cogs[cog_name] = cog_instance
                     
-                    # Register the commands with the main app
+                    # 1. Register Slash Commands
                     commands = cog_instance.get_commands()
                     for cmd_name, handler in commands.items():
                         self.app.register_command(cmd_name, handler)
                     
-                    print(f"  -> Successfully loaded Cog '{cog_name}' with commands: {list(commands.keys())}")
+                    # 2. Register Host Tools (AI facing)
+                    host_tools = cog_instance.get_host_tools()
+                    for tool_name, tool_data in host_tools.items():
+                        self.app.host_tools[tool_name] = tool_data["handler"]
+                        # Inject into the AI Prompt Dictionary so the AI knows it exists
+                        self.app.ai_commands["host"][tool_name] = tool_data["doc"]
+                    
+                    tools_msg = f", Host Tools: {list(host_tools.keys())}" if host_tools else ""
+                    print(f"  -> Successfully loaded Cog '{cog_name}' (Slash Cmds: {list(commands.keys())}{tools_msg})")
                     return
 
             print(f"{C.WARN}  -> Warning: No class inheriting from BaseCog found in '{cog_name}.py'.{C.END}")
 
         except ImportError:
             print(f"{C.ERR}  -> Error: Could not find or import cog '{cog_name}'. Please check the file exists.{C.END}")
-            # If it's a required cog, this is a fatal error.
             if cog_name in self.app.world_model.get("required_cogs", []):
                 raise
         except Exception as e:

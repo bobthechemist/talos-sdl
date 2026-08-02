@@ -20,10 +20,30 @@ class BaseCog:
 
     def get_commands(self):
         """
-        Must be implemented by subclasses.
+        Must be implemented by subclasses to provide slash commands.
 
         Returns:
             dict: A dictionary mapping a command name (e.g., "/help") to its
                   handler method (e.g., self.handle_help).
         """
-        raise NotImplementedError("Cogs must implement get_commands()")
+        return {}
+
+    def get_host_tools(self):
+        """
+        Optional: Can be implemented by subclasses to provide host-side execution tools.
+        
+        Returns:
+            dict: Mapping of tool names to their handler function and AI documentation schema.
+                  Example:
+                  {
+                      "wait": {
+                          "handler": self.execute_wait,
+                          "doc": {
+                              "description": "Waits for n seconds.",
+                              "args": [{"name": "seconds", "type": "float"}],
+                              "ai_enabled": True
+                          }
+                      }
+                  }
+        """
+        return {}
