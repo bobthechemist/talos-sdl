@@ -24,9 +24,11 @@ Adhere to the following standards:
    - Implement `send_telemetry(machine)` and pass it to `GenericIdle`: `machine.add_state(GenericIdle(telemetry_callback=send_telemetry))`.
    - **Crucial:** After calling `register_common_commands(machine)`, you must manually set `ai_enabled = False` for 'help', 'ping', 'set_time', and 'get_info' to keep the AI focused on high-level actions.
 
+
 2. **Command Definition Schema:**
    - Registration: `machine.add_command(name, handler_func, doc_dict)`.
    - `doc_dict` must include: `description`, `args` (list of dicts), `ai_enabled` (bool), and optionally `effects` (list) and `usage_notes` (str).
+   - If the command requests data, `doc_dict` must also include a `returns` key that maps return field names to a dictionary defining their metadata, including 'type' and 'unit'.
 
 3. **Handler Logic (`handlers.py`):**
    - Every handler must use the `@try_wrapper` decorator.

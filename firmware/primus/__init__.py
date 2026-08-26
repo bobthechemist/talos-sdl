@@ -1,4 +1,5 @@
 # firmware/primus/__init__.py
+#type: ignore
 import board
 from shared_lib.statemachine import StateMachine
 from shared_lib.messages import Message
@@ -16,7 +17,7 @@ from . import handlers
 # 1. INSTRUMENT CONFIGURATION
 # ============================================================================
 SUBSYSTEM_NAME = "PRIMUS"
-SUBSYSTEM_VERSION = "2.0.0"
+SUBSYSTEM_VERSION = "2.1.0"
 SUBSYSTEM_INIT_STATE = "Initialize"
 
 SUBSYSTEM_CONFIG = {
@@ -47,7 +48,7 @@ SUBSYSTEM_CONFIG = {
         "The 'pan', 'tilt', and 'play' commands take time to execute; wait for the success response. "
         "The 'light' command accepts a 3-element list of integers for RGB color, and a pixel index (0 or 1). "
         "This version includes environmental sensors. 'read_ec02' and 'read_voc' return air quality data. "
-        "'read_distance' returns distance in cm. 'read_all' returns spectral data from the AS7341. "
+        "'read_distance' returns distance. 'read_all' returns spectral data from the AS7341. "
         "Use 'set_gain' (e.g. 1, 2, 256), 'set_source' (0-10 mA), 'source_on' and 'source_off' to configure the AS7341."
     )
 }
@@ -141,27 +142,33 @@ machine.add_command("play", handlers.handle_play, {
     "effects": ["the buzzer sounds for the specified duration"]
 })
 
-# New Sensor Features
+# New Sensor Features with Explicit Return Schemas
 machine.add_command("read_ec02", handlers.handle_read_ec02, {
     "description": "Reads the equivalent CO2 (eCO2) value from the SGP30.",
     "args": [],
+    "returns": {"eCO2_ppm": {"type": "int", "unit": "ppm"}},
     "ai_enabled": True
 })
 machine.add_command("read_voc", handlers.handle_read_voc, {
     "description": "Reads the Total Volatile Organic Compounds (TVOC) value from the SGP30.",
     "args": [],
+    "returns": {"TVOC_ppb": {"type": "int", "unit": "ppb"}},
     "ai_enabled": True
 })
 machine.add_command("read_distance", handlers.handle_read_distance, {
-    "description": "Reads distance from the VL53L0X in centimeters.",
+    "description": "Reads distance from the VL53L0X.",
     "args": [],
+    "returns": {"distance_cm": {"type": "float", "unit": "cm"}},
     "ai_enabled": True
 })
 machine.add_command("read_all", handlers.handle_read_all, {
     "description": "Returns a list of all raw spectral channels from the AS7341.",
     "args": [],
+    "returns": {"spectral_channels": {"type": "list[int]", "unit": "counts"}},
     "ai_enabled": True
 })
+
+# Settings
 machine.add_command("set_gain", handlers.handle_set_gain, {
     "description": "Sets the AS7341 gain multiplier.",
     "args": [{"name": "multiplier", "type": "float", "description": "Allowed values: 0.5, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512"}],

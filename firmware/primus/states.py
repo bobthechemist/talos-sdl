@@ -1,4 +1,5 @@
 # firmware/primus/states.py
+#type: ignore
 import board
 import time
 import pwmio

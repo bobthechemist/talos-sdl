@@ -1,10 +1,11 @@
 # firmware/primus/handlers.py
+#type: ignore
 from shared_lib.messages import send_problem, send_success, Message
 from shared_lib.error_handling import try_wrapper
 import adafruit_as7341  # Required for mapping gain constants
 
 # ----------------------------------------------------------------------------
-# ORIGINAL HARDWARE HANDLERS
+# HARDWARE HANDLERS
 # ----------------------------------------------------------------------------
 @try_wrapper
 def handle_pan(machine, payload):
@@ -69,7 +70,7 @@ def handle_play(machine, payload):
     machine.sequencer.start(sequence, initial_context={'name': 'play tone'})
 
 # ----------------------------------------------------------------------------
-# NEW SENSOR HANDLERS (SGP30, VL53L0X, AS7341)
+# SENSOR HANDLERS (SGP30, VL53L0X, AS7341)
 # ----------------------------------------------------------------------------
 
 @try_wrapper
@@ -78,7 +79,7 @@ def handle_read_ec02(machine, payload):
         send_problem(machine, "SGP30 is still initializing (requires 15s warmup).")
         return
     eco2_val = machine.hardware['sgp30'].eCO2
-    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"eCO2_ppm": eco2_val})
+    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"data": {"eCO2_ppm": eco2_val}})
     machine.postman.send(response.serialize())
 
 @try_wrapper
@@ -87,21 +88,21 @@ def handle_read_voc(machine, payload):
         send_problem(machine, "SGP30 is still initializing (requires 15s warmup).")
         return
     tvoc_val = machine.hardware['sgp30'].TVOC
-    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"TVOC_ppb": tvoc_val})
+    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"data": {"TVOC_ppb": tvoc_val}})
     machine.postman.send(response.serialize())
 
 @try_wrapper
 def handle_read_distance(machine, payload):
     val_mm = machine.hardware['vl53l0x'].range
     val_cm = val_mm / 10.0
-    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"distance_cm": val_cm})
+    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"data": {"distance_cm": val_cm}})
     machine.postman.send(response.serialize())
 
 @try_wrapper
 def handle_read_all(machine, payload):
     channels = machine.hardware['as7341'].all_channels
     # Returns a tuple of 6 values: [F1, F2, F3, F4, Clear, NIR] depending on mux step
-    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"spectral_channels": list(channels)})
+    response = Message(subsystem_name=machine.name, status="DATA_RESPONSE", payload={"data": {"spectral_channels": list(channels)}})
     machine.postman.send(response.serialize())
 
 @try_wrapper

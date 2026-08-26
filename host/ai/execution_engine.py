@@ -10,20 +10,31 @@ class ExecutionEngine:
     A streamlined engine responsible ONLY for executing a pre-approved plan.
     It has no planning or AI capabilities.
     """
-    def __init__(self, manager, device_ports, dln, host_tools=None):
+    def __init__(self, manager, device_ports, dln, host_tools=None, app=None):
         self.manager = manager
         self.device_ports = device_ports
         self.dln = dln
         self.host_tools = host_tools if host_tools is not None else {}
+        self.app = app
         self.current_plan = []
         self.current_step_idx = 0
 
-    def inject_steps(self, new_steps: list) -> None:
-        """Appends new steps to the active execution plan at runtime."""
-        self.current_plan.extend(new_steps)
+    def inject_steps(self, new_steps: list, immediate: bool = True) -> None:
+        """Appends or inserts new steps into the active execution plan at runtime."""
+        if immediate:
+            # Insert right after the currently executing step
+            insert_pos = self.current_step_idx + 1
+            self.current_plan = self.current_plan[:insert_pos] + new_steps + self.current_plan[insert_pos:]
+        else:
+            self.current_plan.extend(new_steps)
 
     def execute_plan(self, plan: list, plan_id: int = None):
         """Executes a list of command steps sequentially with support for dynamic evaluation."""
+        # --- RE-ENTRANCY SAFEGUARD ---
+        # Save previous state in case this was called recursively by a host tool (like submit_intent)
+        prev_plan = self.current_plan
+        prev_idx = self.current_step_idx
+
         print(f"\n{C.INFO}Executing Plan (ID: {plan_id})...{C.END}")
         self.current_plan = plan
         self.current_step_idx = 0
@@ -34,14 +45,13 @@ class ExecutionEngine:
             command = step.get("command")
             args = step.get("args", {})
             
-            # Note: len(self.current_plan) allows dynamic resizing mid-execution
             print(f"  -> Step {self.current_step_idx + 1}/{len(self.current_plan)}: {device}.{command}()...", end="", flush=True)
 
             if device == "host":
                 if command in self.host_tools:
                     try:
-                        # Invoke the host callback
-                        result = self.host_tools[command](args, plan_id, self.current_step_idx, self, self.dln)
+                        # Invoke the host callback passing `self.app` instead of `self.dln`
+                        result = self.host_tools[command](args, plan_id, self.current_step_idx, self, self.app)
                         print(f" {C.OK}[OK]{C.END}")
                         
                         # Pythonic routing: If it returns a dict, log it as a DATA_RESPONSE
@@ -76,7 +86,6 @@ class ExecutionEngine:
                 if result['status'] in ("SUCCESS", "DATA_RESPONSE"):
                     print(f" {C.OK}[OK]{C.END}")
                     if result['status'] == "DATA_RESPONSE":
-                        # Pass the plan_id and current step_idx
                         self._handle_data_response(device, command, args, result['payload'], plan_id, self.current_step_idx)
                 else:
                     error_msg = result.get('payload', 'Unknown hardware or serial error.')
@@ -88,6 +97,10 @@ class ExecutionEngine:
         else:
             self.dln.log_science(entry_type="system", data={"message": "Plan executed successfully.", "plan_id": plan_id})
             print(f"{C.OK}Plan finished successfully.{C.END}")
+
+        # --- RESTORE STATE ---
+        self.current_plan = prev_plan
+        self.current_step_idx = prev_idx
 
     def _wait_for_result(self, port, timeout=60):
         """Waits for a terminal response (SUCCESS, PROBLEM, DATA_RESPONSE) for a command."""

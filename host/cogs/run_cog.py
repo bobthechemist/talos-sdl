@@ -16,13 +16,14 @@ class RunCog(BaseCog):
             app.device_manager, 
             app.device_ports, 
             app.dln,
-            getattr(app, "host_tools", {})
+            getattr(app, "host_tools", {}),
+            app=app  
         )
 
     def get_commands(self):
         return {"/run": self.handle_run}
 
-    def handle_run(self, *args):
+    def handle_run(self, *args, injected_observation=None):
         """Executes a user's goal by planning and running hardware commands."""
         goal = " ".join(args)
         if not goal:
@@ -32,7 +33,34 @@ class RunCog(BaseCog):
         print(f"[*] Goal received: '{goal}'")
         self.dln.log_science(entry_type="intent", data={"goal": goal})
         
-        prompt = self.prompt_factory.build_run_user_prompt(goal)
+        
+        # If no specific data was injected (e.g., by a chained intent tool), 
+        # automatically pull the last 10 observations to give the AI context.
+        if injected_observation is None and self.dln.current_session_id is not None:
+            sql = f"""
+                SELECT data FROM ScienceLog 
+                WHERE session_id = {self.dln.current_session_id} 
+                  AND entry_type = 'observation' 
+                ORDER BY id DESC LIMIT 10
+            """
+            rows = self.dln.query_relational(sql)
+            if rows:
+                obs_list = []
+                # Reverse to make it chronological
+                for row in reversed(rows):
+                    log_data = json.loads(row[0])
+                    payload = log_data.get('payload', {})
+                    device = log_data.get('device', 'unknown').upper()
+                    cmd = log_data.get('command', 'unknown')
+                    args_used = log_data.get('args', {})
+                    
+                    # Format neatly for the AI to parse
+                    data_vals = payload.get('data', payload)
+                    obs_list.append(f"{device}.{cmd}({args_used}) -> {json.dumps(data_vals)}")
+                
+                injected_observation = "\n".join(obs_list)
+
+        prompt = self.prompt_factory.build_run_user_prompt(goal, observation=injected_observation)
         print("[*] Thinking...")
         response = self.app.ai_agent.prompt(prompt, use_history=True)
         if not response: return
@@ -87,7 +115,6 @@ class RunCog(BaseCog):
             json_str = response.split("```")[1].split("```")[0]
         return json.loads(json_str.strip())
 
-    # TODO: input splitting seems to be convoluted and highly dependent on the command. Consider refactoring.
     def _review_and_edit_plan(self, envelope):
         """Displays the plan for human-in-the-loop review and editing."""
         plan = envelope["final_plan"]

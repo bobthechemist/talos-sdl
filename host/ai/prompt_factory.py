@@ -31,6 +31,9 @@ Your goal is to translate the user's request into a sequence of hardware command
 # AVAILABLE COMMANDS (JSON)
 {json.dumps(self.command_sets, indent=2)}
 
+# SCHEMA AWARENESS
+Pay attention to the "returns" key in the command dictionary. It defines the exact JSON keys and units the device will output.
+
 # REAGENTS (World Model)
 {json.dumps(self.world_model.get('reagents', {}), indent=2)}
 
@@ -66,5 +69,8 @@ Your goal is to answer user questions by interpreting experimental data provided
 """
 
     def build_run_user_prompt(self, goal, observation=None):
-        obs_section = f"\n# PREVIOUS EXECUTION RESULT\n{observation}" if observation else ""
+        obs_section = ""
+        if observation:
+            obs_section = f"\n\n# RECENT OBSERVATIONS (Short-Term Memory)\nUse this recent data to inform your plan if the user asks you to analyze results, find a maximum/minimum, or make a decision.\n{observation}"
+            
         return f"# USER GOAL\n{goal}{obs_section}\n\nGenerate the execution plan."
