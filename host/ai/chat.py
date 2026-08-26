@@ -98,11 +98,6 @@ class ChatApp:
             "execution timeline, optimize parameters, or process local data."
         )
 
-        # 3. Cog and Command Management
-        self.commands = {}
-        self.cog_manager = CogManager(self)
-        self.cog_manager.load_cogs()
-
     def register_command(self, name, handler):
         """Callback for CogManager to register commands."""
         self.commands[name] = handler
