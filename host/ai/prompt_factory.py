@@ -31,9 +31,6 @@ Your goal is to translate the user's request into a sequence of hardware command
 # AVAILABLE COMMANDS (JSON)
 {json.dumps(self.command_sets, indent=2)}
 
-# SCHEMA AWARENESS
-Pay attention to the "returns" key in the command dictionary. It defines the exact JSON keys and units the device will output.
-
 # REAGENTS (World Model)
 {json.dumps(self.world_model.get('reagents', {}), indent=2)}
 
