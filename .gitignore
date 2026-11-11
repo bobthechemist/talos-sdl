@@ -190,4 +190,10 @@ firmware_lib/*
 !/firmware_lib/*.md
 
 # temporary as needed
-# docs/
+docs/
+firmware/pybot_arm
+firmware/stirplate_manager
+firmware/mplam
+firmware/primus
+utility/
+tests/
