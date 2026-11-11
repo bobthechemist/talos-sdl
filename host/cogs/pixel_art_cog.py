@@ -5,6 +5,7 @@ import re
 from pathlib import Path
 
 from host.cogs.base_cog import BaseCog
+from host.gui.console import C
 
 DEVICE = "sidekick"
 ROWS = 8
@@ -27,7 +28,162 @@ class PixelArtCog(BaseCog):
         self.art_dir = Path(".talos/art")
 
     def get_commands(self):
-        return {}
+        """Slash commands for the pixel art workflow. Usage: /art <subcommand>."""
+        return {
+            "/art": self.cmd_art,
+            "art list": self.cmd_art_list,
+            "art show": self.cmd_art_show,
+            "art plan": self.cmd_art_plan,
+            "art run": self.cmd_art_run,
+        }
+
+    @staticmethod
+    def _as_args_str(args) -> str:
+        """Accept either a single argument string or the token list ChatApp passes."""
+        if isinstance(args, (list, tuple)):
+            return " ".join(str(a) for a in args).strip()
+        return str(args or "").strip()
+
+    def cmd_art(self, *args):
+        """Routes '/art <subcommand> ...' to the matching handler. Usage: /art list|show|plan|run <name>"""
+        tokens = [str(a) for a in args]
+        if not tokens:
+            print(f"{C.ERR}Usage: /art <list|show|plan|run> [name]{C.END}")
+            return
+
+        subcommand = tokens[0].lower()
+        handlers = {
+            "list": self.cmd_art_list,
+            "show": self.cmd_art_show,
+            "plan": self.cmd_art_plan,
+            "run": self.cmd_art_run,
+        }
+        handler = handlers.get(subcommand)
+        if handler is None:
+            print(f"{C.ERR}Unknown art subcommand: '{subcommand}'. Try: {', '.join(handlers)}{C.END}")
+            return
+
+        handler(" ".join(tokens[1:]))
+
+    def cmd_art_list(self, args: str = "") -> None:
+        """List every art schema in the art directory. Usage: /art list"""
+        self.art_dir.mkdir(parents=True, exist_ok=True)
+
+        files = sorted(self.art_dir.glob("*.json"))
+        if not files:
+            print(f"{C.WARN}No art schemas found in {self.art_dir}.{C.END}")
+            return
+
+        print(f"\n{C.INFO}--- Art Schemas ({self.art_dir}) ---{C.END}")
+        for path in files:
+            try:
+                schema = json.loads(path.read_text(encoding="utf-8"))
+            except json.JSONDecodeError as exc:
+                print(f"  {C.ERR}{path.name}{C.END}: unreadable JSON ({exc})")
+                continue
+
+            geometry = schema.get("plate_geometry", {})
+            dims = f"{geometry.get('rows', '?')}x{geometry.get('cols', '?')}"
+            print(f"  {C.OK}{path.stem:<12}{C.END} [{dims}] {schema.get('name', 'Untitled')}")
+            description = schema.get("description", "")
+            if description:
+                print(f"    {description}")
+
+    def cmd_art_show(self, args: str = "") -> None:
+        """Show an art schema: header, ASCII grid preview, and palette legend. Usage: /art show <name>"""
+        name = self._as_args_str(args)
+        if not name:
+            name = input("Artwork name: ").strip()
+            if not name:
+                print(f"{C.ERR}No artwork name provided.{C.END}")
+                return
+
+        try:
+            schema = self._load_art_schema(name)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"{C.ERR}{exc}{C.END}")
+            return
+
+        geometry = schema.get("plate_geometry", {})
+        rows = int(geometry.get("rows", ROWS))
+        cols = int(geometry.get("cols", COLS))
+        volume_config = schema.get("volume_config", {})
+        nominal_volume = float(volume_config.get("nominal_well_volume_ul", DEFAULT_NOMINAL_WELL_VOLUME_UL))
+
+        print(f"\n{C.INFO}=== {schema.get('name', name)} ==={C.END}")
+        print(f"Grid: {rows}x{cols} | Nominal well volume: {nominal_volume} uL | Diluent: {volume_config.get('diluent', DEFAULT_DILUENT)}")
+        if schema.get("description"):
+            print(f"{schema['description']}")
+
+        print()
+        print(self._format_grid_preview(schema, rows, cols))
+
+        print(f"\n{C.INFO}--- Palette Legend ---{C.END}")
+        palette = schema.get("palette", {})
+        for token in sorted(palette):
+            entry = palette[token]
+            liquids_ul = entry.get("liquids_ul", {})
+            pigment_total = sum(float(v) for v in liquids_ul.values())
+            topoff = max(0.0, nominal_volume - pigment_total)
+
+            if liquids_ul:
+                mix = ", ".join(
+                    f"{liquid} {float(vol)} uL" for liquid, vol in liquids_ul.items()
+                )
+            else:
+                mix = "no pigments"
+
+            pumps = ", ".join(
+                f"{liquid}={self._safe_resolve_pump(liquid)}" for liquid in liquids_ul
+            )
+            print(f"  {C.OK}{token}{C.END}  {entry.get('name', 'Unnamed')}")
+            print(f"       mix: {mix}")
+            if pumps:
+                print(f"       pumps: {pumps}")
+            print(f"       top-off: {topoff} uL ({pigment_total + topoff} uL in well)")
+
+    def cmd_art_plan(self, args: str = "") -> None:
+        """Dry-run: print the expanded plan for an artwork without executing it. Usage: /art plan <name>"""
+        name = self._as_args_str(args)
+        if not name:
+            print(f"{C.ERR}Usage: /art plan <name>{C.END}")
+            return
+
+        try:
+            schema = self._load_art_schema(name)
+            plan = self._grid_to_plan(schema)
+        except (FileNotFoundError, ValueError) as exc:
+            print(f"{C.ERR}{exc}{C.END}")
+            return
+
+        print(f"\n{C.INFO}--- Plan for {schema.get('name', name)} ({len(plan)} steps) ---{C.END}")
+        for idx, step in enumerate(plan):
+            print(f"  {idx:>3} {step['device']} {step['command']} {json.dumps(step['args'])}")
+
+    def cmd_art_run(self, args: str = "") -> None:
+        """Execute an artwork on the plate. Usage: /art run <name>"""
+        print(f"{C.WARN}/art run is not wired to the execution engine yet. Use /art plan <name> for a dry run.{C.END}")
+
+    def _safe_resolve_pump(self, liquid_name: str) -> str:
+        """Resolve a pump for display purposes, reporting unassigned liquids without raising."""
+        try:
+            return self._resolve_pump(liquid_name)
+        except ValueError:
+            return "?"
+
+    @staticmethod
+    def _format_grid_preview(schema: dict, rows: int, cols: int) -> str:
+        """Render the grid as ASCII with row letters (A-H) and column headers (1-12)."""
+        grid = schema.get("grid", [])
+        header = "   " + " ".join(f"{col:>2}" for col in range(1, cols + 1))
+        lines = [header, "   " + "-" * (cols * 3 - 1)]
+
+        for row_idx in range(rows):
+            row = (grid[row_idx] if row_idx < len(grid) else "").ljust(cols)
+            letter = chr(ord("A") + row_idx)
+            lines.append(f"{letter}  " + " ".join(f"{ch:>2}" for ch in row))
+
+        return "\n".join(lines)
 
     def _resolve_pump(self, liquid_name: str) -> str:
         """
