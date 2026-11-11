@@ -55,7 +55,7 @@ def get_current_position_degrees(machine):
     Converts current motor steps to degrees.
     Returns: (theta1, theta2)
     """
-    m1_steps, m2_steps = _get_current_position_steps(machine)
+    m1_steps, m2_steps = get_current_position_steps(machine)
     return kinematics.steps_to_degrees(machine, m1_steps, m2_steps)
 
 def get_current_position_cartesian(machine):
