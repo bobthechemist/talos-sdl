@@ -88,15 +88,7 @@ class ChatApp:
             provider=self.ai_provider, model=self.ai_model, 
             context=self.prompt_factory.get_system_prompt("data")
         )
-        self.ai_agent = self.run_agent # Default to run_agent      
-
-        self.host_tools = {}
-        if "host" not in self.ai_commands:
-            self.ai_commands["host"] = {}
-        self.ai_guidance["host"] = (
-            "Software-side host utilities. Use these commands to manipulate the "
-            "execution timeline, optimize parameters, or process local data."
-        )
+        self.ai_agent = self.run_agent # Default to run_agent
 
     def register_command(self, name, handler):
         """Callback for CogManager to register commands."""
