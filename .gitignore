@@ -196,4 +196,4 @@ firmware/stirplate_manager
 firmware/mplam
 firmware/primus
 utility/
-tests/
+#tests/
