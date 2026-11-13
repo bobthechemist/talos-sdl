@@ -19,6 +19,7 @@ DEFAULT_DILUENT = "water"
 DISPENSE_SECONDS_PER_CYCLE = 0.25
 MOVE_SECONDS_PER_DISPENSE = 1.5
 HOME_SECONDS = 5.0
+PARK_SECONDS = 3.0
 
 
 class PixelArtCog(BaseCog):
@@ -168,7 +169,8 @@ class PixelArtCog(BaseCog):
         print(f"  Grid:           {stats['rows']}x{stats['cols']} ({stats['cells']} cells)")
         print(f"  Active wells:   {stats['active_wells']}")
         print(f"  Steps:          {stats['steps']} "
-              f"(home {stats['home_steps']}, move {stats['move_steps']}, dispense {stats['dispense_steps']})")
+              f"(home {stats['home_steps']}, move {stats['move_steps']}, dispense {stats['dispense_steps']}, "
+              f"park {stats['park_steps']})")
         print(f"  Dispense cycles: {stats['cycles']}")
         print(f"  Total volume:   {stats['total_ul']} uL")
         print(f"  Est. runtime:   {self._format_duration(stats['estimated_seconds'])} "
@@ -265,7 +267,7 @@ class PixelArtCog(BaseCog):
         per_liquid: dict[str, float] = {}
         pumps: dict[str, str] = {}
         wells: set[str] = set()
-        home_steps = move_steps = dispense_steps = 0
+        home_steps = move_steps = dispense_steps = park_steps = 0
         cycles = 0
 
         for step in plan:
@@ -273,6 +275,9 @@ class PixelArtCog(BaseCog):
             step_args = step.get("args", {})
             if command == "home":
                 home_steps += 1
+                continue
+            if command == "park":
+                park_steps += 1
                 continue
             if command == "to_well":
                 move_steps += 1
@@ -297,6 +302,7 @@ class PixelArtCog(BaseCog):
             HOME_SECONDS
             + dispense_steps * MOVE_SECONDS_PER_DISPENSE
             + cycles * DISPENSE_SECONDS_PER_CYCLE
+            + park_steps * PARK_SECONDS
         )
 
         return {
@@ -308,6 +314,7 @@ class PixelArtCog(BaseCog):
             "home_steps": home_steps,
             "move_steps": move_steps,
             "dispense_steps": dispense_steps,
+            "park_steps": park_steps,
             "cycles": cycles,
             "total_ul": round(sum(per_liquid.values()), 6),
             "per_liquid": per_liquid,
@@ -515,5 +522,8 @@ class PixelArtCog(BaseCog):
                     diluent_pump = self._resolve_pump(diluent)
                     plan.append({"device": DEVICE, "command": "to_well", "args": {"well": well, "pump": diluent_pump}})
                     plan.append({"device": DEVICE, "command": "dispense", "args": {"pump": diluent_pump, "vol": topoff_vol}})
+
+        # Park the arm over the safe park position once the canvas is complete.
+        plan.append({"device": DEVICE, "command": "park", "args": {}})
 
         return plan

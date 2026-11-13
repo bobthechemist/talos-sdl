@@ -234,10 +234,15 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
         plan = self.cog._grid_to_plan(make_schema(full_grid("R"), self.palette))
         self.assertEqual(plan[0], {"device": "sidekick", "command": "home", "args": {}})
 
+    def test_plan_ends_with_park(self):
+        plan = self.cog._grid_to_plan(make_schema(full_grid("R"), self.palette))
+        self.assertEqual(plan[-1], {"device": "sidekick", "command": "park", "args": {}})
+        self.assertEqual([s["command"] for s in plan if s["command"] == "park"], ["park"])
+
     def test_two_step_pairs_for_single_liquid_cell(self):
         plan = self.cog._grid_to_plan(make_schema(full_grid("R"), self.palette))
-        # home + (move + dispense) for red + (move + dispense) for water top-off, per well
-        self.assertEqual(len(plan), 1 + 96 * 4)
+        # home + (move + dispense) for red + (move + dispense) for water top-off, per well + park
+        self.assertEqual(len(plan), 1 + 96 * 4 + 1)
         self.assertEqual(plan[1], {"device": "sidekick", "command": "to_well", "args": {"well": "A1", "pump": "p1"}})
         self.assertEqual(plan[2], {"device": "sidekick", "command": "dispense", "args": {"pump": "p1", "vol": 30.0}})
         self.assertEqual(plan[3], {"device": "sidekick", "command": "to_well", "args": {"well": "A1", "pump": "p4"}})
@@ -245,8 +250,8 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
 
     def test_mixing_cell_emits_pair_per_liquid(self):
         plan = self.cog._grid_to_plan(make_schema(full_grid("O"), self.palette))
-        # home + 2 pigments * 2 steps + top-off pair, per well
-        self.assertEqual(len(plan), 1 + 96 * 6)
+        # home + 2 pigments * 2 steps + top-off pair, per well + park
+        self.assertEqual(len(plan), 1 + 96 * 6 + 1)
         first_well = plan[1:7]
         self.assertEqual([s["args"]["well"] for s in first_well if s["command"] == "to_well"], ["A1"] * 3)
         self.assertEqual([s["args"]["pump"] for s in first_well], ["p1", "p1", "p2", "p2", "p4", "p4"])
@@ -262,7 +267,7 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
     def test_no_top_off_when_cell_is_already_full(self):
         palette = {"R": {"name": "Full", "liquids_ul": {"red": 100.0}}}
         plan = self.cog._grid_to_plan(make_schema(full_grid("R"), palette))
-        self.assertEqual(len(plan), 1 + 96 * 2)  # home + one pair per well
+        self.assertEqual(len(plan), 1 + 96 * 2 + 1)  # home + one pair per well + park
         self.assertEqual([s["command"] for s in plan[1:3]], ["to_well", "dispense"])
 
     def test_well_names_use_rows_a_to_h_and_columns_1_to_12(self):
@@ -274,13 +279,13 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
         self.assertEqual(len(wells), 96)
 
     def test_total_step_count_for_full_plate(self):
-        # 96 cells, one pigment each -> 2 steps per cell + home.
+        # 96 cells, one pigment each -> 2 steps per cell + home + park.
         plan = self.cog._grid_to_plan(make_schema(full_grid("R"), self.palette))
-        self.assertEqual(len(plan), 1 + 96 * 4)
+        self.assertEqual(len(plan), 1 + 96 * 4 + 1)
 
-        # Blank cells: top-off only -> 2 steps per cell.
+        # Blank cells: top-off only -> 2 steps per cell + home + park.
         plan_blank = self.cog._grid_to_plan(make_schema(full_grid("."), self.palette))
-        self.assertEqual(len(plan_blank), 1 + 96 * 2)
+        self.assertEqual(len(plan_blank), 1 + 96 * 2 + 1)
 
     def test_smiley_art_expands_to_expected_step_count(self):
         schema = {
@@ -305,8 +310,8 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
             ],
         }
         plan = self.cog._grid_to_plan(schema)
-        # 28 blanks (2 steps) + 56 orange (4) + 4 green (6) + 8 red (4) + home = 449
-        self.assertEqual(len(plan), 449)
+        # 28 blanks (2 steps) + 56 orange (4) + 4 green (6) + 8 red (4) + home + park = 450
+        self.assertEqual(len(plan), 450)
 
     def test_plan_expansion_validates_first(self):
         with self.assertRaises(ValueError):
@@ -401,7 +406,8 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         output = strip_ansi(capture_stdout(self.cog.cmd_art_plan, "smiley"))
         self.assertIn("Plan Summary", output)
         self.assertIn("Active wells:   96", output)
-        self.assertIn("Steps:          385", output)  # home + 96 * (2 + 2)
+        self.assertIn("Steps:          386", output)  # home + 96 * (2 + 2) + park
+        self.assertIn("park 1", output)
         self.assertIn("Per-liquid breakdown", output)
         self.assertIn("Red Food Coloring", output)
         self.assertIn("2880.0 uL", output)  # 96 * 30 red
@@ -422,7 +428,7 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         intent_entries = self.dln.entries_of("intent")
         self.assertEqual(len(intent_entries), 1)
         self.assertEqual(intent_entries[0]["data"]["intent"], "Execute pixel art: Smiley Face")
-        self.assertEqual(len(intent_entries[0]["data"]["plan"]), 385)
+        self.assertEqual(len(intent_entries[0]["data"]["plan"]), 386)
 
         observations = self.dln.entries_of("observation")
         self.assertEqual(len(observations), 96)
@@ -432,9 +438,10 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         self.assertEqual(observations[-1]["data"]["well"], "H12")
 
         self.assertEqual(len(self.engine.calls), 1)
-        self.assertEqual(len(self.engine.calls[0]["plan"]), 385)
+        self.assertEqual(len(self.engine.calls[0]["plan"]), 386)
+        self.assertEqual(self.engine.calls[0]["plan"][-1], {"device": "sidekick", "command": "park", "args": {}})
         self.assertEqual(self.engine.calls[0]["plan_id"], 1)  # plan_id from the intent log
-        self.assertIn("executed (385 steps)", output)
+        self.assertIn("executed (386 steps)", output)
 
     def test_art_run_respects_confirmation_prompt(self):
         self.app.require_confirmation = True
