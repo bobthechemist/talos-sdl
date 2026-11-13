@@ -283,9 +283,20 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
         plan = self.cog._grid_to_plan(make_schema(full_grid("R"), self.palette))
         self.assertEqual(len(plan), 1 + 96 * 4 + 1)
 
-        # Blank cells: top-off only -> 2 steps per cell + home + park.
+        # Blank cells are skipped entirely -> home + park only.
         plan_blank = self.cog._grid_to_plan(make_schema(full_grid("."), self.palette))
-        self.assertEqual(len(plan_blank), 1 + 96 * 2 + 1)
+        self.assertEqual(plan_blank, [
+            {"device": "sidekick", "command": "home", "args": {}},
+            {"device": "sidekick", "command": "park", "args": {}},
+        ])
+
+    def test_skip_cell_produces_no_steps(self):
+        grid = ["R" + "." * 10 + "R"] + ["." * 12] * 7
+        plan = self.cog._grid_to_plan(make_schema(grid, self.palette))
+        # home + 2 painted cells * (2 + 2) + park
+        self.assertEqual(len(plan), 1 + 2 * 4 + 1)
+        self.assertEqual(sorted({s["args"].get("well") for s in plan if s["command"] == "to_well"}), ["A1", "A12"])
+        self.assertEqual([s["command"] for s in plan if s["command"] == "dispense"], ["dispense"] * 4)
 
     def test_smiley_art_expands_to_expected_step_count(self):
         schema = {
@@ -310,8 +321,10 @@ class TestPixelArtCogPlanExpansion(unittest.TestCase):
             ],
         }
         plan = self.cog._grid_to_plan(schema)
-        # 28 blanks (2 steps) + 56 orange (4) + 4 green (6) + 8 red (4) + home + park = 450
-        self.assertEqual(len(plan), 450)
+        # 28 blanks skipped + 56 orange (4) + 4 green (6) + 8 red (4) + home + park = 394
+        self.assertEqual(len(plan), 394)
+        self.assertEqual(self.cog._plan_stats(schema, plan)["skipped_cells"], 28)
+        self.assertEqual(self.cog._plan_stats(schema, plan)["active_wells"], 68)
 
     def test_plan_expansion_validates_first(self):
         with self.assertRaises(ValueError):
@@ -389,6 +402,17 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         self.assertIn("red=p1", output)
         self.assertIn("top-off: 70.0 uL", output)
 
+    def test_art_show_legend_marks_skip_cells(self):
+        skip_art = dict(self.smiley)
+        skip_art["palette"] = {".": {"name": "Empty", "liquids_ul": {}}}
+        skip_art["grid"] = [".R" + "." * 10] * 8
+        (self.art_dir / "skip.json").write_text(json.dumps(skip_art), encoding="utf-8")
+
+        output = strip_ansi(capture_stdout(self.cog.cmd_art_show, "skip"))
+        self.assertIn("Empty", output)
+        self.assertIn("skip: well is left empty", output)
+        self.assertNotIn("no pigments", output)
+
     def test_art_show_prompts_when_name_missing(self):
         with patch("builtins.input", return_value="smiley"):
             output = strip_ansi(capture_stdout(self.cog.cmd_art_show, ""))
@@ -419,6 +443,20 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         output = strip_ansi(capture_stdout(self.cog.cmd_art_plan, ""))
         self.assertIn("Usage: /art plan", output)
 
+    def test_art_plan_reports_skipped_cells_and_no_diluent_volume(self):
+        skip_art = dict(self.smiley)
+        skip_art["palette"] = {".": {"name": "Empty", "liquids_ul": {}}, "R": {"name": "Red", "liquids_ul": {"red": 30.0}}}
+        skip_art["grid"] = ["R" + "." * 11] * 8
+        (self.art_dir / "skip.json").write_text(json.dumps(skip_art), encoding="utf-8")
+
+        output = strip_ansi(capture_stdout(self.cog.cmd_art_plan, "skip"))
+        self.assertIn("Active wells:   8 (skipped 88)", output)
+        self.assertIn("Steps:          34", output)  # home + 8 * (2 + 2) + park
+        self.assertIn("Red Food Coloring", output)
+        self.assertIn("240.0 uL", output)  # 8 * 30 red
+        self.assertIn("560.0 uL", output)  # 8 * 70 diluent, only for painted wells
+        self.assertIn("Total volume:   800.0 uL", output)
+
     def test_art_run_logs_intent_and_observations_then_executes(self):
         output = strip_ansi(capture_stdout(self.cog.cmd_art_run, "smiley"))
         self.assertIn("Executing Smiley Face", output)
@@ -442,6 +480,23 @@ class TestPixelArtCogSlashCommands(unittest.TestCase):
         self.assertEqual(self.engine.calls[0]["plan"][-1], {"device": "sidekick", "command": "park", "args": {}})
         self.assertEqual(self.engine.calls[0]["plan_id"], 1)  # plan_id from the intent log
         self.assertIn("executed (386 steps)", output)
+
+    def test_art_run_skips_blank_wells_in_observations(self):
+        skip_art = dict(self.smiley)
+        skip_art["palette"] = {".": {"name": "Empty", "liquids_ul": {}}, "R": {"name": "Red", "liquids_ul": {"red": 30.0}}}
+        skip_art["grid"] = ["R" + "." * 11] * 8
+        (self.art_dir / "skip.json").write_text(json.dumps(skip_art), encoding="utf-8")
+
+        output = strip_ansi(capture_stdout(self.cog.cmd_art_run, "skip"))
+        self.assertIn("8 well observations logged", output)
+
+        observations = self.dln.entries_of("observation")
+        self.assertEqual(len(observations), 8)
+        self.assertEqual([o["data"]["well"] for o in observations], [f"{chr(ord('A') + i)}1" for i in range(8)])
+        self.assertEqual(observations[0]["data"]["total_vol_ul"], 100.0)
+
+        self.assertEqual(len(self.engine.calls), 1)
+        self.assertEqual(len(self.engine.calls[0]["plan"]), 34)  # home + 8 * (2 + 2) + park
 
     def test_art_run_respects_confirmation_prompt(self):
         self.app.require_confirmation = True

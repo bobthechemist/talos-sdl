@@ -129,6 +129,12 @@ class PixelArtCog(BaseCog):
         for token in sorted(palette):
             entry = palette[token]
             liquids_ul = entry.get("liquids_ul", {})
+
+            if self._is_skip_cell(entry):
+                print(f"  {C.OK}{token}{C.END}  {entry.get('name', 'Unnamed')}")
+                print("       skip: well is left empty")
+                continue
+
             pigment_total = sum(float(v) for v in liquids_ul.values())
             topoff = max(0.0, nominal_volume - pigment_total)
 
@@ -167,7 +173,7 @@ class PixelArtCog(BaseCog):
         print(f"\n{C.INFO}=== Plan Summary: {schema.get('name', name)} ==={C.END}")
         print(f"  Artwork:        {schema.get('name', name)} ({name}.json)")
         print(f"  Grid:           {stats['rows']}x{stats['cols']} ({stats['cells']} cells)")
-        print(f"  Active wells:   {stats['active_wells']}")
+        print(f"  Active wells:   {stats['active_wells']} (skipped {stats['skipped_cells']})")
         print(f"  Steps:          {stats['steps']} "
               f"(home {stats['home_steps']}, move {stats['move_steps']}, dispense {stats['dispense_steps']}, "
               f"park {stats['park_steps']})")
@@ -236,7 +242,11 @@ class PixelArtCog(BaseCog):
         for row_idx, row in enumerate(schema.get("grid", [])):
             row_letter = chr(ord("A") + row_idx)
             for col_idx, char in enumerate(row):
-                liquids_ul = palette.get(char, {}).get("liquids_ul", {})
+                entry = palette.get(char, {})
+                if self._is_skip_cell(entry):
+                    continue
+
+                liquids_ul = entry.get("liquids_ul", {})
                 pigment_total = sum(float(v) for v in liquids_ul.values())
                 topoff = max(0.0, nominal_volume - pigment_total)
                 total_vol = pigment_total + topoff
@@ -269,6 +279,13 @@ class PixelArtCog(BaseCog):
         wells: set[str] = set()
         home_steps = move_steps = dispense_steps = park_steps = 0
         cycles = 0
+        skipped_cells = 0
+
+        palette = schema.get("palette", {})
+        for row in schema.get("grid", []):
+            for char in row:
+                if self._is_skip_cell(palette.get(char, {})):
+                    skipped_cells += 1
 
         for step in plan:
             command = step.get("command")
@@ -310,6 +327,7 @@ class PixelArtCog(BaseCog):
             "cols": cols,
             "cells": rows * cols,
             "active_wells": len(wells),
+            "skipped_cells": skipped_cells,
             "steps": len(plan),
             "home_steps": home_steps,
             "move_steps": move_steps,
@@ -465,7 +483,7 @@ class PixelArtCog(BaseCog):
                     )
                 cell_total += vol
 
-            cell_total += max(0.0, nominal_volume - cell_total)
+            cell_total += 0.0 if self._is_skip_cell(entry) else max(0.0, nominal_volume - cell_total)
             if cell_total > max_well_volume:
                 raise ValueError(
                     f"Palette cell '{char}' totals {cell_total} uL, exceeding max_well_volume_ul "
@@ -483,6 +501,11 @@ class PixelArtCog(BaseCog):
             self._resolve_pump(diluent)
         except ValueError as exc:
             raise ValueError(f"Diluent '{diluent}': {exc}") from exc
+
+    @staticmethod
+    def _is_skip_cell(entry: dict) -> bool:
+        """A palette entry with no liquid volumes is a skip: the well is left truly empty."""
+        return not any(float(vol) > 0 for vol in entry.get("liquids_ul", {}).values())
 
     @staticmethod
     def _is_multiple(vol: float, increment: float) -> bool:
@@ -505,8 +528,12 @@ class PixelArtCog(BaseCog):
         for row_idx, row in enumerate(grid):
             row_letter = chr(ord("A") + row_idx)
             for col_idx, char in enumerate(row):
+                entry = palette[char]
+                if self._is_skip_cell(entry):
+                    continue
+
                 well = f"{row_letter}{col_idx + 1}"
-                liquids_ul = palette[char].get("liquids_ul", {})
+                liquids_ul = entry.get("liquids_ul", {})
                 pigment_total = sum(float(vol) for vol in liquids_ul.values())
 
                 for liquid_name, vol_ul in liquids_ul.items():
